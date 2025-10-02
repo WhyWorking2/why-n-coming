@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_owner_review")
+@Table(name = "owner_reviews")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -43,4 +43,10 @@ public class OwnerReview {
 
     @Column
     private LocalDateTime deletedDate;
+
+    public OwnerReview(Review review, User user, String ownerReviewContent) {
+        this.review = review;
+        this.user = user;
+        this.ownerReviewContent = ownerReviewContent;
+    }
 }

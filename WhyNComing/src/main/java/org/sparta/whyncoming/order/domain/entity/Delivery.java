@@ -3,6 +3,7 @@ package org.sparta.whyncoming.order.domain.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.sparta.whyncoming.order.domain.enums.DeliveryStatus;
 import org.sparta.whyncoming.user.domain.entity.Address;
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_delivery")
+@Table(name = "deliveries")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -33,7 +34,7 @@ public class Delivery {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userNo", nullable = false)
-    private User user; // 이 부분은 ERD랑 맞지 않아서 수정 필요
+    private User user;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -53,10 +54,11 @@ public class Delivery {
     @Column
     private LocalDateTime deletedDate;
 
-    public enum DeliveryStatus {
-        ACCEPTED,
-        COOKED,
-        DELIVERING,
-        DELIVERED
+    public Delivery(Order order, Address address, User user, DeliveryStatus deliveryStatus, String position) {
+        this.order = order;
+        this.address = address;
+        this.user = user;
+        this.deliveryStatus = deliveryStatus;
+        this.position = position;
     }
 }

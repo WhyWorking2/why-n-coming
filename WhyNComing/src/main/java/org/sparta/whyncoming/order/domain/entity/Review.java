@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_review")
+@Table(name = "reviews")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -57,4 +57,15 @@ public class Review {
 
     @OneToOne(mappedBy = "review")
     private OwnerReview ownerReview;
+
+    public Review(Store store, User user, Order order, Integer reviewRating,
+                  String reviewContent, String reviewPictureUrl, OwnerReview ownerReview) {
+        this.store = store;
+        this.user = user;
+        this.order = order;
+        this.reviewRating = reviewRating;
+        this.reviewContent = reviewContent;
+        this.reviewPictureUrl = reviewPictureUrl;
+        this.ownerReview = ownerReview;
+    }
 }

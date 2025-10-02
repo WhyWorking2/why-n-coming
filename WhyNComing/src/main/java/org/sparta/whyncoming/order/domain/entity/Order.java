@@ -3,6 +3,7 @@ package org.sparta.whyncoming.order.domain.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.sparta.whyncoming.order.domain.enums.Status;
 import org.sparta.whyncoming.product.domain.entity.Cart;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.user.domain.entity.User;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_order")
+@Table(name = "orders")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -67,9 +68,16 @@ public class Order {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Delivery delivery;
 
-    public enum Status {
-        SUCCESS,
-        CANCELED,
-        REFUNDED
+    public Order(Store store, User user, String paymentMethod, Integer totalPrice, String requests,
+                 Status status, Review review, List<Cart> carts, Delivery delivery) {
+        this.store = store;
+        this.user = user;
+        this.paymentMethod = paymentMethod;
+        this.totalPrice = totalPrice;
+        this.requests = requests;
+        this.status = status;
+        this.review = review;
+        this.carts = carts;
+        this.delivery = delivery;
     }
 }
