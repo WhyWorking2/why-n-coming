@@ -27,7 +27,7 @@ public class Store {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID storeSeq;
+    private UUID storeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userNo", nullable = false)

@@ -19,7 +19,7 @@ public class CategoryProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID categoryStoreSeq;
+    private UUID categorystoreId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "productSeq", nullable = false)

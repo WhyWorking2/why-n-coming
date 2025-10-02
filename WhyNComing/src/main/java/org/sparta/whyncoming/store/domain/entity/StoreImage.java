@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "store_image")
+@Table(name = "store_images")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)

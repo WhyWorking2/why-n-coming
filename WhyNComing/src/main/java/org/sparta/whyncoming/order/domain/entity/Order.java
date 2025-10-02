@@ -28,7 +28,7 @@ public class Order {
     private UUID orderSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeSeq", nullable = false)
+    @JoinColumn(name = "storeId", nullable = false)
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)
