@@ -8,6 +8,7 @@ import org.sparta.whyncoming.order.domain.entity.OwnerReview;
 import org.sparta.whyncoming.order.domain.entity.Review;
 import org.sparta.whyncoming.product.domain.entity.Cart;
 import org.sparta.whyncoming.store.domain.entity.Store;
+import org.sparta.whyncoming.user.domain.enums.Role;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "p_user")
+@Table(name = "users")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -75,8 +76,20 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> carts = new ArrayList<>();
 
-    public enum Role {
-        CUSTOMER,
-        ADMIN
+    public User(String userId, String password, String userName, String userPhone,
+                String email, Role role, List<Address> addresses, List<Store> stores,
+                List<Order> orders, List<Review> reviews, List<OwnerReview> ownerReviews, List<Cart> carts) {
+        this.userId = userId;
+        this.password = password;
+        this.userName = userName;
+        this.userPhone = userPhone;
+        this.email = email;
+        this.role = role;
+        this.addresses = addresses;
+        this.stores = stores;
+        this.orders = orders;
+        this.reviews = reviews;
+        this.ownerReviews = ownerReviews;
+        this.carts = carts;
     }
 }

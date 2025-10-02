@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_address")
+@Table(name = "addresses")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -47,4 +47,11 @@ public class Address {
 
     @OneToMany(mappedBy = "address", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Delivery> deliveries = new ArrayList<>();
+
+    public Address(User user, String address, String representativeYn, List<Delivery> deliveries) {
+        this.user = user;
+        this.address = address;
+        this.representativeYn = representativeYn;
+        this.deliveries = deliveries;
+    }
 }
