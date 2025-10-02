@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sparta.whyncoming.product.domain.entity.Category;
-import org.sparta.whyncoming.product.domain.entity.Product;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_category_store")
+@Table(name = "category_stores")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -24,8 +23,8 @@ public class CategoryStore {
     private UUID categoryProductSeq;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productSeq", nullable = false)
-    private Product product;
+    @JoinColumn(name = "storeSeq", nullable = false)
+    private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "categorySeq", nullable = false)
@@ -41,4 +40,9 @@ public class CategoryStore {
 
     @Column
     private LocalDateTime deletedDate;
+
+    public CategoryStore(Store store, Category category) {
+        this.store = store;
+        this.category = category;
+    }
 }

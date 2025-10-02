@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_store_image")
+@Table(name = "store_image")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -38,4 +38,9 @@ public class StoreImage {
 
     @Column
     private LocalDateTime deletedDate;
+
+    public StoreImage(Store store, String storeImageUrl) {
+        this.store = store;
+        this.storeImageUrl = storeImageUrl;
+    }
 }
