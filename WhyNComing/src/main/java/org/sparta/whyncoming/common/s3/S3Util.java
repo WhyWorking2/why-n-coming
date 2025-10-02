@@ -7,19 +7,24 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.UUID;
 
 @Component
 public class S3Util {
 
     private final S3Client s3Client;
+    private final S3Presigner s3Presigner;
     private final String bucketName;
 
-    public S3Util(S3Client _s3Client,
+    public S3Util(S3Client _s3Client, S3Presigner _s3Presigner,
                   @Value("${cloud.aws.s3.bucket}") String _bucketName){
         this.s3Client = _s3Client;
+        this.s3Presigner = _s3Presigner;
         this.bucketName = _bucketName;
     }
 
@@ -50,13 +55,18 @@ public class S3Util {
             ));
 
             // 반환
-            String regionId = s3Client.serviceClientConfiguration().region().id();
-            return String.format("https://%s.s3.%s.amazonaws.com/%s",
-                                    bucketName,
-                                    regionId,
-                                    fileName);
+            return generatePresignedUrl(fileName);
         } catch (S3Exception e){
             throw new IOException("파일 업로드 실패", e);
         }
+    }
+
+    private String generatePresignedUrl(String fileName){
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofDays(7))
+                .getObjectRequest(b -> b.bucket(bucketName).key(fileName))
+                .build();
+
+        return s3Presigner.presignGetObject(presignRequest).url().toString();
     }
 }
