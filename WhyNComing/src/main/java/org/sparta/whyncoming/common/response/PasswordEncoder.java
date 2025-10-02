@@ -1,11 +1,16 @@
 package org.sparta.whyncoming.common.response;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PasswordEncoder {
 
+    @Value("${security.bcrypt.cost}")
+    private int cost;
+
     public String encode(String rawPassword) {
-        int cost = 12; //임시로 하드코딩 상태, 나중에 이 부분 조절할 수 있게 바꿔야 함.
         return BCrypt.withDefaults().hashToString(cost, rawPassword.toCharArray());
     }
 
