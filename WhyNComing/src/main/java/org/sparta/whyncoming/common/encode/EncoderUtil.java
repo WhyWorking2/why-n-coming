@@ -1,4 +1,4 @@
-package org.sparta.whyncoming.common.response;
+package org.sparta.whyncoming.common.encode;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Value;

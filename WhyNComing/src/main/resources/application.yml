@@ -22,7 +22,7 @@ spring:
     baseline-on-migrate: true   # 기존 DB에 테이블이 이미 있을 때 첫 실행 시 베이스라인 처리
 security:
  bcrypt:
-  cost: 12
+  cost: 10
 
 springdoc:
   api-docs:
