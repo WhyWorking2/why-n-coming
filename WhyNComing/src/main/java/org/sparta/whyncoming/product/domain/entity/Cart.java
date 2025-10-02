@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_cart")
+@Table(name = "carts")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -53,4 +53,12 @@ public class Cart {
 
     @Column
     private LocalDateTime deletedDate;
+
+    public Cart(Store store, Product product, Order order, User user, Integer quantity) {
+        this.store = store;
+        this.product = product;
+        this.order = order;
+        this.user = user;
+        this.quantity = quantity;
+    }
 }

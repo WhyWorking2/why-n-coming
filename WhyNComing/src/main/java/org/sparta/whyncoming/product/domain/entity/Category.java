@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "p_category")
+@Table(name = "categories")
 @Getter
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -43,4 +43,10 @@ public class Category {
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryProduct> categoryProducts = new ArrayList<>();
+
+    public Category(String categoryName, List<CategoryStore> categoryStores, List<CategoryProduct> categoryProducts) {
+        this.categoryName = categoryName;
+        this.categoryStores = categoryStores;
+        this.categoryProducts = categoryProducts;
+    }
 }
