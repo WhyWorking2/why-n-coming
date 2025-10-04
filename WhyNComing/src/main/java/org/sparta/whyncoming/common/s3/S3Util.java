@@ -29,7 +29,7 @@ public class S3Util {
     }
 
     // 파일 S3에 업로드, 파일 url 반환
-    public String uploadFile(MultipartFile file) throws IOException{
+    public String uploadFile(MultipartFile file, String folderName) throws IOException{
 
         // 파일명 없으면 Exception
         String originalFilename = file.getOriginalFilename();
@@ -38,7 +38,7 @@ public class S3Util {
         }
 
         // 파일명 처리 (충돌 방지)
-        String fileName = UUID.randomUUID().toString() + "_" + originalFilename;
+        String fileName = folderName + "/" + UUID.randomUUID().toString() + "_" + originalFilename;
 
         try{
             // 요청 객체 생성

@@ -30,7 +30,7 @@ public class S3TestController {
         }
 
         try {
-            String fileUrl = s3Util.uploadFile(file);
+            String fileUrl = s3Util.uploadFile(file, "test");
 
             return ResponseEntity.ok("파일 업로드 성공 " + fileUrl);
         } catch (IOException e){
