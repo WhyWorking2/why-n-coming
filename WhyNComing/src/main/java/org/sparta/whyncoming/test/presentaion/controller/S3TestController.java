@@ -1,6 +1,7 @@
-package org.sparta.whyncoming.common.s3;
+package org.sparta.whyncoming.test.presentaion.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.sparta.whyncoming.common.s3.S3Util;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,8 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/s3test")
-@Tag(name = "S3Test", description = "S3 Test API")
+@RequestMapping("/api/test")
+@Tag(name = "Test")
 public class S3TestController {
 
     private final S3Util s3Util;
