@@ -1,11 +1,11 @@
-package org.sparta.whyncoming.test;
+package org.sparta.whyncoming.test.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "test")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @NoArgsConstructor
 public class Test {
 
     @Id
@@ -18,4 +18,13 @@ public class Test {
     private Long id;
 
     private String name;
+
+    public Test(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }
