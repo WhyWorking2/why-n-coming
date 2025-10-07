@@ -1,20 +1,27 @@
-package org.sparta.whyncoming.product.domain.controller;
+package org.sparta.whyncoming.product.presentaion.controller;
 
-import org.sparta.whyncoming.product.domain.entity.Product;
-import org.sparta.whyncoming.product.domain.service.ProductService;
+import org.sparta.whyncoming.common.response.ApiResult;
+import org.sparta.whyncoming.product.application.service.ProductService;
+import org.sparta.whyncoming.product.presentaion.dto.request.ProductRequestDto;
+import org.sparta.whyncoming.product.presentaion.dto.response.ProductResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/products")
 public class ProductController {
-   // private final ProductService productService;
+    private final ProductService productService;
 
-//    public ProductController(ProductService productService) {
-//        this.productService = productService;
-//    }
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
+
+    // 생성
+    @PostMapping
+    public ResponseEntity<ApiResult<ProductResponseDto>> createProduct(@RequestBody ProductRequestDto requestDto) {
+        return ResponseEntity.ok(ApiResult.ofSuccess(productService.creatProduct(requestDto)));
+    }
+
 //
 //    // 전체 조회
 //    @GetMapping
@@ -28,11 +35,6 @@ public class ProductController {
 //        return ResponseEntity.ok(productService.findById(id));
 //    }
 //
-//    // 등록
-//    @PostMapping
-//    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-//        return ResponseEntity.ok(productService.save(product));
-//    }
 //
 //    // 수정
 //    @PutMapping("/{id}")

@@ -67,4 +67,22 @@ public class Product {
         this.carts = carts;
         this.categoryProducts = categoryProducts;
     }
+
+    /**
+     * 상품 생성 시 사용되는 생성자 (cart 부분에 대한 것 어떻게 할지 수정 필요)
+     * @param store 가게정보
+     * @param productName 상품 이름
+     * @param description 상품 설명
+     * @param price 상품 가격
+     * @param productPictureUrl 상품 사진
+     * @param categoryProductList 상품이 속한 카테고리의 목록
+     */
+    public Product(Store store, String productName, String description, Integer price, String productPictureUrl, List<CategoryProduct> categoryProductList) {
+        this.store = store;
+        this.productName = productName;
+        this.description = description;
+        this.price = price;
+        this.productPictureUrl = productPictureUrl;
+        this.categoryProducts = categoryProductList;
+    }
 }

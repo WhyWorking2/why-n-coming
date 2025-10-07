@@ -1,6 +1,6 @@
-package org.sparta.whyncoming.product.domain.repository;
+package org.sparta.whyncoming.product.infrastructure.repository;
 
-import org.sparta.whyncoming.product.domain.entity.Product;
+import org.sparta.whyncoming.product.domain.entity.Category;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,24 +11,30 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class ProductRepositoryImpl implements ProductRepositoryCustom{
+public class CategoryRepositoryImpl implements CategoryRepositoryCustom{
+
+    @Override
+    public Optional<Category> findByCategoryName(String name) {
+        return Optional.empty();
+    }
+
     @Override
     public void flush() {
 
     }
 
     @Override
-    public <S extends Product> S saveAndFlush(S entity) {
+    public <S extends Category> S saveAndFlush(S entity) {
         return null;
     }
 
     @Override
-    public <S extends Product> List<S> saveAllAndFlush(Iterable<S> entities) {
+    public <S extends Category> List<S> saveAllAndFlush(Iterable<S> entities) {
         return List.of();
     }
 
     @Override
-    public void deleteAllInBatch(Iterable<Product> entities) {
+    public void deleteAllInBatch(Iterable<Category> entities) {
 
     }
 
@@ -43,67 +49,67 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     }
 
     @Override
-    public Product getOne(Long aLong) {
+    public Category getOne(Long aLong) {
         return null;
     }
 
     @Override
-    public Product getById(Long aLong) {
+    public Category getById(Long aLong) {
         return null;
     }
 
     @Override
-    public Product getReferenceById(Long aLong) {
+    public Category getReferenceById(Long aLong) {
         return null;
     }
 
     @Override
-    public <S extends Product> Optional<S> findOne(Example<S> example) {
+    public <S extends Category> Optional<S> findOne(Example<S> example) {
         return Optional.empty();
     }
 
     @Override
-    public <S extends Product> List<S> findAll(Example<S> example) {
+    public <S extends Category> List<S> findAll(Example<S> example) {
         return List.of();
     }
 
     @Override
-    public <S extends Product> List<S> findAll(Example<S> example, Sort sort) {
+    public <S extends Category> List<S> findAll(Example<S> example, Sort sort) {
         return List.of();
     }
 
     @Override
-    public <S extends Product> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S extends Category> Page<S> findAll(Example<S> example, Pageable pageable) {
         return null;
     }
 
     @Override
-    public <S extends Product> long count(Example<S> example) {
+    public <S extends Category> long count(Example<S> example) {
         return 0;
     }
 
     @Override
-    public <S extends Product> boolean exists(Example<S> example) {
+    public <S extends Category> boolean exists(Example<S> example) {
         return false;
     }
 
     @Override
-    public <S extends Product, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+    public <S extends Category, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
 
     @Override
-    public <S extends Product> S save(S entity) {
+    public <S extends Category> S save(S entity) {
         return null;
     }
 
     @Override
-    public <S extends Product> List<S> saveAll(Iterable<S> entities) {
+    public <S extends Category> List<S> saveAll(Iterable<S> entities) {
         return List.of();
     }
 
     @Override
-    public Optional<Product> findById(Long aLong) {
+    public Optional<Category> findById(Long aLong) {
         return Optional.empty();
     }
 
@@ -113,12 +119,12 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     }
 
     @Override
-    public List<Product> findAll() {
+    public List<Category> findAll() {
         return List.of();
     }
 
     @Override
-    public List<Product> findAllById(Iterable<Long> longs) {
+    public List<Category> findAllById(Iterable<Long> longs) {
         return List.of();
     }
 
@@ -133,7 +139,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     }
 
     @Override
-    public void delete(Product entity) {
+    public void delete(Category entity) {
 
     }
 
@@ -143,7 +149,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     }
 
     @Override
-    public void deleteAll(Iterable<? extends Product> entities) {
+    public void deleteAll(Iterable<? extends Category> entities) {
 
     }
 
@@ -153,12 +159,12 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom{
     }
 
     @Override
-    public List<Product> findAll(Sort sort) {
+    public List<Category> findAll(Sort sort) {
         return List.of();
     }
 
     @Override
-    public Page<Product> findAll(Pageable pageable) {
+    public Page<Category> findAll(Pageable pageable) {
         return null;
     }
 }
