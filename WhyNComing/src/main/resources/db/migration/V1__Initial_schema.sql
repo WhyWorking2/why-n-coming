@@ -73,12 +73,12 @@ ALTER TABLE IF EXISTS public.stores
 
 CREATE TABLE IF NOT EXISTS public.categories
 (
-    category_seq uuid NOT NULL DEFAULT gen_random_uuid(),
+    category_id uuid NOT NULL DEFAULT gen_random_uuid(),
     category_name character varying(20) COLLATE pg_catalog."default" NOT NULL,
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
-    CONSTRAINT pk_categories PRIMARY KEY (category_seq)
+    CONSTRAINT pk_categories PRIMARY KEY (category_id)
     )
 
     TABLESPACE pg_default;
@@ -88,7 +88,7 @@ ALTER TABLE IF EXISTS public.categories
 
 CREATE TABLE IF NOT EXISTS public.products
 (
-    product_seq uuid NOT NULL DEFAULT gen_random_uuid(),
+    product_id uuid NOT NULL DEFAULT gen_random_uuid(),
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     description character varying(255) COLLATE pg_catalog."default",
@@ -97,7 +97,7 @@ CREATE TABLE IF NOT EXISTS public.products
     product_name character varying(255) COLLATE pg_catalog."default" NOT NULL,
     product_picture_url text COLLATE pg_catalog."default",
     store_id uuid NOT NULL,
-    CONSTRAINT pk_products PRIMARY KEY (product_seq),
+    CONSTRAINT pk_products PRIMARY KEY (product_id),
     CONSTRAINT fk_products_store_id FOREIGN KEY (store_id)
     REFERENCES public.stores (store_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
@@ -111,7 +111,7 @@ ALTER TABLE IF EXISTS public.products
 
 CREATE TABLE IF NOT EXISTS public.orders
 (
-    order_seq uuid NOT NULL DEFAULT gen_random_uuid(),
+    order_id uuid NOT NULL DEFAULT gen_random_uuid(),
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS public.orders
     total_price integer NOT NULL,
     store_id uuid NOT NULL,
     user_no integer NOT NULL,
-    CONSTRAINT pk_orders PRIMARY KEY (order_seq),
+    CONSTRAINT pk_orders PRIMARY KEY (order_id),
     CONSTRAINT fk_orders_user_no FOREIGN KEY (user_no)
     REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
@@ -161,7 +161,7 @@ ALTER TABLE IF EXISTS public.addresses
 
 CREATE TABLE IF NOT EXISTS public.deliveries
 (
-    delivery_seq uuid NOT NULL DEFAULT gen_random_uuid(),
+    delivery_id uuid NOT NULL DEFAULT gen_random_uuid(),
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     delivery_status character varying(255) COLLATE pg_catalog."default" NOT NULL,
@@ -170,14 +170,14 @@ CREATE TABLE IF NOT EXISTS public.deliveries
     address_id uuid NOT NULL,
     order_id uuid NOT NULL,
     user_no integer NOT NULL,
-    CONSTRAINT pk_deliveries PRIMARY KEY (delivery_seq),
+    CONSTRAINT pk_deliveries PRIMARY KEY (delivery_id),
     CONSTRAINT uq_deliveries_order_id UNIQUE (order_id),
     CONSTRAINT fk_deliveries_user_no FOREIGN KEY (user_no)
     REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
     CONSTRAINT fk_deliveries_order_id FOREIGN KEY (order_id)
-    REFERENCES public.orders (order_seq) MATCH SIMPLE
+    REFERENCES public.orders (order_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
     CONSTRAINT fk_deliveries_address_id FOREIGN KEY (address_id)
@@ -194,20 +194,20 @@ ALTER TABLE IF EXISTS public.deliveries
 
 CREATE TABLE IF NOT EXISTS public.reviews
 (
-    review_seq uuid NOT NULL DEFAULT gen_random_uuid(),
+    review_id uuid NOT NULL DEFAULT gen_random_uuid(),
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
     review_content character varying(255) COLLATE pg_catalog."default",
     review_picture_url text COLLATE pg_catalog."default",
     review_rating integer NOT NULL,
-    order_seq uuid NOT NULL,
+    order_id uuid NOT NULL,
     store_id uuid NOT NULL,
     user_no integer NOT NULL,
-    CONSTRAINT pk_reviews PRIMARY KEY (review_seq),
-    CONSTRAINT uq_reviews_order_seq UNIQUE (order_seq),
-    CONSTRAINT fk_reviews_order_seq FOREIGN KEY (order_seq)
-    REFERENCES public.orders (order_seq) MATCH SIMPLE
+    CONSTRAINT pk_reviews PRIMARY KEY (review_id),
+    CONSTRAINT uq_reviews_order_id UNIQUE (order_id),
+    CONSTRAINT fk_reviews_order_id FOREIGN KEY (order_id)
+    REFERENCES public.orders (order_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
     CONSTRAINT fk_reviews_store_id FOREIGN KEY (store_id)
@@ -227,21 +227,21 @@ ALTER TABLE IF EXISTS public.reviews
 
 CREATE TABLE IF NOT EXISTS public.owner_reviews
 (
-    owner_review_seq uuid NOT NULL DEFAULT gen_random_uuid(),
+    owner_review_id uuid NOT NULL DEFAULT gen_random_uuid(),
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
     owner_review_content character varying(255) COLLATE pg_catalog."default",
-    review_seq uuid NOT NULL,
+    review_id uuid NOT NULL,
     user_no integer NOT NULL,
-    CONSTRAINT pk_owner_reviews PRIMARY KEY (owner_review_seq),
-    CONSTRAINT uq_owner_reviews_review_seq UNIQUE (review_seq),
+    CONSTRAINT pk_owner_reviews PRIMARY KEY (owner_review_id),
+    CONSTRAINT uq_owner_reviews_review_id UNIQUE (review_id),
     CONSTRAINT fk_owner_reviews_user_no FOREIGN KEY (user_no)
     REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
-    CONSTRAINT fk_owner_reviews_review_seq FOREIGN KEY (review_seq)
-    REFERENCES public.reviews (review_seq) MATCH SIMPLE
+    CONSTRAINT fk_owner_reviews_review_id FOREIGN KEY (review_id)
+    REFERENCES public.reviews (review_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
     )
@@ -253,30 +253,30 @@ ALTER TABLE IF EXISTS public.owner_reviews
 
 CREATE TABLE IF NOT EXISTS public.carts
 (
-    cart_seq uuid NOT NULL DEFAULT gen_random_uuid(),
+    cart_id uuid NOT NULL DEFAULT gen_random_uuid(),
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
     quantity integer NOT NULL,
-    order_seq uuid,
-    product_seq uuid NOT NULL,
+    order_id uuid,
+    product_id uuid NOT NULL,
     store_id uuid NOT NULL,
     user_no integer NOT NULL,
-    CONSTRAINT pk_carts PRIMARY KEY (cart_seq),
+    CONSTRAINT pk_carts PRIMARY KEY (cart_id),
     CONSTRAINT fk_carts_store_id FOREIGN KEY (store_id)
     REFERENCES public.stores (store_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
-    CONSTRAINT fk_carts_order_seq FOREIGN KEY (order_seq)
-    REFERENCES public.orders (order_seq) MATCH SIMPLE
+    CONSTRAINT fk_carts_order_id FOREIGN KEY (order_id)
+    REFERENCES public.orders (order_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
     CONSTRAINT fk_carts_user_no FOREIGN KEY (user_no)
     REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
-    CONSTRAINT fk_carts_product_seq FOREIGN KEY (product_seq)
-    REFERENCES public.products (product_seq) MATCH SIMPLE
+    CONSTRAINT fk_carts_product_id FOREIGN KEY (product_id)
+    REFERENCES public.products (product_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
     )
@@ -292,15 +292,15 @@ CREATE TABLE IF NOT EXISTS public.category_products
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
-    category_seq uuid NOT NULL,
-    product_seq uuid NOT NULL,
+    category_id uuid NOT NULL,
+    product_id uuid NOT NULL,
     CONSTRAINT pk_category_products PRIMARY KEY (categorystore_id),
-    CONSTRAINT fk_category_products_product_seq FOREIGN KEY (product_seq)
-    REFERENCES public.products (product_seq) MATCH SIMPLE
+    CONSTRAINT fk_category_products_product_id FOREIGN KEY (product_id)
+    REFERENCES public.products (product_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
-    CONSTRAINT fk_category_products_category_seq FOREIGN KEY (category_seq)
-    REFERENCES public.categories (category_seq) MATCH SIMPLE
+    CONSTRAINT fk_category_products_category_id FOREIGN KEY (category_id)
+    REFERENCES public.categories (category_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
     )
@@ -312,15 +312,15 @@ ALTER TABLE IF EXISTS public.category_products
 
 CREATE TABLE IF NOT EXISTS public.category_stores
 (
-    category_product_seq uuid NOT NULL DEFAULT gen_random_uuid(),
+    category_product_id uuid NOT NULL DEFAULT gen_random_uuid(),
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
-    category_seq uuid NOT NULL,
+    category_id uuid NOT NULL,
     store_id uuid NOT NULL,
-    CONSTRAINT pk_category_stores PRIMARY KEY (category_product_seq),
-    CONSTRAINT fk_category_stores_category_seq FOREIGN KEY (category_seq)
-    REFERENCES public.categories (category_seq) MATCH SIMPLE
+    CONSTRAINT pk_category_stores PRIMARY KEY (category_product_id),
+    CONSTRAINT fk_category_stores_category_id FOREIGN KEY (category_id)
+    REFERENCES public.categories (category_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
     CONSTRAINT fk_category_stores_store_id FOREIGN KEY (store_id)
@@ -336,13 +336,13 @@ ALTER TABLE IF EXISTS public.category_stores
 
 CREATE TABLE IF NOT EXISTS public.store_images
 (
-    store_image_seq uuid NOT NULL DEFAULT gen_random_uuid(),
+    store_image_id uuid NOT NULL DEFAULT gen_random_uuid(),
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
     store_image_url text COLLATE pg_catalog."default" NOT NULL,
     store_id uuid NOT NULL,
-    CONSTRAINT pk_store_image PRIMARY KEY (store_image_seq),
+    CONSTRAINT pk_store_image PRIMARY KEY (store_image_id),
     CONSTRAINT fk_store_images_store_id FOREIGN KEY (store_id)
     REFERENCES public.stores (store_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
