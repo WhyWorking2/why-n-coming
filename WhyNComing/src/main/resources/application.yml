@@ -8,7 +8,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update        # ← 중요: 스키마는 Flyway가 만들고, JPA는 검증만 #update는 jpa 가 스키마 생성/수정까지 함   # 운영에서는 ddl-auto: validate, 로컬 임시 개발이라도 update는 습관 들이지 않는 걸 추천해요. (실수로 운영에 반영될 위험)
+      ddl-auto: va        # ← 중요: 스키마는 Flyway가 만들고, JPA는 검증만 #update는 jpa 가 스키마 생성/수정까지 함   # 운영에서는 ddl-auto: validate, 로컬 임시 개발이라도 update는 습관 들이지 않는 걸 추천해요. (실수로 운영에 반영될 위험)
     open-in-view: false
     properties:
       hibernate:

@@ -26,7 +26,7 @@ public class ProductRequestDto {
     @Schema(description = "상품 이미지 URL", example = "https://example.com/images/malatang.jpg")
     private String productPictureUrl;
 
-    @Schema(description = "가게 이름", example = "홍콩반점")
+    @Schema(description = "가게 이름", example = "중국집1")
     private String storeName;
 
     @Schema(description = "카테고리 이름 목록", example = "[\"중식\"]")

@@ -9,7 +9,7 @@ import java.util.UUID;
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
 
     @Override
-    public Optional<Product> findByProductSeq(UUID productSeq) {
+    public Optional<Product> findByProductId(UUID productId) {
         return Optional.empty();
     }
 }

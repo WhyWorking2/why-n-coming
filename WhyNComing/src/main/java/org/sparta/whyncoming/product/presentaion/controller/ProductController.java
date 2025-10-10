@@ -52,9 +52,9 @@ public class ProductController {
     @Operation(summary = "상품 수정")
     @PutMapping("/{uuid}")
     public ResponseEntity<ApiResult<ProductResponseDto>> updateProduct
-    (@PathVariable@RequestParam(required = false) UUID productSeq, @RequestBody ProductUpdateRequestDto updateRequestDto) {
+    (@PathVariable@RequestParam(required = false) UUID productId, @RequestBody ProductUpdateRequestDto updateRequestDto) {
 
-        return ResponseEntity.ok(ApiResult.ofSuccess(productService.updateProduct(productSeq, updateRequestDto)));
+        return ResponseEntity.ok(ApiResult.ofSuccess(productService.updateProduct(productId, updateRequestDto)));
     }
 
 //    // 삭제

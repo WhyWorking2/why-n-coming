@@ -86,6 +86,13 @@ public class Product {
         this.categoryProducts = categoryProductList;
     }
 
+    /**
+     * 상품 수정시 사용되는 생성자
+     * @param productName 상품명
+     * @param price 가격
+     * @param description 설명
+     * @param productPictureUrl 이미지
+     */
     public void update(String productName, Integer price, String description, String productPictureUrl) {
         this.productName = productName;
         this.price = price;

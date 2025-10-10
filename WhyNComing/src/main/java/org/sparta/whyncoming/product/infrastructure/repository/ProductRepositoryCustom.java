@@ -7,5 +7,5 @@ import java.util.UUID;
 
 public interface ProductRepositoryCustom {
 
-    Optional<Product> findByProductSeq(UUID productSeq);
+    Optional<Product> findByProductId(UUID productId);
 }
