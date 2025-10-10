@@ -5,40 +5,36 @@ import org.sparta.whyncoming.product.domain.entity.Category;
 import org.sparta.whyncoming.product.domain.entity.CategoryProduct;
 import org.sparta.whyncoming.product.domain.entity.Product;
 import org.sparta.whyncoming.product.domain.repository.CategoryRepository;
-import org.sparta.whyncoming.product.domain.repository.ProductRepositoy;
+import org.sparta.whyncoming.product.domain.repository.ProductRepository;
 import org.sparta.whyncoming.product.presentaion.dto.request.ProductRequestDto;
+import org.sparta.whyncoming.product.presentaion.dto.request.ProductUpdateRequestDto;
 import org.sparta.whyncoming.product.presentaion.dto.response.ProductResponseDto;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.store.domain.repository.StoreRepository;
-import org.sparta.whyncoming.user.domain.entity.User;
-import org.sparta.whyncoming.user.domain.enums.Role;
-import org.sparta.whyncoming.user.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
 @Transactional
 public class ProductService {
 
-    private final ProductRepositoy productRepositoy;
+    private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final StoreRepository storeRepository;
-    private final UserRepository userRepository;
 
-    public ProductService(ProductRepositoy productRepositoy, CategoryRepository categoryRepository, StoreRepository storeRepository, UserRepository userRepository) {
-        this.productRepositoy = productRepositoy;
+    public ProductService(ProductRepository productRepository, CategoryRepository categoryRepository, StoreRepository storeRepository) {
+        this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.storeRepository = storeRepository;
-        this.userRepository = userRepository;
     }
 
-    @Transactional
-    public ProductResponseDto creatProduct(@RequestBody ProductRequestDto requestDto) {
+
+    public ProductResponseDto creatProduct(ProductRequestDto requestDto) {
 
         /**
          * TODO 스토어가 존재하는지에 대한 추가 검증 필요, 스토어 부분 완성되면 아래 주석된 부분 사용 예정
@@ -109,31 +105,29 @@ public class ProductService {
 //        Category chineseCategory = new Category("중식" ,new ArrayList<>(),new ArrayList<>());
 //        categoryRepository.save(chineseCategory);
 
-        /**
-         * 여기까지 더미
-         */
 
         Store store = storeRepository.findByStoreName(requestDto.getStoreName())
-                .orElseThrow(() -> new IllegalArgumentException("스토어 없음"));
+                .orElseThrow(() -> new IllegalArgumentException("스토어 없음: " + requestDto.getStoreName()));
 
-        Product product = productRepositoy.save(new Product(store, requestDto.getProductName(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getProductPictureUrl(), new ArrayList<>())); // 빈 카테고리로 생성
+        Product product = productRepository.save(new Product(store, requestDto.getProductName(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getProductPictureUrl(), new ArrayList<>())); // 빈 카테고리로 생성
 
         List<CategoryProduct> categoryProducts = requestDto.getCategoryNames().stream()
                 .map(name -> {
                     Category category = categoryRepository.findByCategoryName(name)
-                            .orElseThrow(() -> new RuntimeException("Category not found: " + name));
+                            .orElseThrow(() -> new RuntimeException("카테고리 없음: " + name));
                     return new CategoryProduct(product, category);
                 })
                 .toList();
 
         product.getCategoryProducts().addAll(categoryProducts);
-        productRepositoy.save(product);
+        productRepository.save(product);
         return new ProductResponseDto(product);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductResponseDto> readAllProducts() {
 
-        List<ProductResponseDto> responseDtoList = productRepositoy.findAll().stream()
+        return productRepository.findAll().stream()
                 .map(product -> new ProductResponseDto(
                         product.getProductSeq(),
                         product.getStore().getStoreName(),
@@ -141,9 +135,24 @@ public class ProductService {
                         product.getPrice(),
                         product.getProductPictureUrl()
                 )).toList();
-        return responseDtoList;
     }
 
+    public ProductResponseDto updateProduct(UUID productSeq, ProductUpdateRequestDto requestDto) {
+        Product product = productRepository.findByProductSeq(productSeq)
+                .orElseThrow(() -> new IllegalArgumentException("상품 없음 : " + requestDto.getProductName()));
+
+        product.update(
+                requestDto.getProductName(),
+                requestDto.getPrice(),
+                requestDto.getDescription(),
+                requestDto.getProductPictureUrl()
+        );
+
+        Product updateProduct = productRepository.save(product);
+
+        return new ProductResponseDto(updateProduct);
+    }
+}
 
 
 
@@ -153,4 +162,3 @@ public class ProductService {
 //    private ProductResponseDto toProductResponse(Product product) {
 //        return new ProductResponseDto(product);
 //    }
-}

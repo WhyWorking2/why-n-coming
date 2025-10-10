@@ -85,4 +85,12 @@ public class Product {
         this.productPictureUrl = productPictureUrl;
         this.categoryProducts = categoryProductList;
     }
+
+    public void update(String productName, Integer price, String description, String productPictureUrl) {
+        this.productName = productName;
+        this.price = price;
+        this.description = description;
+        this.productPictureUrl = productPictureUrl;
+    }
+
 }

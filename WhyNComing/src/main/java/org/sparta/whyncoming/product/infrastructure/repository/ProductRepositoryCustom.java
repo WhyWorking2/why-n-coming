@@ -1,6 +1,11 @@
 package org.sparta.whyncoming.product.infrastructure.repository;
 
-import org.sparta.whyncoming.product.domain.repository.ProductRepositoy;
+import org.sparta.whyncoming.product.domain.entity.Product;
 
-public interface ProductRepositoryCustom extends ProductRepositoy {
+import java.util.Optional;
+import java.util.UUID;
+
+public interface ProductRepositoryCustom {
+
+    Optional<Product> findByProductSeq(UUID productSeq);
 }
