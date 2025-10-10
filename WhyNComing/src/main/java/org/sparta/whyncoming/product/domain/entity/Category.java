@@ -22,7 +22,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID categorySeq;
+    private UUID categoryId;
 
     @Column(name = "categoryName", length = 20, nullable = false)
     private String categoryName;

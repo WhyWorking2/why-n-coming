@@ -22,7 +22,7 @@ public class Delivery {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID deliverySeq;
+    private UUID deliveryId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "orderId", nullable = false)
