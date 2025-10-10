@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/v1/test/s3")
 @Tag(name = "Test")
 public class S3TestController {
 
