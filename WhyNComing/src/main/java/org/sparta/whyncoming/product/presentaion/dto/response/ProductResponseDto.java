@@ -14,16 +14,21 @@ import java.util.stream.Collectors;
 public class ProductResponseDto {
 
     private UUID productSeq;
-    private String name;
+    private String productName;
     private Integer price;
     private String description;
     private String productPictureUrl;
     private LocalDateTime createdDate;
     private List<String> categoryNameList;
+    private String storeName;
 
+    /**
+     * 상품 생성을 위한 생성자 (사장님 권한)
+     * @param product 생성된 값에 대한 Response 값 반환
+     */
     public ProductResponseDto(Product product) {
         this.productSeq = product.getProductSeq();
-        this.name = product.getProductName();
+        this.productName = product.getProductName();
         this.price = product.getPrice();
         this.description = product.getDescription();
         this.categoryNameList = product.getCategoryProducts().stream()
@@ -31,5 +36,21 @@ public class ProductResponseDto {
                 .collect(Collectors.toList());
         this.productPictureUrl = product.getProductPictureUrl();
         this.createdDate = product.getCreatedDate();
+    }
+
+    /**
+     * 상품을 리스트 형태로 만들어 조회하기 위한 생성자
+     * @param productSeq 상품의 uuid
+     * @param storeName 상품을 팔고있는 가게
+     * @param productName 상품이름
+     * @param price 상품가격
+     * @param productPictureUrl 상품사진
+     */
+    public ProductResponseDto(UUID productSeq, String storeName, String productName, Integer price, String productPictureUrl) {
+        this.productSeq = productSeq;
+        this.storeName = storeName;
+        this.productName = productName;
+        this.price = price;
+        this.productPictureUrl = productPictureUrl;
     }
 }
