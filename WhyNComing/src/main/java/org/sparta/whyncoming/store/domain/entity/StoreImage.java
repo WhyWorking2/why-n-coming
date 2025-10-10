@@ -19,7 +19,7 @@ public class StoreImage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID storeImageSeq;
+    private UUID storeImageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "storeId", nullable = false)

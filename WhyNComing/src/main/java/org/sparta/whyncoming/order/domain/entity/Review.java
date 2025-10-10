@@ -21,7 +21,7 @@ public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID reviewSeq;
+    private UUID reviewId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "storeId", nullable = false)
@@ -32,7 +32,7 @@ public class Review {
     private User user;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderSeq", nullable = false)
+    @JoinColumn(name = "orderId", nullable = false)
     private Order order;
 
     @Column(nullable = false)

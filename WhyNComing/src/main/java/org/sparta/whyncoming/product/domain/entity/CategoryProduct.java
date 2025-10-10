@@ -22,11 +22,11 @@ public class CategoryProduct {
     private UUID categorystoreId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productSeq", nullable = false)
+    @JoinColumn(name = "productId", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categorySeq", nullable = false)
+    @JoinColumn(name = "categoryId", nullable = false)
     private Category category;
 
     @CreatedDate
