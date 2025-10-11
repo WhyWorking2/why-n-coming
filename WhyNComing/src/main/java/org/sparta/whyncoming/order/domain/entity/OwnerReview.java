@@ -20,10 +20,10 @@ public class OwnerReview {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID ownerReviewSeq;
+    private UUID ownerReviewId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewSeq", nullable = false)
+    @JoinColumn(name = "reviewId", nullable = false)
     private Review review;
 
     @ManyToOne(fetch = FetchType.LAZY)
