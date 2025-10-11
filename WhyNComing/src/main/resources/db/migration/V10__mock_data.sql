@@ -1,6 +1,5 @@
 -- 필요한 확장
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 ----------------------------
 -- 1) 사용자 (users)
 ----------------------------
