@@ -10,7 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+import org.sparta.whyncoming.user.domain.entity.User;
 @Entity
 @Table(name = "category_stores")
 @Getter
@@ -40,6 +40,19 @@ public class CategoryStore {
 
     @Column
     private LocalDateTime deletedDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by")
+    private User modifiedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deleted_by")
+    private User deletedBy;
+
 
     public CategoryStore(Store store, Category category) {
         this.store = store;
