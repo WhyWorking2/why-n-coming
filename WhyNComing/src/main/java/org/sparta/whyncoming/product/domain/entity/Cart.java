@@ -54,6 +54,19 @@ public class Cart {
     @Column
     private LocalDateTime deletedDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by")
+    private User modifiedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deleted_by")
+    private User deletedBy;
+
+
     public Cart(Store store, Product product, Order order, User user, Integer quantity) {
         this.store = store;
         this.product = product;

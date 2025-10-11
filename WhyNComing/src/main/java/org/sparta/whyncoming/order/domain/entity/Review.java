@@ -58,6 +58,19 @@ public class Review {
     @OneToOne(mappedBy = "review")
     private OwnerReview ownerReview;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by")
+    private User modifiedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deleted_by")
+    private User deletedBy;
+
+
     public Review(Store store, User user, Order order, Integer reviewRating,
                   String reviewContent, String reviewPictureUrl, OwnerReview ownerReview) {
         this.store = store;

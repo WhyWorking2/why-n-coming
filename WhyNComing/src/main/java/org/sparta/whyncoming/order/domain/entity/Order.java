@@ -59,6 +59,19 @@ public class Order {
     @Column
     private LocalDateTime deletedDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by")
+    private User modifiedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deleted_by")
+    private User deletedBy;
+
+
     @OneToOne(mappedBy = "order")
     private Review review;
 
