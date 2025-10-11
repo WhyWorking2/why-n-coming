@@ -4,9 +4,6 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 ----------------------------
 -- 1) 사용자 (users)
 ----------------------------
-----------------------------
--- 1) 사용자 (users)
-----------------------------
 INSERT INTO users (
     user_no, user_id, password, user_name, user_phone, email, role,
     created_date, modified_date, deleted_date,

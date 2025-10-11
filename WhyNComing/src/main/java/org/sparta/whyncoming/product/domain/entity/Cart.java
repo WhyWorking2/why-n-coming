@@ -1,5 +1,5 @@
 package org.sparta.whyncoming.product.domain.entity;
-
+//
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
