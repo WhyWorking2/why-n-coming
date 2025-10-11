@@ -24,11 +24,26 @@ CREATE TABLE IF NOT EXISTS public.users
     user_id character varying(36) COLLATE pg_catalog."default" NOT NULL,
     user_name character varying(100) COLLATE pg_catalog."default" NOT NULL,
     user_phone character varying(11) COLLATE pg_catalog."default" NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_users PRIMARY KEY (user_no),
     CONSTRAINT uq_users_user_phone UNIQUE (user_phone),
     CONSTRAINT uq_users_email UNIQUE (email),
     CONSTRAINT uq_users_user_id UNIQUE (user_id),
-    CONSTRAINT ck_users_role CHECK (role IN ('CUSTOMER','OWNER','MANAGER','MASTER'))
+    CONSTRAINT ck_users_role CHECK (role IN ('CUSTOMER','OWNER','MANAGER','MASTER')),
+    CONSTRAINT fk_users_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_users_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_users_deleted_by FOREIGN KEY (deleted_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION
     )
 
     TABLESPACE pg_default;
@@ -54,11 +69,26 @@ CREATE TABLE IF NOT EXISTS public.stores
     store_phone character varying(20) COLLATE pg_catalog."default" NOT NULL,
     store_rating numeric(2,1) NOT NULL,
     store_review_count integer NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     user_no integer NOT NULL,
     CONSTRAINT pk_stores PRIMARY KEY (store_id),
     CONSTRAINT uq_stores_store_phone UNIQUE (store_phone),
     -- FK 블록은 FOREIGN KEY -> REFERENCES가 연속되어야 함
     CONSTRAINT fk_stores_user_no FOREIGN KEY (user_no)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_stores_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_stores_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_stores_deleted_by FOREIGN KEY (deleted_by)
     REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
@@ -78,7 +108,22 @@ CREATE TABLE IF NOT EXISTS public.categories
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
-    CONSTRAINT pk_categories PRIMARY KEY (category_id)
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
+    CONSTRAINT pk_categories PRIMARY KEY (category_id),
+    CONSTRAINT fk_categories_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_categories_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_categories_deleted_by FOREIGN KEY (deleted_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION
     )
 
     TABLESPACE pg_default;
@@ -97,9 +142,24 @@ CREATE TABLE IF NOT EXISTS public.products
     product_name character varying(255) COLLATE pg_catalog."default" NOT NULL,
     product_picture_url text COLLATE pg_catalog."default",
     store_id uuid NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_products PRIMARY KEY (product_id),
     CONSTRAINT fk_products_store_id FOREIGN KEY (store_id)
     REFERENCES public.stores (store_id) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_products_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_products_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_products_deleted_by FOREIGN KEY (deleted_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
     )
@@ -121,6 +181,9 @@ CREATE TABLE IF NOT EXISTS public.orders
     total_price integer NOT NULL,
     store_id uuid NOT NULL,
     user_no integer NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_orders PRIMARY KEY (order_id),
     CONSTRAINT fk_orders_user_no FOREIGN KEY (user_no)
     REFERENCES public.users (user_no) MATCH SIMPLE
@@ -128,6 +191,18 @@ CREATE TABLE IF NOT EXISTS public.orders
                               ON DELETE NO ACTION,
     CONSTRAINT fk_orders_store_id FOREIGN KEY (store_id)
     REFERENCES public.stores (store_id) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_orders_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_orders_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_orders_deleted_by FOREIGN KEY (deleted_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
     CONSTRAINT ck_orders_status CHECK (status::text = ANY (ARRAY['SUCCESS'::character varying, 'CANCELED'::character varying, 'REFUNDED'::character varying]::text[]))
@@ -147,8 +222,23 @@ CREATE TABLE IF NOT EXISTS public.addresses
     modified_date timestamp(6) without time zone NOT NULL,
     representative_yn character varying(1) COLLATE pg_catalog."default",
     user_no integer,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_addresses PRIMARY KEY (address_id),
     CONSTRAINT fk_addresses_user_no FOREIGN KEY (user_no)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_addresses_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_addresses_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_addresses_deleted_by FOREIGN KEY (deleted_by)
     REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
@@ -170,6 +260,9 @@ CREATE TABLE IF NOT EXISTS public.deliveries
     address_id uuid NOT NULL,
     order_id uuid NOT NULL,
     user_no integer NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_deliveries PRIMARY KEY (delivery_id),
     CONSTRAINT uq_deliveries_order_id UNIQUE (order_id),
     CONSTRAINT fk_deliveries_user_no FOREIGN KEY (user_no)
@@ -182,6 +275,18 @@ CREATE TABLE IF NOT EXISTS public.deliveries
                               ON DELETE NO ACTION,
     CONSTRAINT fk_deliveries_address_id FOREIGN KEY (address_id)
     REFERENCES public.addresses (address_id) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_deliveries_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_deliveries_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_deliveries_deleted_by FOREIGN KEY (deleted_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
     CONSTRAINT ck_deliveries_delivery_status CHECK (delivery_status::text = ANY (ARRAY['ACCEPTED'::character varying, 'COOKED'::character varying, 'DELIVERING'::character varying, 'DELIVERED'::character varying]::text[]))
@@ -204,6 +309,9 @@ CREATE TABLE IF NOT EXISTS public.reviews
     order_id uuid NOT NULL,
     store_id uuid NOT NULL,
     user_no integer NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_reviews PRIMARY KEY (review_id),
     CONSTRAINT uq_reviews_order_id UNIQUE (order_id),
     CONSTRAINT fk_reviews_order_id FOREIGN KEY (order_id)
@@ -215,6 +323,18 @@ CREATE TABLE IF NOT EXISTS public.reviews
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION,
     CONSTRAINT fk_reviews_user_no FOREIGN KEY (user_no)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_reviews_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_reviews_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_reviews_deleted_by FOREIGN KEY (deleted_by)
     REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
@@ -234,6 +354,9 @@ CREATE TABLE IF NOT EXISTS public.owner_reviews
     owner_review_content character varying(255) COLLATE pg_catalog."default",
     review_id uuid NOT NULL,
     user_no integer NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_owner_reviews PRIMARY KEY (owner_review_id),
     CONSTRAINT uq_owner_reviews_review_id UNIQUE (review_id),
     CONSTRAINT fk_owner_reviews_user_no FOREIGN KEY (user_no)
@@ -242,6 +365,18 @@ CREATE TABLE IF NOT EXISTS public.owner_reviews
                               ON DELETE NO ACTION,
     CONSTRAINT fk_owner_reviews_review_id FOREIGN KEY (review_id)
     REFERENCES public.reviews (review_id) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_owner_reviews_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_owner_reviews_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_owner_reviews_deleted_by FOREIGN KEY (deleted_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
     )
@@ -262,6 +397,9 @@ CREATE TABLE IF NOT EXISTS public.carts
     product_id uuid NOT NULL,
     store_id uuid NOT NULL,
     user_no integer NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_carts PRIMARY KEY (cart_id),
     CONSTRAINT fk_carts_store_id FOREIGN KEY (store_id)
     REFERENCES public.stores (store_id) MATCH SIMPLE
@@ -277,6 +415,18 @@ CREATE TABLE IF NOT EXISTS public.carts
                               ON DELETE NO ACTION,
     CONSTRAINT fk_carts_product_id FOREIGN KEY (product_id)
     REFERENCES public.products (product_id) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_carts_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_carts_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_carts_deleted_by FOREIGN KEY (deleted_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
     )
@@ -294,6 +444,9 @@ CREATE TABLE IF NOT EXISTS public.category_products
     modified_date timestamp(6) without time zone NOT NULL,
     category_id uuid NOT NULL,
     product_id uuid NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_category_products PRIMARY KEY (categorystore_id),
     CONSTRAINT fk_category_products_product_id FOREIGN KEY (product_id)
     REFERENCES public.products (product_id) MATCH SIMPLE
@@ -301,6 +454,18 @@ CREATE TABLE IF NOT EXISTS public.category_products
                               ON DELETE NO ACTION,
     CONSTRAINT fk_category_products_category_id FOREIGN KEY (category_id)
     REFERENCES public.categories (category_id) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_category_products_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_category_products_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_category_products_deleted_by FOREIGN KEY (deleted_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
     )
@@ -318,6 +483,9 @@ CREATE TABLE IF NOT EXISTS public.category_stores
     modified_date timestamp(6) without time zone NOT NULL,
     category_id uuid NOT NULL,
     store_id uuid NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_category_stores PRIMARY KEY (category_product_id),
     CONSTRAINT fk_category_stores_category_id FOREIGN KEY (category_id)
     REFERENCES public.categories (category_id) MATCH SIMPLE
@@ -325,6 +493,18 @@ CREATE TABLE IF NOT EXISTS public.category_stores
                               ON DELETE NO ACTION,
     CONSTRAINT fk_category_stores_store_id FOREIGN KEY (store_id)
     REFERENCES public.stores (store_id) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_category_stores_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_category_stores_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_category_stores_deleted_by FOREIGN KEY (deleted_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
     )
@@ -342,9 +522,24 @@ CREATE TABLE IF NOT EXISTS public.store_images
     modified_date timestamp(6) without time zone NOT NULL,
     store_image_url text COLLATE pg_catalog."default" NOT NULL,
     store_id uuid NOT NULL,
+    created_by integer,
+    modified_by integer,
+    deleted_by integer,
     CONSTRAINT pk_store_image PRIMARY KEY (store_image_id),
     CONSTRAINT fk_store_images_store_id FOREIGN KEY (store_id)
     REFERENCES public.stores (store_id) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_store_images_created_by FOREIGN KEY (created_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_store_images_modified_by FOREIGN KEY (modified_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
+                              ON UPDATE NO ACTION
+                              ON DELETE NO ACTION,
+    CONSTRAINT fk_store_images_deleted_by FOREIGN KEY (deleted_by)
+    REFERENCES public.users (user_no) MATCH SIMPLE
                               ON UPDATE NO ACTION
                               ON DELETE NO ACTION
     )
