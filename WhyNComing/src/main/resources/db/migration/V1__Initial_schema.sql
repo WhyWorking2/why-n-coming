@@ -255,7 +255,7 @@ CREATE TABLE IF NOT EXISTS public.deliveries
     deleted_date timestamp(6) without time zone,
     delivery_status character varying(255) COLLATE pg_catalog."default" NOT NULL,
     modified_date timestamp(6) without time zone NOT NULL,
-    "position" character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    delivery_position character varying(255) COLLATE pg_catalog."default" NOT NULL,
     address_id uuid NOT NULL,
     order_id uuid NOT NULL,
     user_no integer NOT NULL,
@@ -437,7 +437,7 @@ ALTER TABLE IF EXISTS public.carts
 
 CREATE TABLE IF NOT EXISTS public.category_products
 (
-    categorystore_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    category_product_id uuid NOT NULL DEFAULT gen_random_uuid(),
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
@@ -446,7 +446,7 @@ CREATE TABLE IF NOT EXISTS public.category_products
     created_by integer,
     modified_by integer,
     deleted_by integer,
-    CONSTRAINT pk_category_products PRIMARY KEY (categorystore_id),
+    CONSTRAINT pk_category_products PRIMARY KEY (category_product_id),
     CONSTRAINT fk_category_products_product_id FOREIGN KEY (product_id)
     REFERENCES public.products (product_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
@@ -476,7 +476,7 @@ ALTER TABLE IF EXISTS public.category_products
 
 CREATE TABLE IF NOT EXISTS public.category_stores
 (
-    category_product_id uuid NOT NULL DEFAULT gen_random_uuid(),
+    category_store_id uuid NOT NULL DEFAULT gen_random_uuid(),
     created_date timestamp(6) without time zone NOT NULL,
     deleted_date timestamp(6) without time zone,
     modified_date timestamp(6) without time zone NOT NULL,
@@ -485,7 +485,7 @@ CREATE TABLE IF NOT EXISTS public.category_stores
     created_by integer,
     modified_by integer,
     deleted_by integer,
-    CONSTRAINT pk_category_stores PRIMARY KEY (category_product_id),
+    CONSTRAINT pk_category_stores PRIMARY KEY (categorystore_id),
     CONSTRAINT fk_category_stores_category_id FOREIGN KEY (category_id)
     REFERENCES public.categories (category_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
