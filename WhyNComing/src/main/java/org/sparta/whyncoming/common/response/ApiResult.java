@@ -2,6 +2,7 @@ package org.sparta.whyncoming.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
+import org.sparta.whyncoming.common.exception.ErrorCode;
 
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)

@@ -1,7 +1,9 @@
-package org.sparta.whyncoming.common.response;
+package org.sparta.whyncoming.common.exception;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ConstraintViolationException;
+import org.sparta.whyncoming.common.response.ApiResult;
+import org.sparta.whyncoming.common.response.ResponseUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
