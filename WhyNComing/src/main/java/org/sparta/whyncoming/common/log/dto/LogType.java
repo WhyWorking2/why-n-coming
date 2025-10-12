@@ -7,5 +7,5 @@ public enum LogType {
     CLIENT_ERROR,
     BUSINESS,
     REQUEST,
-    RESPONSE
+    ERROR, RESPONSE
 }
