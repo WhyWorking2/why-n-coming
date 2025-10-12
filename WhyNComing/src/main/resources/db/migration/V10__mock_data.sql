@@ -145,7 +145,7 @@ VALUES
 -- 7) 카테고리-매장 연결 (category_stores)
 --    PK 이름: category_product_id (스키마 기준), created/modified 필수
 ----------------------------
-INSERT INTO category_stores (category_stores_id, store_id, category_id, created_date, modified_date, deleted_date)
+INSERT INTO category_stores (category_store_id, store_id, category_id, created_date, modified_date, deleted_date)
 VALUES
     (gen_random_uuid(), (SELECT id FROM store_map WHERE code='STORE001'), (SELECT id FROM cat_map WHERE code='CAT001'), NOW(), NOW(), NULL),
     (gen_random_uuid(), (SELECT id FROM store_map WHERE code='STORE002'), (SELECT id FROM cat_map WHERE code='CAT001'), NOW(), NOW(), NULL),
@@ -235,7 +235,7 @@ WHERE o.order_id = c.order_id;
 -- 11) 배달 (deliveries)  ※ delivery_status 체크값 매핑
 -- '배송중'→'DELIVERING', '배송완료'→'DELIVERED', '대기중'→'ACCEPTED'
 ----------------------------
-INSERT INTO deliveries (delivery_id, order_id, user_no, address_id, delivery_status, deliveryPosition, created_date, modified_date, deleted_date)
+INSERT INTO deliveries (delivery_id, order_id, user_no, address_id, delivery_status, delivery_position, created_date, modified_date, deleted_date)
 VALUES
     (gen_random_uuid(), (SELECT id FROM order_map WHERE code='ORDER001'),  1, (SELECT id FROM addr_map WHERE code='ADDR001'), 'DELIVERING', '강남대로 10',  NOW(), NOW(), NULL),
     (gen_random_uuid(), (SELECT id FROM order_map WHERE code='ORDER002'),  2, (SELECT id FROM addr_map WHERE code='ADDR002'), 'DELIVERED',  '마포대로 20',  NOW(), NOW(), NULL),

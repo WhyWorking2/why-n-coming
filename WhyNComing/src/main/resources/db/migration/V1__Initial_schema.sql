@@ -494,7 +494,7 @@ CREATE TABLE IF NOT EXISTS public.category_stores
     created_by integer,
     modified_by integer,
     deleted_by integer,
-    CONSTRAINT pk_category_stores PRIMARY KEY (categorystore_id),
+    CONSTRAINT pk_category_stores PRIMARY KEY (category_store_id),
     CONSTRAINT fk_category_stores_category_id FOREIGN KEY (category_id)
     REFERENCES public.categories (category_id) MATCH SIMPLE
                               ON UPDATE NO ACTION
