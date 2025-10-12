@@ -20,14 +20,14 @@ public class CategoryStore {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID categoryProductId;
+    private UUID categoryStoreId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId", nullable = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryId", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @CreatedDate

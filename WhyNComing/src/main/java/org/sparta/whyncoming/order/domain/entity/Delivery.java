@@ -25,15 +25,15 @@ public class Delivery {
     private UUID deliveryId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderId", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "addressId", nullable = false)
+    @JoinColumn(name = "address_id", nullable = false)
     private Address address;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userNo", nullable = false)
+    @JoinColumn(name = "user_no", nullable = false)
     private User user;
 
     @Enumerated(EnumType.STRING)
@@ -41,7 +41,7 @@ public class Delivery {
     private DeliveryStatus deliveryStatus = DeliveryStatus.ACCEPTED; // 기본값 ACCEPTED
 
     @Column(nullable = false, length = 255)
-    private String position;
+    private String deliveryPosition;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -66,11 +66,11 @@ public class Delivery {
     @JoinColumn(name = "deleted_by")
     private User deletedBy;
 
-    public Delivery(Order order, Address address, User user, DeliveryStatus deliveryStatus, String position) {
+    public Delivery(Order order, Address address, User user, DeliveryStatus deliveryStatus, String deliveryPosition) {
         this.order = order;
         this.address = address;
         this.user = user;
         this.deliveryStatus = deliveryStatus;
-        this.position = position;
+        this.deliveryPosition = deliveryPosition;
     }
 }

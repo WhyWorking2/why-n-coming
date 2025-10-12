@@ -22,7 +22,7 @@ public class StoreImage {
     private UUID storeImageId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId", nullable = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
     @Column(columnDefinition = "text", nullable = false)

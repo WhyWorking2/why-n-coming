@@ -23,11 +23,11 @@ public class OwnerReview {
     private UUID ownerReviewId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewId", nullable = false)
+    @JoinColumn(name = "review_id", nullable = false)
     private Review review;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userNo", nullable = false)
+    @JoinColumn(name = "user_no", nullable = false)
     private User user;
 
     @Column(length = 255)

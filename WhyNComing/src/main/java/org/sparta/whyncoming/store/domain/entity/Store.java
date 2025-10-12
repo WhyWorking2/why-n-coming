@@ -30,7 +30,7 @@ public class Store {
     private UUID storeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userNo", nullable = false)
+    @JoinColumn(name = "user_no", nullable = false)
     private User user;
 
     @Column(nullable = false, length = 255)

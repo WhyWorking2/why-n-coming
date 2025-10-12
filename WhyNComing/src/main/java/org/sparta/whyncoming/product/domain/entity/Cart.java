@@ -25,19 +25,19 @@ public class Cart {
     private UUID cartId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId", nullable = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orderId", nullable = true) // ERD 상 Order가 저장되어 있지 않아도 가능한 것으로 봄
+    @JoinColumn(name = "order_id", nullable = true) // ERD 상 Order가 저장되어 있지 않아도 가능한 것으로 봄
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userNo", nullable = false)
+    @JoinColumn(name = "user_no", nullable = false)
     private User user;
 
     @Column(nullable = false)

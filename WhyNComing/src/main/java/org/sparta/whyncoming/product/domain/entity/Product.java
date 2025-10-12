@@ -25,7 +25,7 @@ public class Product {
     private UUID productId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId", nullable = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
     @Column(nullable = false, length = 255)

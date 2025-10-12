@@ -25,7 +25,7 @@ public class Address {
     private UUID addressId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userNo")
+    @JoinColumn(name = "user_no")
     private User user;
 
     @Column(nullable = false, length = 255)
