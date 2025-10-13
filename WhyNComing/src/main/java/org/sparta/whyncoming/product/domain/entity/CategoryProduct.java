@@ -9,7 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
+import org.sparta.whyncoming.user.domain.entity.User;
 @Entity
 @Table(name = "category_products")
 @Getter
@@ -19,14 +19,14 @@ public class CategoryProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID categorystoreId;
+    private UUID categoryProductId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "productId", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryId", nullable = false)
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     @CreatedDate
@@ -39,6 +39,19 @@ public class CategoryProduct {
 
     @Column
     private LocalDateTime deletedDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "modified_by")
+    private User modifiedBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "deleted_by")
+    private User deletedBy;
+
 
     public CategoryProduct(Product product, Category category) {
         this.product = product;
