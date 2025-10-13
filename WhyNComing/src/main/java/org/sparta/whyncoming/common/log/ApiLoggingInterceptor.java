@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.sparta.whyncoming.common.log.dto.LogType;
 import org.sparta.whyncoming.common.log.dto.RequestLog;
 import org.sparta.whyncoming.common.log.dto.ResponseLog;
+import org.sparta.whyncoming.common.log.util.LogSanitizer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.util.ContentCachingRequestWrapper;

@@ -1,4 +1,4 @@
-package org.sparta.whyncoming.common.log;
+package org.sparta.whyncoming.common.log.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

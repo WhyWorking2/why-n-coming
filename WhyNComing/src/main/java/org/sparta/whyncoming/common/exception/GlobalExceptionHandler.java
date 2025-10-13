@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sparta.whyncoming.common.log.StackTraceUtil;
+import org.sparta.whyncoming.common.log.util.StackTraceUtil;
 import org.sparta.whyncoming.common.log.dto.ErrorLog;
 import org.sparta.whyncoming.common.log.dto.LogType;
 import org.sparta.whyncoming.common.response.ApiResult;

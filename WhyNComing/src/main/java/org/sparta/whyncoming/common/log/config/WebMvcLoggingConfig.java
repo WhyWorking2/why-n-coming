@@ -1,4 +1,4 @@
-package org.sparta.whyncoming.config;
+package org.sparta.whyncoming.common.log.config;
 
 import org.sparta.whyncoming.common.log.ApiLoggingInterceptor;
 import org.sparta.whyncoming.common.log.TraceAndCacheFilter;

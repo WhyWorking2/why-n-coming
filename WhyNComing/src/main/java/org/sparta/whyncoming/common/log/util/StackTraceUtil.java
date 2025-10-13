@@ -1,4 +1,4 @@
-package org.sparta.whyncoming.common.log;
+package org.sparta.whyncoming.common.log.util;
 
 public class StackTraceUtil {
     private static final int MAX_CHARS = 8000;

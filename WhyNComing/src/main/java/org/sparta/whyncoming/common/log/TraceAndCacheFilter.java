@@ -12,7 +12,6 @@ import org.springframework.web.util.ContentCachingResponseWrapper;
 import java.io.IOException;
 import java.util.UUID;
 
-
 public class TraceAndCacheFilter extends OncePerRequestFilter {
 
     public static final String TRACE_ID = "traceId";
@@ -21,8 +20,8 @@ public class TraceAndCacheFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String u = request.getRequestURI();
-        // Swagger/OpenAPI & 공통 제외 (정적/스트리밍 리소스는 절대 래핑하지 않음 → 500 예방)
-        return u.startsWith("/api-docs")
+
+        boolean isAccepted =  u.startsWith("/api-docs")
                 || u.startsWith("/swagger-ui")
                 || u.equals("/swagger-ui.html")
                 || u.startsWith("/swagger-resources")
@@ -30,14 +29,19 @@ public class TraceAndCacheFilter extends OncePerRequestFilter {
                 || u.equals("/favicon.ico")
                 || u.equals("/health")
                 || u.startsWith("/actuator")
-                || u.startsWith("/error"); // 스프링 기본 에러 엔드포인트
+                || u.startsWith("/error")
+                || u.startsWith("/v3/api-docs");
+        if(!isAccepted) {
+            logger.info(request.getRequestURI() + " is not accepted for traceId");
+        }
+
+        return isAccepted;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-        request.getRequestURI();
 
         // traceId: 클라이언트 제공값(X-Trace-Id) 우선, 없으면 생성
         String traceId = request.getHeader("X-Trace-Id");
@@ -46,7 +50,6 @@ public class TraceAndCacheFilter extends OncePerRequestFilter {
 
         try {
             if (shouldNotFilter(request)) {
-                // 제외 경로는 래핑 없이 그대로 통과 (인터셉터에서도 제외하도록 설정)
                 chain.doFilter(request, response);
                 return;
             }

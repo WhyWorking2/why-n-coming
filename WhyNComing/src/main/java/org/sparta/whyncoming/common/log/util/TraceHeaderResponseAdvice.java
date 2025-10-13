@@ -1,6 +1,7 @@
-package org.sparta.whyncoming.common.log;
+package org.sparta.whyncoming.common.log.util;
 
 import org.slf4j.MDC;
+import org.sparta.whyncoming.common.log.TraceAndCacheFilter;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
