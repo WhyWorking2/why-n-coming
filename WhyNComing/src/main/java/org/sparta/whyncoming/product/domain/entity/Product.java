@@ -3,6 +3,7 @@ package org.sparta.whyncoming.product.domain.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.sparta.whyncoming.order.domain.entity.Cart;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

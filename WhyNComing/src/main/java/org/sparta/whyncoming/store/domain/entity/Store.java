@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sparta.whyncoming.order.domain.entity.Order;
 import org.sparta.whyncoming.order.domain.entity.Review;
-import org.sparta.whyncoming.product.domain.entity.Cart;
+import org.sparta.whyncoming.order.domain.entity.Cart;
 import org.sparta.whyncoming.product.domain.entity.Product;
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.springframework.data.annotation.CreatedDate;
