@@ -4,15 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sparta.whyncoming.common.entity.BaseActorEntity;
-import org.sparta.whyncoming.order.domain.entity.Order;
 import org.sparta.whyncoming.product.domain.entity.Product;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.user.domain.entity.User;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
