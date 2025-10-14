@@ -48,4 +48,8 @@ public class Delivery extends BaseActorEntity {
         this.deliveryStatus = deliveryStatus;
         this.deliveryPosition = deliveryPosition;
     }
+
+    public void updateDeliveryStatus(DeliveryStatus deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
 }
