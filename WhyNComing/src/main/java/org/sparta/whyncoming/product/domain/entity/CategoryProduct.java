@@ -18,7 +18,7 @@ public class CategoryProduct extends BaseActorEntity {
     private UUID categoryProductId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id", nullable = true)
+    @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)

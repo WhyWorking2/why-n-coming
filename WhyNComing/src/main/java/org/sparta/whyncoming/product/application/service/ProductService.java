@@ -124,7 +124,7 @@ public class ProductService {
             throw new IllegalArgumentException("카테고리 : " + NOT_FOUND);
         }
 
-        //카테고리에 대한 리스트 생성 시에는 상품을 null로 저장
+        //카테고리에 대한 리스트 생성
         List<Category> categoryList = new ArrayList<>();
         categoryList.addAll(categories);
         return categoryList;
