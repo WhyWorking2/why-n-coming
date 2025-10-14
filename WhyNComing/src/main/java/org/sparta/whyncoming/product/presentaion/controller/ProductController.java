@@ -52,16 +52,16 @@ public class ProductController {
     @Operation(summary = "상품 수정")
     @PutMapping("/{uuid}")
     public ResponseEntity<ApiResult<ProductResponseDto>> updateProduct
-    (@PathVariable@RequestParam(required = false) UUID productId, @RequestBody ProductUpdateRequestDto updateRequestDto) {
+    (@PathVariable @RequestParam(required = false) UUID uuid, @RequestBody ProductUpdateRequestDto updateRequestDto) {
 
-        return ResponseEntity.ok(ApiResult.ofSuccess(productService.updateProduct(productId, updateRequestDto)));
+        return ResponseEntity.ok(ApiResult.ofSuccess(productService.updateProduct(uuid, updateRequestDto)));
     }
 
-//    // 삭제
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-//        productService.delete(id);
-//        return ResponseEntity.noContent().build();
-//    }
+    // 삭제
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<ApiResult<String>> deleteProduct(@PathVariable @RequestParam(required = false) UUID uuid) {
+        String deleteProductId = productService.deleteProduct(uuid);
+        return ResponseEntity.ok(ApiResult.ofSuccess("삭제된 상품의 UUID :", deleteProductId));
+    }
 
 }

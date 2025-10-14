@@ -3,6 +3,8 @@ package org.sparta.whyncoming.product.domain.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.DynamicUpdate;
 import org.sparta.whyncoming.order.domain.entity.Cart;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,9 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.sparta.whyncoming.user.domain.entity.User;
+
+@Slf4j
 @Entity
 @Table(name = "products")
 @Getter
+@DynamicUpdate //삭제시간 추가를 위한 동적 업데이트 어노테이션 추가
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
 public class Product {
@@ -103,5 +108,10 @@ public class Product {
         this.description = description;
         this.productPictureUrl = productPictureUrl;
         this.modifiedDate = LocalDateTime.now();
+    }
+
+    public void delete() {
+        this.deletedDate = LocalDateTime.now();
+        log.info("Product.delete() called - deletedDate set to {}", this.deletedDate);
     }
 }

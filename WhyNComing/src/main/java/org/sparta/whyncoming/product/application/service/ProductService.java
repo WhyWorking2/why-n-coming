@@ -1,6 +1,7 @@
 package org.sparta.whyncoming.product.application.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.sparta.whyncoming.common.response.ErrorCode;
 import org.sparta.whyncoming.product.domain.entity.Category;
 import org.sparta.whyncoming.product.domain.entity.CategoryProduct;
 import org.sparta.whyncoming.product.domain.entity.Product;
@@ -89,5 +90,18 @@ public class ProductService {
         Product updateProduct = productRepository.save(product);
 
         return new ProductResponseDto(updateProduct);
+    }
+
+    //TODO 반환값 String 하드코딩 대신 쓸 타입을 정해야 하고, 이미 삭제된 상품에 대한 예외처리가 필요함
+    public String deleteProduct(UUID productId) {
+        Product product = productRepository.findByProductId(productId)
+                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(ErrorCode.NOT_FOUND)));
+        product.delete();
+
+        log.info("ProductService.deleteProduct() - after delete(), product: {}", product);
+
+
+        Product deletedProduct = productRepository.save(product);
+        return deletedProduct.getProductId().toString();
     }
 }
