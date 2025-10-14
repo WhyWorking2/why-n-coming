@@ -1,36 +1,45 @@
 package org.sparta.whyncoming.product.presentation.controller;
 
-import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.sparta.whyncoming.common.response.ApiResult;
 import org.sparta.whyncoming.product.application.service.CategoryService;
 import org.sparta.whyncoming.product.presentation.dto.request.CategoryRequestDto;
 import org.sparta.whyncoming.product.presentation.dto.response.CategoryResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/categories")
-@RequiredArgsConstructor
+@Tag(name = "Category", description = "카테고리 관련 API")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
+    }
+
     /**
      * 카테고리 생성
      */
+    @Operation(summary = "카테고리 추가")
     @PostMapping
-    public ResponseEntity<CategoryResponseDto> createCategory(@RequestBody CategoryRequestDto requestDto) {
+    public ResponseEntity<ApiResult<CategoryResponseDto>> createCategory(@RequestBody CategoryRequestDto requestDto) {
         CategoryResponseDto response = categoryService.createCategory(requestDto);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResult.ofSuccess(response));
     }
 
-//    /**
-//     * 카테고리 전체 조회
-//     */
-//    @GetMapping
-//    public ResponseEntity<List<CategoryResponseDto>> getAllCategories() {
-//        List<CategoryResponseDto> categories = categoryService.getAllCategories();
-//        return ResponseEntity.ok(categories);
-//    }
+    /**
+     * 카테고리 전체 조회
+     */
+    @GetMapping
+    public ResponseEntity<ApiResult<List<CategoryResponseDto>>> getAllCategories() {
+        List<CategoryResponseDto> categories = categoryService.getAllCategories();
+        return ResponseEntity.ok(ApiResult.ofSuccess(categories));
+    }
 //
 //    /**
 //     * 단일 카테고리 조회
@@ -62,4 +71,5 @@ public class CategoryController {
 //        return ResponseEntity.noContent().build();
 //    }
 }
+
 

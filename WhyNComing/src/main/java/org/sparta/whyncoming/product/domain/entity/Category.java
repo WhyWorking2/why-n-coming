@@ -29,9 +29,11 @@ public class Category extends BaseActorEntity {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryProduct> categoryProducts = new ArrayList<>();
 
-    public Category(String categoryName, List<CategoryStore> categoryStores, List<CategoryProduct> categoryProducts) {
+    /**
+     * 카테고리를 생성하기 위한 생성자
+     * @param categoryName
+     */
+    public Category(String categoryName) {
         this.categoryName = categoryName;
-        this.categoryStores = categoryStores;
-        this.categoryProducts = categoryProducts;
     }
 }
