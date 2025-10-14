@@ -63,6 +63,7 @@ public class Product extends BaseActorEntity {
         this.price = price;
         this.productPictureUrl = productPictureUrl;
         this.categoryProducts = categoryProductList;
+        this.restore();
     }
 
     /**
@@ -80,6 +81,7 @@ public class Product extends BaseActorEntity {
     }
 
     public void delete() {
+        this.markDeleted();
         log.info("Product.delete() called - deletedDate set to {}", this.getDeletedDate());
     }
 }

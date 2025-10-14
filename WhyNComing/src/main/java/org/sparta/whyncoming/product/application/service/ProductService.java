@@ -61,6 +61,12 @@ public class ProductService {
         return new ProductResponseDto(product);
     }
 
+    /**
+     * 상품 전체 조회
+     * TODO 카테고리 리스트에 대한 문제, 소프트 딜리트 조회 안되는 문제(DB에는 반영이 됨), 유저 정보에 대한 문제 미해결
+     * 이후 코드 리팩토링 하면서 해결할 예정입니다.
+     * @return 리스트 타입으로 상품목록 출력
+     */
     @Transactional(readOnly = true)
     public List<ProductResponseDto> readAllProducts() {
 
