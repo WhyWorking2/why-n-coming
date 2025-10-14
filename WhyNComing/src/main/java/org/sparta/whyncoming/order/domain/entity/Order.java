@@ -75,6 +75,18 @@ public class Order extends BaseActorEntity {
         this.status = Status.SUCCESS;
     }
 
+    public void cancel() {
+        this.status = Status.CANCELED;
+    }
+
+    public void refund() {
+        this.status = Status.REFUNDED;
+    }
+
+    public void updateReview(Review review) {
+        this.review = review;
+    }
+
     public void assignDelivery(Delivery delivery) {
         this.delivery = delivery;
     }

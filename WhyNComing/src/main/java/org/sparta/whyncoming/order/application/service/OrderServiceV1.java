@@ -23,6 +23,7 @@ import org.sparta.whyncoming.user.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -50,7 +51,7 @@ public class OrderServiceV1 {
     @Transactional
     public OrderStatusResponseV1 createOrder(CreateOrderRequestV1 req) {
 
-        User user = userRepository.findById(req.getUserId())
+        User user = userRepository.findByUserNo(req.getUserNo())
                 .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
 
         Store store = storeRepository.findById(req.getStoreId())
@@ -87,7 +88,7 @@ public class OrderServiceV1 {
 
         order.pay(req.getPaymentMethod(), req.getRequests());
 
-        User user = userRepository.findById(req.getUserId())
+        User user = userRepository.findByUserNo(req.getUserNo())
                 .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
 
         Address address = addressRepository.findByUserAndAddress(user, req.getAddress())
@@ -126,80 +127,135 @@ public class OrderServiceV1 {
 
     // 배달 조회
     public DeliveryStatusResponseV1 readDeliveryStatus(UUID orderId) {
-        Delivery delivery = deliveryRepository.findByOrderId(orderId)
+        Delivery delivery = deliveryRepository.findByOrder_OrderId(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Delivery not found for order: " + orderId));
         return new DeliveryStatusResponseV1(delivery.getDeliveryPosition(), delivery.getDeliveryStatus());
     }
 
-    // 주문 리스토 조회
+    // 주문 리스트 조회
     public List<GetOrderListResponseV1> getOrderList(UUID userId) {
-        return orderRepository.findAllByUserId(userId).stream()
-                .map(order -> new GetOrderListResponseV1(order.getId(), order.getStatus(), order.getStoreId()))
+        return orderRepository.findAllByUser_UserId(userId).stream()
+                .map(order -> new GetOrderListResponseV1(order.getOrderId(), order.getStatus(), order.getStore().getStoreId()))
                 .toList();
     }
 
     // 주문 상세 조회
     public GetOrderDetailResponseV1 getOrderDetail(UUID orderId) {
         Order order = findOrderOrThrow(orderId);
-        return new GetOrderDetailResponseV1(order.getOrderId(), order.getStatus(), order.getItems(), order.getReview());
+
+        List<GetOrderDetailResponseV1.OrderItemResponseV1> items = order.getCarts().stream()
+                .map(cart -> new GetOrderDetailResponseV1.OrderItemResponseV1(
+                        cart.getProduct().getProductId(),
+                        cart.getProduct().getProductName(),
+                        cart.getQuantity()
+                ))
+                .toList();
+
+        GetOrderDetailResponseV1.ReviewResponseV1 review = Optional.ofNullable(order.getReview())
+                .map(r -> new GetOrderDetailResponseV1.ReviewResponseV1(
+                        r.getReviewId(),
+                        r.getReviewContent(),
+                        r.getReviewRating(),
+                        r.getReviewPictureUrl()
+                ))
+                .orElse(null);
+
+        return new GetOrderDetailResponseV1(order.getOrderId(), items, review);
     }
 
     // 리뷰 작성
     @Transactional
-    public OrderStatusResponseV1 writeReview(UUID orderId, CreateReviewRequestV1 req) {
+    public ReviewStatusResponseV1 writeReview(UUID orderId, CreateReviewRequestV1 req) {
         Order order = findOrderOrThrow(orderId);
-        reviewRepository.save(new Review(orderId, req.getContent(), req.getRating(), req.getReviewPictureUrl()));
-        return new OrderStatusResponseV1("SUCCESS");
+
+        Review review = new Review(
+                order.getStore(),
+                order.getUser(),
+                order,
+                req.getRating(),
+                req.getContent(),
+                req.getReviewPictureUrl(),
+                null
+        );
+
+        reviewRepository.save(review);
+        order.updateReview(review);
+
+        return new ReviewStatusResponseV1("SUCCESS");
     }
 
     // 배달 수락
     @Transactional
     public DeliveryStatusResponseV1 acceptDelivery(UUID orderId) {
-        Order order = findOrderOrThrow(orderId);
-        order.updateStatus("ACCEPTED");
-        return new DeliveryStatusResponseV1("ACCEPTED");
+        Delivery delivery = findDeliveryOrThrow(orderId);
+        delivery.updateDeliveryStatus(DeliveryStatus.ACCEPTED);
+        return new DeliveryStatusResponseV1(delivery.getDeliveryStatus());
     }
 
     // 조리 완료
     @Transactional
     public DeliveryStatusResponseV1 cookedDelivery(UUID orderId) {
-        Order order = findOrderOrThrow(orderId);
-        order.updateStatus("COOKED");
-        return new DeliveryStatusResponseV1("COOKED");
+        Delivery delivery = findDeliveryOrThrow(orderId);
+        delivery.updateDeliveryStatus(DeliveryStatus.COOKED);
+        return new DeliveryStatusResponseV1(delivery.getDeliveryStatus());
     }
 
     // 배달 시작
     @Transactional
     public DeliveryStatusResponseV1 startDelivery(UUID orderId) {
-        Order order = findOrderOrThrow(orderId);
-        order.updateStatus("DELIVERING");
-        return new DeliveryStatusResponseV1("DELIVERING");
+        Delivery delivery = findDeliveryOrThrow(orderId);
+        delivery.updateDeliveryStatus(DeliveryStatus.DELIVERING);
+        return new DeliveryStatusResponseV1(delivery.getDeliveryStatus());
     }
 
     // 배달 완료
     @Transactional
     public DeliveryStatusResponseV1 completeDelivery(UUID orderId) {
-        Order order = findOrderOrThrow(orderId);
-        order.updateStatus("DELIVERED");
-        return new DeliveryStatusResponseV1("DELIVERED");
+        Delivery delivery = findDeliveryOrThrow(orderId);
+        delivery.updateDeliveryStatus(DeliveryStatus.DELIVERED);
+        return new DeliveryStatusResponseV1(delivery.getDeliveryStatus());
     }
 
     // 입점주 주문 리스트 조회
     public List<GetStoreOrderListResponseV1> getStoreOrderList(UUID storeId) {
-        return orderRepository.findAllByStoreId(storeId).stream()
-                .map(order -> new GetStoreOrderListResponseV1(order.getId(), order.getStatus(), order.getUserId()))
+        return orderRepository.findAllByStore_StoreId(storeId).stream()
+                .map(order -> new GetStoreOrderListResponseV1(order.getOrderId(), order.getStatus(), order.getUser().getUserNo()))
                 .toList();
     }
 
     // 입점주 주문 상세 조회
     public GetStoreOrderDetailResponseV1 getStoreOrderDetail(UUID orderId) {
         Order order = findOrderOrThrow(orderId);
-        return new GetStoreOrderDetailResponseV1(order.getOrderId(), order.getStatus(), order.getItems(), order.getReview());
+
+        List<GetStoreOrderDetailResponseV1.OrderItemResponseV1> items = order.getCarts().stream()
+                .map(cart -> new GetStoreOrderDetailResponseV1.OrderItemResponseV1(
+                        cart.getProduct().getProductId(),
+                        cart.getProduct().getProductName(),
+                        cart.getQuantity()
+                ))
+                .toList();
+
+        GetStoreOrderDetailResponseV1.ReviewResponseV1 review = Optional.ofNullable(order.getReview())
+                .map(r -> new GetStoreOrderDetailResponseV1.ReviewResponseV1(
+                        r.getReviewId(),
+                        r.getReviewContent(),
+                        r.getReviewRating(),
+                        r.getReviewPictureUrl()
+                ))
+                .orElse(null);
+
+        return new GetStoreOrderDetailResponseV1(order.getOrderId(), items, review);
     }
 
     // 공통 조회 메서드
     private Order findOrderOrThrow(UUID orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
+    }
+
+    private Delivery findDeliveryOrThrow(UUID orderId) {
+        return Optional.of(findOrderOrThrow(orderId))
+                .map(Order::getDelivery)
+                .orElseThrow(() -> new IllegalStateException("해당 주문에 배달 정보가 없습니다: " + orderId));
     }
 }

@@ -34,6 +34,12 @@ public class GetStoreOrderDetailResponseV1 {
 
         @Schema(description = "수량", example = "2")
         private int quantity;
+
+        public OrderItemResponseV1(UUID itemId, String name, int quantity) {
+            this.itemId = itemId;
+            this.name = name;
+            this.quantity = quantity;
+        }
     }
 
     @Getter
@@ -52,5 +58,18 @@ public class GetStoreOrderDetailResponseV1 {
 
         @Schema(description = "리뷰 이미지 URL", example = "https://cdn.app.com/review1.jpg")
         private String reviewPictureUrl;
+
+        public ReviewResponseV1(UUID reviewId, String content, int rating, String reviewPictureUrl) {
+            this.reviewId = reviewId;
+            this.content = content;
+            this.rating = rating;
+            this.reviewPictureUrl = reviewPictureUrl;
+        }
+    }
+
+    public GetStoreOrderDetailResponseV1(UUID orderId, List<OrderItemResponseV1> items, ReviewResponseV1 review) {
+        this.orderId = orderId;
+        this.items = items;
+        this.review = review;
     }
 }

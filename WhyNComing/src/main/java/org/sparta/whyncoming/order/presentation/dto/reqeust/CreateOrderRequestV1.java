@@ -16,9 +16,9 @@ import java.util.UUID;
 @Schema(description = "주문 요청 DTO")
 public class CreateOrderRequestV1 {
 
-    @Schema(description = "유저ID", example = "101")
-    @NotBlank(message = "유저ID는 필수입니다.")
-    private Integer userId;
+    @Schema(description = "회원번호", example = "101")
+    @NotBlank(message = "회원번호는 필수입니다.")
+    private Integer userNo;
 
     @Schema(description = "가게ID", example = "f47ac10b-58cc-4372-a567-0e02b2c3d479")
     @NotBlank(message = "가게ID는 필수입니다.")

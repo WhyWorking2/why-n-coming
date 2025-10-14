@@ -63,7 +63,7 @@ public class OrderControllerV1 {
     public ResponseEntity<ApiResult<DeliveryStatusResponseV1>> readDeliveryStatus(
             @PathVariable UUID orderId
     ) {
-        return ResponseUtil.success("주문 환불 성공", service.readDeliveryStatus(orderId));
+        return ResponseUtil.success("배달 조회 성공", service.readDeliveryStatus(orderId));
     }
 
     @Operation(summary = "주문 리스트 조회")
@@ -84,7 +84,7 @@ public class OrderControllerV1 {
 
     @Operation(summary = "리뷰 작성")
     @PostMapping("/{orderId}/review")
-    public ResponseEntity<ApiResult<OrderStatusResponseV1>> refundOrder(
+    public ResponseEntity<ApiResult<ReviewStatusResponseV1>> refundOrder(
             @PathVariable UUID orderId,
             @RequestBody CreateReviewRequestV1 req
     ) {

@@ -3,6 +3,7 @@ package org.sparta.whyncoming.order.presentation.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.sparta.whyncoming.order.domain.enums.Status;
 
 import java.util.UUID;
 
@@ -17,6 +18,12 @@ public class GetStoreOrderListResponseV1 {
     @Schema(description = "주문 상태", example = "DELIVERED")
     private String status;
 
-    @Schema(description = "유저 ID", example = "101")
-    private Integer userId;
+    @Schema(description = "회원번호", example = "101")
+    private Integer userNo;
+
+    public GetStoreOrderListResponseV1(UUID orderId, Status status, Integer userNo) {
+        this.orderId = orderId;
+        this.status = status.name();
+        this.userNo = userNo;
+    }
 }

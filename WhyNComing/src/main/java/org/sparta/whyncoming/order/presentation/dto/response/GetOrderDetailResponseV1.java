@@ -3,6 +3,7 @@ package org.sparta.whyncoming.order.presentation.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.sparta.whyncoming.order.domain.enums.Status;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,9 +15,6 @@ public class GetOrderDetailResponseV1 {
 
     @Schema(description = "주문 ID", example = "f47ac10b-58cc-4372-a567-0e02b2c3d479")
     private UUID orderId;
-
-    @Schema(description = "주문 상태", example = "DELIVERED")
-    private String status;
 
     @Schema(description = "주문 항목 리스트")
     private List<OrderItemResponseV1> items;
@@ -36,6 +34,12 @@ public class GetOrderDetailResponseV1 {
 
         @Schema(description = "수량", example = "2")
         private int quantity;
+
+        public OrderItemResponseV1(UUID itemId, String name, int quantity) {
+            this.itemId = itemId;
+            this.name = name;
+            this.quantity = quantity;
+        }
     }
 
     @Getter
@@ -53,12 +57,18 @@ public class GetOrderDetailResponseV1 {
 
         @Schema(description = "리뷰 이미지 URL", example = "https://cdn.app.com/review1.jpg")
         private String reviewPictureUrl;
+
+        public ReviewResponseV1(UUID reviewId, String content, int rating, String reviewPictureUrl) {
+            this.reviewId = reviewId;
+            this.content = content;
+            this.rating = rating;
+            this.reviewPictureUrl = reviewPictureUrl;
+        }
     }
 
-    public GetOrderDetailResponseV1(UUID orderId, String status, List<OrderItemResponseV1> items,
+    public GetOrderDetailResponseV1(UUID orderId, List<OrderItemResponseV1> items,
                                     ReviewResponseV1 review) {
         this.orderId = orderId;
-        this.status = status;
         this.items = items;
         this.review = review;
     }

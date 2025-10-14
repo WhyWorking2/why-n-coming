@@ -22,7 +22,6 @@ public class CreateReviewRequestV1 {
     @Max(value = 5, message = "평점은 5 이하이어야 합니다.")
     private int rating;
 
-    @Schema(description = "리뷰 이미지 URL 리스트",
-            example = "[\"https://cdn.app.com/review1.jpg\", \"https://cdn.app.com/review2.jpg\"]")
-    private List<String> reviewPictureUrl;
+    @Schema(description = "리뷰 이미지 URL 리스트", example = "https://cdn.app.com/review1.jpg")
+    private String reviewPictureUrl;
 }
