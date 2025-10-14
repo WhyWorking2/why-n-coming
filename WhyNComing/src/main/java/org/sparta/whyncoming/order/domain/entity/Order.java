@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sparta.whyncoming.common.entity.BaseActorEntity;
 import org.sparta.whyncoming.order.domain.enums.Status;
-import org.sparta.whyncoming.product.domain.entity.Cart;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.user.domain.entity.User;
 
