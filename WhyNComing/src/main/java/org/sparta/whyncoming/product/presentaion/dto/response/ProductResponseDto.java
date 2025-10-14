@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.sparta.whyncoming.product.domain.entity.CategoryProduct;
 import org.sparta.whyncoming.product.domain.entity.Product;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -38,9 +39,9 @@ public class ProductResponseDto {
                 .map(cp -> cp.getCategory().getCategoryName())
                 .collect(Collectors.toList());
         this.productPictureUrl = product.getProductPictureUrl();
-        this.createdDate = product.getCreatedDate();
-        this.modifiedDate = product.getModifiedDate();
-        this.deletedDate = product.getDeletedDate();
+//        this.createdDate = product.getCreatedDate();
+//        this.modifiedDate = product.getModifiedDate();
+//        this.deletedDate = product.getDeletedDate();
     }
 
     /**
@@ -52,13 +53,14 @@ public class ProductResponseDto {
      * @param price 상품가격
      * @param productPictureUrl 상품사진
      */
-    public ProductResponseDto(UUID productId, String storeName, String productName, Integer price, String productPictureUrl,LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public ProductResponseDto(UUID productId, String storeName, String productName, Integer price, String productPictureUrl,Instant createdDate, Instant modifiedDate) {
         this.productId = productId;
         this.storeName = storeName;
         this.productName = productName;
         this.price = price;
         this.productPictureUrl = productPictureUrl;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
+//        this.createdDate = createdDate;
+//        this.modifiedDate = modifiedDate;
     }
+
 }

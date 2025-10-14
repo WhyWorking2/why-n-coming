@@ -6,16 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicUpdate;
 import org.sparta.whyncoming.order.domain.entity.Cart;
+import org.sparta.whyncoming.common.entity.BaseActorEntity;
 import org.sparta.whyncoming.store.domain.entity.Store;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.sparta.whyncoming.user.domain.entity.User;
 
 @Slf4j
 @Entity
@@ -23,8 +19,7 @@ import org.sparta.whyncoming.user.domain.entity.User;
 @Getter
 @DynamicUpdate //삭제시간 추가를 위한 동적 업데이트 어노테이션 추가
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class Product {
+public class Product extends BaseActorEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -45,30 +40,6 @@ public class Product {
 
     @Column(columnDefinition = "text")
     private String productPictureUrl;
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedDate;
-
-    @Column
-    private LocalDateTime deletedDate;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "modified_by")
-    private User modifiedBy;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "deleted_by")
-    private User deletedBy;
-
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Cart> carts = new ArrayList<>();
@@ -92,7 +63,6 @@ public class Product {
         this.price = price;
         this.productPictureUrl = productPictureUrl;
         this.categoryProducts = categoryProductList;
-        this.createdDate = LocalDateTime.now();
     }
 
     /**
@@ -107,11 +77,9 @@ public class Product {
         this.price = price;
         this.description = description;
         this.productPictureUrl = productPictureUrl;
-        this.modifiedDate = LocalDateTime.now();
     }
 
     public void delete() {
-        this.deletedDate = LocalDateTime.now();
-        log.info("Product.delete() called - deletedDate set to {}", this.deletedDate);
+        log.info("Product.delete() called - deletedDate set to {}", this.getDeletedDate());
     }
 }
