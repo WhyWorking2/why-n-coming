@@ -24,12 +24,4 @@ public class CategoryResponseDto {
         this.modifiedDate = category.getModifiedDate();
         this.deletedDate = category.getDeletedDate();
     }
-
-    public CategoryResponseDto(UUID categoryId, String categoryName, Instant createdDate, Instant modifiedDate, Instant deletedDate) {
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
-        this.createdDate = createdDate;
-        this.modifiedDate = modifiedDate;
-        this.deletedDate = deletedDate;
-    }
 }

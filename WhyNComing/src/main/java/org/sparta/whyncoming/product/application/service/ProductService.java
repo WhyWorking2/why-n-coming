@@ -69,17 +69,15 @@ public class ProductService {
     public List<ProductResponseDto> readAllProducts() {
 
         return productRepository.findAllWithStore().stream()
-                .map(product -> new ProductResponseDto(
-                        product.getProductId(),
-                        product.getStore().getStoreName(),
-                        product.getProductName(),
-                        product.getPrice(),
-                        product.getProductPictureUrl(),
-                        product.getCreatedDate(),
-                        product.getModifiedDate()
-                )).toList();
+                .map(ProductResponseDto::new).toList();
     }
 
+    /**
+     * 상품 수정
+     * @param productId 상품의 uuid
+     * @param requestDto 변경할 상품정보
+     * @return 변경된 상품정보
+     */
     public ProductResponseDto updateProduct(UUID productId, ProductUpdateRequestDto requestDto) {
         Product product = productRepository.findByProductId(productId)
                 .orElseThrow(() -> new IllegalArgumentException("상품 없음 : " + requestDto.getProductName()));

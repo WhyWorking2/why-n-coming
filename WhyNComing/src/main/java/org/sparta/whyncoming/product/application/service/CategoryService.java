@@ -34,13 +34,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public List<CategoryResponseDto> getAllCategories() {
         return categoryRepository.findAll().stream()
-                .map(category -> new CategoryResponseDto(
-                        category.getCategoryId(),
-                        category.getCategoryName(),
-                        category.getCreatedDate(),
-                        category.getModifiedDate(),
-                        category.getDeletedDate()
-                )).toList();
+                .map(CategoryResponseDto::new).toList();
     }
 
     public String deleteCategory(UUID categoryId) {
