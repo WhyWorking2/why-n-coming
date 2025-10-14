@@ -106,7 +106,9 @@ public class ProductService {
 
         log.info("ProductService.deleteProduct() - after delete(), product: {}", product);
 
+        //TODO 이 부분 트랜잭션 영속성 있어서 save 없어도 진행 될 수도 있을 거 같아서 없앨지 고민중입니다.
         Product deletedProduct = productRepository.save(product);
+
         return deletedProduct.getProductId().toString();
     }
 }

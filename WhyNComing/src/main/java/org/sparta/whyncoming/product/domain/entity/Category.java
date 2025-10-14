@@ -35,5 +35,10 @@ public class Category extends BaseActorEntity {
      */
     public Category(String categoryName) {
         this.categoryName = categoryName;
+        this.restore();
+    }
+
+    public void delete() {
+        this.markDeleted();
     }
 }

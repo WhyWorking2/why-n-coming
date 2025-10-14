@@ -57,6 +57,7 @@ public class ProductController {
     }
 
     // 삭제
+    @Operation(summary = "상품 삭제")
     @DeleteMapping("/{uuid}")
     public ResponseEntity<ApiResult<String>> deleteProduct(@PathVariable UUID uuid) {
         String deleteProductId = productService.deleteProduct(uuid);

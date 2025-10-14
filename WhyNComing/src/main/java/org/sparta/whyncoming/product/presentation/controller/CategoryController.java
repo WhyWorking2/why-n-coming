@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -35,41 +36,25 @@ public class CategoryController {
     /**
      * 카테고리 전체 조회
      */
+    @Operation(summary = "카테고리 전체 조회")
     @GetMapping
     public ResponseEntity<ApiResult<List<CategoryResponseDto>>> getAllCategories() {
         List<CategoryResponseDto> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(ApiResult.ofSuccess(categories));
     }
-//
-//    /**
-//     * 단일 카테고리 조회
-//     */
-//    @GetMapping("/{id}")
-//    public ResponseEntity<CategoryResponseDto> getCategoryById(@PathVariable UUID id) {
-//        CategoryResponseDto category = categoryService.getCategoryById(id);
-//        return ResponseEntity.ok(category);
-//    }
-//
-//    /**
-//     * 카테고리 수정
-//     */
-//    @PutMapping("/{id}")
-//    public ResponseEntity<CategoryResponseDto> updateCategory(
-//            @PathVariable UUID id,
-//            @RequestBody CategoryRequestDto requestDto
-//    ) {
-//        CategoryResponseDto updated = categoryService.updateCategory(id, requestDto);
-//        return ResponseEntity.ok(updated);
-//    }
-//
-//    /**
-//     * 카테고리 삭제
-//     */
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
-//        categoryService.deleteCategory(id);
-//        return ResponseEntity.noContent().build();
-//    }
+
+
+
+    /**
+     * TODO 카테고리 수정에 대한 의견 - 카테고리 수정은 하면 안된다는 생각에서 제외할까 합니다.
+     * 카테고리 삭제
+     */
+    @Operation(summary = "카테고리 삭제")
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<ApiResult<String>> deleteCategory(@PathVariable UUID uuid) {
+        String categoryId = categoryService.deleteCategory(uuid);
+        return ResponseEntity.ok(ApiResult.ofSuccess("삭제된 상품의 UUID :", categoryId));
+    }
 }
 
 
