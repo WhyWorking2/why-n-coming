@@ -8,6 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface AddressRepository extends JpaRepository<Address, Long> {
-    
+
     Optional<Address> findByUserAndAddress(User user, String address);
 }

@@ -140,6 +140,7 @@ public class OrderServiceV1 {
     }
 
     // 주문 상세 조회
+    @Transactional
     public GetOrderDetailResponseV1 getOrderDetail(UUID orderId) {
         Order order = findOrderOrThrow(orderId);
 
@@ -224,6 +225,7 @@ public class OrderServiceV1 {
     }
 
     // 입점주 주문 상세 조회
+    @Transactional
     public GetStoreOrderDetailResponseV1 getStoreOrderDetail(UUID orderId) {
         Order order = findOrderOrThrow(orderId);
 
