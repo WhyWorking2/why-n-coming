@@ -1,12 +1,10 @@
-package org.sparta.whyncoming.product.presentaion.dto.response;
+package org.sparta.whyncoming.product.presentation.dto.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.sparta.whyncoming.product.domain.entity.CategoryProduct;
 import org.sparta.whyncoming.product.domain.entity.Product;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
