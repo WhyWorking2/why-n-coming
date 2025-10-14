@@ -69,9 +69,9 @@ public class OrderControllerV1 {
     @Operation(summary = "주문 리스트 조회")
     @GetMapping
     public ResponseEntity<ApiResult<List<GetOrderListResponseV1>>> readOrderList(
-            @RequestParam(required = false) UUID userId
+            @RequestParam(required = false) Integer UserNo
     ) {
-        return ResponseUtil.success("주문 리스트 조회 성공", service.getOrderList(userId));
+        return ResponseUtil.success("주문 리스트 조회 성공", service.getOrderList(UserNo));
     }
 
     @Operation(summary = "주문 상세 조회")

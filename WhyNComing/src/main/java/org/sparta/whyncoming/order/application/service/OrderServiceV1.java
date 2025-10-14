@@ -54,7 +54,7 @@ public class OrderServiceV1 {
         User user = userRepository.findByUserNo(req.getUserNo())
                 .orElseThrow(() -> new IllegalArgumentException("유저가 존재하지 않습니다."));
 
-        Store store = storeRepository.findById(req.getStoreId())
+        Store store = storeRepository.findByStoreId(req.getStoreId())
                 .orElseThrow(() -> new IllegalArgumentException("입점주가 존재하지 않습니다."));
 
         int totalPrice = req.getItems().stream()
@@ -133,8 +133,8 @@ public class OrderServiceV1 {
     }
 
     // 주문 리스트 조회
-    public List<GetOrderListResponseV1> getOrderList(UUID userId) {
-        return orderRepository.findAllByUser_UserId(userId).stream()
+    public List<GetOrderListResponseV1> getOrderList(Integer userNo) {
+        return orderRepository.findAllByUser_UserNo(userNo).stream()
                 .map(order -> new GetOrderListResponseV1(order.getOrderId(), order.getStatus(), order.getStore().getStoreId()))
                 .toList();
     }
