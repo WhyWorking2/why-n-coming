@@ -5,21 +5,20 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 ----------------------------
 INSERT INTO users (
     user_no, user_id, password, user_name, user_phone, email, role,
-    created_date, modified_date, deleted_date,
-    created_by, modified_by, deleted_by
+    created_date, modified_date
 )
 VALUES
-    (1, 'user01', '$2a$10$KazjRgX87iwb2gHQa1Fqs.9CCvk9f6RuY3IslR0UGfOAcsB6QvDrC', '홍길동', '01011110001', 'user01@test.com', 'MANAGER',  NOW(), NOW(), NULL, 1, 1, NULL),
-    (2, 'user02', '$2a$10$nZBkoWM9IxG5bXPt1KW3Ve3qK3XLBRJyOaujbchtC/Ua3G07y5ga2', '김철수', '01011110002', 'user02@test.com', 'OWNER',    NOW(), NOW(), NULL, 2, 2, NULL),
-    (3, 'user03', '$2a$10$ZaVcSOdUXG/yVfneM24QX.z1mLwUCwhTgWYTXoJExkKbh09YUeIAe', '이영희', '01011110003', 'user03@test.com', 'MASTER',   NOW(), NOW(), NULL, 3, 3, NULL),
-    (4, 'user04', '$2a$10$bDwwFnP7s.jQ8DXDLwGZY.d6J208eiNw14d3t8Z2gj/LcpQjbp5DO', '박민수', '01011110004', 'user04@test.com', 'CUSTOMER', NOW(), NOW(), NULL, 4, 4, NULL),
-    (5, 'user05', '$2a$10$S0rYQ6tgCGegmSxpQ.em5e4k2htnCUFwPAa78iUWkRHIlKtv7CCNm', '최지현', '01011110005', 'user05@test.com', 'CUSTOMER', NOW(), NOW(), NULL, 5, 5, NULL),
-    (6, 'user06', '$2a$10$r5z434.rcJMd4jOidj2IM.XBAoBFqLMyzUh7JGH4T5aM37cQJEXvy', '정우성', '01011110006', 'user06@test.com', 'CUSTOMER', NOW(), NOW(), NULL, 6, 6, NULL),
-    (7, 'user07', '$2a$10$7k3TIpb66a0pDcHRXpr3r.0ExVbv5fmZMYpFg0sSGfpE9o95gsQuO', '한가인', '01011110007', 'user07@test.com', 'CUSTOMER', NOW(), NOW(), NULL, 7, 7, NULL),
-    (8, 'user08', '$2a$10$hcplJBuuPDZdcYoRvb/IyeICAH10wpikr7pFj6g68k0xa4VpvdQA6', '조세호', '01011110008', 'user08@test.com', 'CUSTOMER', NOW(), NOW(), NULL, 8, 8, NULL),
-    (9, 'user09', '$2a$10$1SYipAQMnkExCoJ9B4Tyru1jgXtMvLUTKAUE3YPhgVQ41nM8Fz/Lu', '유재석', '01011110009', 'user09@test.com', 'CUSTOMER', NOW(), NOW(), NULL, 9, 9, NULL),
-    (10,'user10', '$2a$10$.6VDxIkE1lYEP05rCxY.l.HsnX5onEx4h5xa4Y.v8Ee3LLwxaK7l2', '강호동', '01011110010', 'user10@test.com', 'CUSTOMER', NOW(), NOW(), NULL, 10, 10, NULL),
-    (11,'user11', '$2a$10$FQmI2GcJ8Xq7vlmFzES5OO4TETIB7DQa9mld9SJIInwi.gHOPhh7i', '이순신', '01011110011', 'user11@test.com', 'OWNER',    NOW(), NOW(), NULL, 11, 11, NULL);
+    (1, 'user01', '$2a$10$KazjRgX87iwb2gHQa1Fqs.9CCvk9f6RuY3IslR0UGfOAcsB6QvDrC', '홍길동', '01011110001', 'user01@test.com', 'MANAGER',  NOW(), NOW()),
+    (2, 'user02', '$2a$10$nZBkoWM9IxG5bXPt1KW3Ve3qK3XLBRJyOaujbchtC/Ua3G07y5ga2', '김철수', '01011110002', 'user02@test.com', 'OWNER',    NOW(), NOW()),
+    (3, 'user03', '$2a$10$ZaVcSOdUXG/yVfneM24QX.z1mLwUCwhTgWYTXoJExkKbh09YUeIAe', '이영희', '01011110003', 'user03@test.com', 'MASTER',   NOW(), NOW()),
+    (4, 'user04', '$2a$10$bDwwFnP7s.jQ8DXDLwGZY.d6J208eiNw14d3t8Z2gj/LcpQjbp5DO', '박민수', '01011110004', 'user04@test.com', 'CUSTOMER', NOW(), NOW()),
+    (5, 'user05', '$2a$10$S0rYQ6tgCGegmSxpQ.em5e4k2htnCUFwPAa78iUWkRHIlKtv7CCNm', '최지현', '01011110005', 'user05@test.com', 'CUSTOMER', NOW(), NOW()),
+    (6, 'user06', '$2a$10$r5z434.rcJMd4jOidj2IM.XBAoBFqLMyzUh7JGH4T5aM37cQJEXvy', '정우성', '01011110006', 'user06@test.com', 'CUSTOMER', NOW(), NOW()),
+    (7, 'user07', '$2a$10$7k3TIpb66a0pDcHRXpr3r.0ExVbv5fmZMYpFg0sSGfpE9o95gsQuO', '한가인', '01011110007', 'user07@test.com', 'CUSTOMER', NOW(), NOW()),
+    (8, 'user08', '$2a$10$hcplJBuuPDZdcYoRvb/IyeICAH10wpikr7pFj6g68k0xa4VpvdQA6', '조세호', '01011110008', 'user08@test.com', 'CUSTOMER', NOW(), NOW()),
+    (9, 'user09', '$2a$10$1SYipAQMnkExCoJ9B4Tyru1jgXtMvLUTKAUE3YPhgVQ41nM8Fz/Lu', '유재석', '01011110009', 'user09@test.com', 'CUSTOMER', NOW(), NOW()),
+    (10,'user10', '$2a$10$.6VDxIkE1lYEP05rCxY.l.HsnX5onEx4h5xa4Y.v8Ee3LLwxaK7l2', '강호동', '01011110010', 'user10@test.com', 'CUSTOMER', NOW(), NOW()),
+    (11,'user11', '$2a$10$FQmI2GcJ8Xq7vlmFzES5OO4TETIB7DQa9mld9SJIInwi.gHOPhh7i', '이순신', '01011110011', 'user11@test.com', 'OWNER',    NOW(), NOW());
 ----------------------------
 -- 2) 코드→UUID 매핑 테이블들 (임시)
 ----------------------------
@@ -298,15 +297,9 @@ VALUES
 
 
 ----------------------------
--- 15) 감사 컬럼 일괄 보정 (created_by / modified_by / deleted_by)
+-- 15) 감사 컬럼 일괄 보정 (created_by / modified_by )
 --     기존 INSERT 이후 실행되어도 무방
 ----------------------------
-
--- users: 자기 자신을 작성/수정자로 설정 (초기 시드 간편화)
-UPDATE public.users u
-SET created_by = u.user_no,
-    modified_by = u.user_no
-WHERE (created_by IS NULL OR modified_by IS NULL);
 
 -- addresses: 소유자(user_no)를 작성/수정자로
 UPDATE public.addresses a
@@ -390,6 +383,4 @@ SET created_by = s.user_no,
 WHERE si.store_id = s.store_id
   AND (si.created_by IS NULL OR si.modified_by IS NULL);
 
--- deleted_by는 현재 목데이터가 삭제 상태(NULL) 가정이므로 유지
--- 필요 시 예: 소프트 삭제된 행에 대해 일괄 지정
--- UPDATE some_table SET deleted_by = 1 WHERE deleted_date IS NOT NULL AND deleted_by IS NULL;
+SELECT setval(pg_get_serial_sequence('users', 'user_no'), (SELECT MAX(user_no) FROM users));
