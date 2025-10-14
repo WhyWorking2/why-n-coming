@@ -64,7 +64,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<ProductResponseDto> readAllProducts() {
 
-        return productRepository.findAll().stream()
+        return productRepository.findAllWithStore().stream()
                 .map(product -> new ProductResponseDto(
                         product.getProductId(),
                         product.getStore().getStoreName(),
@@ -99,7 +99,6 @@ public class ProductService {
         product.delete();
 
         log.info("ProductService.deleteProduct() - after delete(), product: {}", product);
-
 
         Product deletedProduct = productRepository.save(product);
         return deletedProduct.getProductId().toString();

@@ -20,9 +20,9 @@ public class ProductResponseDto {
     private Integer price;
     private String description;
     private String productPictureUrl;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
-    private LocalDateTime deletedDate;
+    private Instant createdDate;
+    private Instant modifiedDate;
+    private Instant deletedDate;
     private List<String> categoryNameList;
     private String storeName;
 
@@ -39,9 +39,9 @@ public class ProductResponseDto {
                 .map(cp -> cp.getCategory().getCategoryName())
                 .collect(Collectors.toList());
         this.productPictureUrl = product.getProductPictureUrl();
-//        this.createdDate = product.getCreatedDate();
-//        this.modifiedDate = product.getModifiedDate();
-//        this.deletedDate = product.getDeletedDate();
+        this.createdDate = product.getCreatedDate();
+        this.modifiedDate = product.getModifiedDate();
+        this.deletedDate = product.getDeletedDate();
     }
 
     /**
@@ -59,8 +59,8 @@ public class ProductResponseDto {
         this.productName = productName;
         this.price = price;
         this.productPictureUrl = productPictureUrl;
-//        this.createdDate = createdDate;
-//        this.modifiedDate = modifiedDate;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 
 }
