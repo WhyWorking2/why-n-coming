@@ -1,4 +1,4 @@
-package org.sparta.whyncoming.product.presentaion.dto.request;
+package org.sparta.whyncoming.product.presentation.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;

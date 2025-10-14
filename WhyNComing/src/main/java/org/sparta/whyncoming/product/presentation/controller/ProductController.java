@@ -1,13 +1,12 @@
-package org.sparta.whyncoming.product.presentaion.controller;
+package org.sparta.whyncoming.product.presentation.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.sparta.whyncoming.common.response.ApiResult;
 import org.sparta.whyncoming.product.application.service.ProductService;
-import org.sparta.whyncoming.product.domain.entity.Product;
-import org.sparta.whyncoming.product.presentaion.dto.request.ProductRequestDto;
-import org.sparta.whyncoming.product.presentaion.dto.request.ProductUpdateRequestDto;
-import org.sparta.whyncoming.product.presentaion.dto.response.ProductResponseDto;
+import org.sparta.whyncoming.product.presentation.dto.request.ProductRequestDto;
+import org.sparta.whyncoming.product.presentation.dto.request.ProductUpdateRequestDto;
+import org.sparta.whyncoming.product.presentation.dto.response.ProductResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +57,7 @@ public class ProductController {
     }
 
     // 삭제
+    @Operation(summary = "상품 삭제")
     @DeleteMapping("/{uuid}")
     public ResponseEntity<ApiResult<String>> deleteProduct(@PathVariable UUID uuid) {
         String deleteProductId = productService.deleteProduct(uuid);
