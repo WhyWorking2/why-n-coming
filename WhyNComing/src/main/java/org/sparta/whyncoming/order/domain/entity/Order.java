@@ -92,4 +92,18 @@ public class Order {
         this.carts = carts;
         this.delivery = delivery;
     }
+
+    public void pay(String method, String requests) {
+        if (this.status != Status.CREATED) {
+            throw new IllegalStateException("이 상태에서는 결제를 할 수 없습니다.");
+        }
+
+        this.paymentMethod = method;
+        this.requests = requests;
+        this.status = Status.SUCCESS;
+    }
+
+    public void assignDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
 }

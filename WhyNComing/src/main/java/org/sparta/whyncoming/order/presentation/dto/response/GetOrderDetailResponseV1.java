@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
@@ -12,7 +13,7 @@ import java.util.List;
 public class GetOrderDetailResponseV1 {
 
     @Schema(description = "주문 ID", example = "f47ac10b-58cc-4372-a567-0e02b2c3d479")
-    private Long orderId;
+    private UUID orderId;
 
     @Schema(description = "주문 상태", example = "DELIVERED")
     private String status;
@@ -28,7 +29,7 @@ public class GetOrderDetailResponseV1 {
     @Schema(description = "주문 항목 DTO")
     public static class OrderItemResponseV1 {
         @Schema(description = "상품 ID", example = "f47ac10b-58cc-4372-a567-0e02b2c3d479")
-        private Long itemId;
+        private UUID itemId;
 
         @Schema(description = "상품명", example = "치킨")
         private String name;
@@ -42,7 +43,7 @@ public class GetOrderDetailResponseV1 {
     @Schema(description = "리뷰 DTO")
     public static class ReviewResponseV1 {
         @Schema(description = "리뷰 ID", example = "f47ac10b-58cc-4372-a567-0e02b2c3d479")
-        private Long reviewId;
+        private UUID reviewId;
 
         @Schema(description = "내용", example = "맛있어요!")
         private String content;
@@ -52,5 +53,13 @@ public class GetOrderDetailResponseV1 {
 
         @Schema(description = "리뷰 이미지 URL", example = "https://cdn.app.com/review1.jpg")
         private String reviewPictureUrl;
+    }
+
+    public GetOrderDetailResponseV1(UUID orderId, String status, List<OrderItemResponseV1> items,
+                                    ReviewResponseV1 review) {
+        this.orderId = orderId;
+        this.status = status;
+        this.items = items;
+        this.review = review;
     }
 }

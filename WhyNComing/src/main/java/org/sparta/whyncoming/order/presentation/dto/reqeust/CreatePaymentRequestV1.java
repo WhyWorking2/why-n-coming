@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.sparta.whyncoming.product.domain.entity.Cart;
+import org.sparta.whyncoming.order.domain.entity.Cart;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,13 +16,13 @@ import java.util.UUID;
 @Schema(description = "결제 요청 DTO")
 public class CreatePaymentRequestV1 {
 
-    @Schema(description = "유저 ID", example = "f47ac10b-58cc-4372-a567-0e02b2c3d479")
+    @Schema(description = "유저 ID", example = "101")
     @NotNull(message = "유저 ID는 필수입니다.")
-    private UUID userId;
+    private Integer userId;
 
     @Schema(description = "가게 ID", example = "f47ac10b-58cc-4372-a567-0e02b2c3d479")
     @NotNull(message = "가게 ID는 필수입니다.")
-    private Long storeId;
+    private UUID storeId;
 
     @Schema(description = "장바구니 아이템 목록")
     @NotNull(message = "주문 항목 리스트는 필수입니다.")
