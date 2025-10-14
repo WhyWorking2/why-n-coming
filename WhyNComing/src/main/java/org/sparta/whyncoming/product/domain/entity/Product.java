@@ -12,6 +12,7 @@ import org.sparta.whyncoming.store.domain.entity.Store;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Entity
@@ -54,15 +55,17 @@ public class Product extends BaseActorEntity {
      * @param description 상품 설명
      * @param price 상품 가격
      * @param productPictureUrl 상품 사진
-     * @param categoryProductList 상품이 속한 카테고리의 목록
+     * @param categoryList 상품이 속한 카테고리의 목록
      */
-    public Product(Store store, String productName, String description, Integer price, String productPictureUrl, List<CategoryProduct> categoryProductList) {
+    public Product(Store store, String productName, String description, Integer price, String productPictureUrl, List<Category> categoryList) {
         this.store = store;
         this.productName = productName;
         this.description = description;
         this.price = price;
         this.productPictureUrl = productPictureUrl;
-        this.categoryProducts = categoryProductList;
+        this.categoryProducts = categoryList.stream()
+                .map(c -> new CategoryProduct(this, c))
+                .collect(Collectors.toList());
         this.restore();
     }
 
@@ -84,4 +87,6 @@ public class Product extends BaseActorEntity {
         this.markDeleted();
         log.info("Product.delete() called - deletedDate set to {}", this.getDeletedDate());
     }
+
+
 }

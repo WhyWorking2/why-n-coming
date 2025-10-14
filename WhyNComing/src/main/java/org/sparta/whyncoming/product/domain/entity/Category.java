@@ -31,7 +31,7 @@ public class Category extends BaseActorEntity {
 
     /**
      * 카테고리를 생성하기 위한 생성자
-     * @param categoryName
+     * @param categoryName 카테고리명
      */
     public Category(String categoryName) {
         this.categoryName = categoryName;

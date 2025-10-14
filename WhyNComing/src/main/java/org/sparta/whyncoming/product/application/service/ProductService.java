@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static org.sparta.whyncoming.common.response.ErrorCode.NOT_FOUND;
+import static org.sparta.whyncoming.common.response.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -38,26 +38,24 @@ public class ProductService {
 
     /**
      * 상품 생성에 대한
-     * @param requestDto
+     * @param requestDto 생성된 상품 정보
      * @return 상품ResponseDto 생성자
      */
     public ProductResponseDto creatProduct(ProductRequestDto requestDto) {
 
+        //입점사 조회
         Store store = storeRepository.findByStoreName(requestDto.getStoreName())
                 .orElseThrow(() -> new IllegalArgumentException(requestDto.getStoreName() + " : " + NOT_FOUND));
 
-        Product product = productRepository.save(new Product(store, requestDto.getProductName(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getProductPictureUrl(), new ArrayList<>())); // 빈 카테고리로 생성
+        //카테고리 리스트 생성
+        List<Category> categoryList = createCategoryList(requestDto.getCategoryNames());
 
-        List<CategoryProduct> categoryProducts = requestDto.getCategoryNames().stream()
-                .map(name -> {
-                    Category category = categoryRepository.findByCategoryName(name)
-                            .orElseThrow(() -> new RuntimeException(name + " : " + NOT_FOUND));
-                    return new CategoryProduct(product, category);
-                })
-                .toList();
+        //상품 생성
+        Product product = productRepository.save(new Product(store, requestDto.getProductName(), requestDto.getDescription(), requestDto.getPrice(), requestDto.getProductPictureUrl(), categoryList));
 
-        product.getCategoryProducts().addAll(categoryProducts);
+        //저장
         productRepository.save(product);
+
         return new ProductResponseDto(product);
     }
 
@@ -111,4 +109,27 @@ public class ProductService {
 
         return deletedProduct.getProductId().toString();
     }
+
+    /**
+     *  입력된 카테고리 예외처리 및 카테고리 리스트화 메서드
+     */
+    private List<Category> createCategoryList (List<String> categoryName) {
+
+        //카테고리 검증
+        if (categoryName == null || categoryName.isEmpty()) {
+            throw new IllegalArgumentException("카테고리 : " + INVALID_REQUEST);
+        }
+
+        //카테고리 조회
+        List<Category> categories = categoryRepository.findAllByCategoryNameIn(categoryName);
+        if (categories.size() != categoryName.size()) {
+            throw new IllegalArgumentException("카테고리 : " + NOT_FOUND);
+        }
+
+        //카테고리에 대한 리스트 생성 시에는 상품을 null로 저장
+        List<Category> categoryList = new ArrayList<>();
+        categoryList.addAll(categories);
+        return categoryList;
+    }
+
 }
