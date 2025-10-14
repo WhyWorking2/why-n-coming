@@ -25,7 +25,10 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
   config:
-    import: application-secret.yml
+    import:
+      - optional:classpath:application-secret.yml
+      - optional:classpath:application-jwt.yml
+
 
 security:
  bcrypt:
