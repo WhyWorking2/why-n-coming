@@ -35,6 +35,11 @@ public class ProductService {
         this.storeRepository = storeRepository;
     }
 
+    /**
+     * 상품 생성에 대한
+     * @param requestDto
+     * @return 상품ResponseDto 생성자
+     */
     public ProductResponseDto creatProduct(ProductRequestDto requestDto) {
 
         Store store = storeRepository.findByStoreName(requestDto.getStoreName())
@@ -64,7 +69,9 @@ public class ProductService {
                         product.getStore().getStoreName(),
                         product.getProductName(),
                         product.getPrice(),
-                        product.getProductPictureUrl()
+                        product.getProductPictureUrl(),
+                        product.getCreatedDate(),
+                        product.getModifiedDate()
                 )).toList();
     }
 

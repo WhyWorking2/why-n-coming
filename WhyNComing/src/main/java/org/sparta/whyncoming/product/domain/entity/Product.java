@@ -71,17 +71,6 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryProduct> categoryProducts = new ArrayList<>();
 
-    public Product(Store store, String productName, String description, Integer price, String productPictureUrl,
-                   List<Cart> carts, List<CategoryProduct> categoryProducts) {
-        this.store = store;
-        this.productName = productName;
-        this.description = description;
-        this.price = price;
-        this.productPictureUrl = productPictureUrl;
-        this.carts = carts;
-        this.categoryProducts = categoryProducts;
-    }
-
     /**
      * 상품 생성 시 사용되는 생성자 (cart 부분에 대한 것 어떻게 할지 수정 필요)
      * @param store 가게정보
@@ -98,6 +87,7 @@ public class Product {
         this.price = price;
         this.productPictureUrl = productPictureUrl;
         this.categoryProducts = categoryProductList;
+        this.createdDate = LocalDateTime.now();
     }
 
     /**
@@ -112,6 +102,6 @@ public class Product {
         this.price = price;
         this.description = description;
         this.productPictureUrl = productPictureUrl;
+        this.modifiedDate = LocalDateTime.now();
     }
-
 }

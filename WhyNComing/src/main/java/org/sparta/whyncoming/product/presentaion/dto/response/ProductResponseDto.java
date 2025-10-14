@@ -19,6 +19,7 @@ public class ProductResponseDto {
     private String description;
     private String productPictureUrl;
     private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
     private List<String> categoryNameList;
     private String storeName;
 
@@ -36,6 +37,7 @@ public class ProductResponseDto {
                 .collect(Collectors.toList());
         this.productPictureUrl = product.getProductPictureUrl();
         this.createdDate = product.getCreatedDate();
+        this.modifiedDate = product.getModifiedDate();
     }
 
     /**
@@ -46,11 +48,13 @@ public class ProductResponseDto {
      * @param price 상품가격
      * @param productPictureUrl 상품사진
      */
-    public ProductResponseDto(UUID productId, String storeName, String productName, Integer price, String productPictureUrl) {
+    public ProductResponseDto(UUID productId, String storeName, String productName, Integer price, String productPictureUrl, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.productId = productId;
         this.storeName = storeName;
         this.productName = productName;
         this.price = price;
         this.productPictureUrl = productPictureUrl;
+        this.createdDate = createdDate;
+        this.modifiedDate = modifiedDate;
     }
 }
