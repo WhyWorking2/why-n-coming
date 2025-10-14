@@ -37,5 +37,3 @@ out/
 ### VS Code ###
 .vscode/
 .idea
-
-application-secret.yml
