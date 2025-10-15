@@ -7,6 +7,7 @@ import org.sparta.whyncoming.common.response.ResponseUtil;
 import org.sparta.whyncoming.common.security.UserDetailsImpl;
 import org.sparta.whyncoming.order.application.service.CartServiceV1;
 import org.sparta.whyncoming.order.presentation.dto.request.AddCartItemRequestV1;
+import org.sparta.whyncoming.order.presentation.dto.request.UpdateCartItemRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.AddCartItemResponseV1;
 import org.sparta.whyncoming.order.presentation.dto.response.GetCartItemResponseV1;
 import org.sparta.whyncoming.user.domain.entity.User;
@@ -16,6 +17,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/carts")
@@ -49,5 +51,16 @@ public class CartControllerV1 {
         List<GetCartItemResponseV1> responseDtoList = cartService.getMyCartItems(user);
 
         return ResponseUtil.success(responseDtoList);
+    }
+
+    @PutMapping("/products/{cartId}")
+    public ResponseEntity<ApiResult<GetCartItemResponseV1>> updateCartItem(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable UUID cartId,
+            @Valid @RequestBody UpdateCartItemRequestV1 request
+    ){
+        User user = userDetails.getUser();
+        GetCartItemResponseV1 responseDto = cartService.updateCartItem(user, cartId, request);
+        return ResponseUtil.success(responseDto);
     }
 }
