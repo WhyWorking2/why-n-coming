@@ -25,7 +25,7 @@ public class CategoryController {
 
     /**
      * 카테고리 생성
-     * TODO 스프링 시큐리티 추가되면 비즈니스 로직 쪽에서 admin 계정인지 검증하는 로직 추가해야함 (http 경로차단을 하면 조회 쪽이 막힘)
+     * TODO 스프링 시큐리티 적용되면 비즈니스 로직 쪽에서 admin 계정인지 검증하는 로직 추가해야함 (http 경로차단을 하면 조회 쪽이 막힘)
      */
     @Operation(summary = "카테고리 추가")
     @PostMapping

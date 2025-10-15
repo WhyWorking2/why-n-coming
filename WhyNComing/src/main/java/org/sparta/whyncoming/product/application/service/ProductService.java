@@ -9,6 +9,7 @@ import org.sparta.whyncoming.product.domain.repository.CategoryRepository;
 import org.sparta.whyncoming.product.domain.repository.ProductRepository;
 import org.sparta.whyncoming.product.presentation.dto.request.ProductRequestDto;
 import org.sparta.whyncoming.product.presentation.dto.request.ProductUpdateRequestDto;
+import org.sparta.whyncoming.product.presentation.dto.response.ProductByCategoryResponseDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductDetailResponseDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductResponseDto;
 import org.sparta.whyncoming.store.domain.entity.Store;
@@ -71,6 +72,17 @@ public class ProductService {
                 .map(ProductResponseDto::new).toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductByCategoryResponseDto> readProductsByCategory(String categoryName) {
+        return productRepository.findAllByCategoryName(categoryName).stream()
+                .map(product -> new ProductByCategoryResponseDto(categoryName,product)).toList();
+    }
+
+    /**
+     * 상품 상세 조회
+     * @param productId 상세조회할 상품의 UUID
+     * @return 상세조회된 상품의 내역
+     */
     @Transactional(readOnly = true)
     public ProductDetailResponseDto getProductDetail(UUID productId) {
         Product product = productRepository.findByProductId(productId)
