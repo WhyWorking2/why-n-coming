@@ -1,5 +1,6 @@
 package org.sparta.whyncoming.product.application.service;
 
+import org.sparta.whyncoming.common.exception.BusinessException;
 import org.sparta.whyncoming.common.exception.ErrorCode;
 import org.sparta.whyncoming.product.domain.entity.Category;
 import org.sparta.whyncoming.product.domain.repository.CategoryRepository;
@@ -39,7 +40,7 @@ public class CategoryService {
 
     public CategoryResponseDto deleteCategory(UUID categoryId) {
         Category category = categoryRepository.findByCategoryId(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(ErrorCode.NOT_FOUND)));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
 
         category.delete();
 
