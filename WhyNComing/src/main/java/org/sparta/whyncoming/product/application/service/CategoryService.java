@@ -37,12 +37,12 @@ public class CategoryService {
                 .map(CategoryResponseDto::new).toList();
     }
 
-    public String deleteCategory(UUID categoryId) {
+    public CategoryResponseDto deleteCategory(UUID categoryId) {
         Category category = categoryRepository.findByCategoryId(categoryId)
                 .orElseThrow(() -> new IllegalArgumentException(String.valueOf(ErrorCode.NOT_FOUND)));
 
         category.delete();
 
-        return category.getCategoryId().toString();
+        return new CategoryResponseDto(category);
     }
 }

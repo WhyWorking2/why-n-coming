@@ -13,7 +13,7 @@ public interface ProductRepositoryCustom {
 
     /**
      * N+1 문제 해결을 위한 패치조인
-     * JQuery 방식이므로 추후 QueryDSL 적용 시 변경 될 예정입니다.
+     * JPQL 방식이므로 추후 QueryDSL 적용 시 변경 될 예정입니다.
      * @return 스토어 정보가 포함된 상품리스트 반환
      */
     @Query("SELECT p FROM Product p JOIN FETCH p.store")

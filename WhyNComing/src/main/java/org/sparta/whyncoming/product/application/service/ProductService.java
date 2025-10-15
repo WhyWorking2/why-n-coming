@@ -9,6 +9,7 @@ import org.sparta.whyncoming.product.domain.repository.CategoryRepository;
 import org.sparta.whyncoming.product.domain.repository.ProductRepository;
 import org.sparta.whyncoming.product.presentation.dto.request.ProductRequestDto;
 import org.sparta.whyncoming.product.presentation.dto.request.ProductUpdateRequestDto;
+import org.sparta.whyncoming.product.presentation.dto.response.ProductDetailResponseDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductResponseDto;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.store.domain.repository.StoreRepository;
@@ -67,9 +68,16 @@ public class ProductService {
      */
     @Transactional(readOnly = true)
     public List<ProductResponseDto> readAllProducts() {
-
         return productRepository.findAllWithStore().stream()
                 .map(ProductResponseDto::new).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ProductDetailResponseDto getProductDetail(UUID productId) {
+        Product product = productRepository.findByProductId(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품 없음 : " + NOT_FOUND));
+
+        return new ProductDetailResponseDto(product);
     }
 
     /**
