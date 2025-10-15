@@ -29,10 +29,10 @@ public class CartServiceV1 {
 
     @Transactional
     public AddCartItemResponseV1 insertItemToCart(User user, AddCartItemRequestV1 request){
-        Store store = storeRepository.findById(request.getStoreId())
+        Store store = storeRepository.findByStoreId(request.getStoreId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "가게를 찾을 수 없습니다."));
 
-        Product product = productRepository.findById(request.getProductId())
+        Product product = productRepository.findByProductId(request.getProductId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "상품을 찾을 수 없습니다."));
 
         // TODO: 이미 있는 상품 -> 수량만 변경

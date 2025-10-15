@@ -1,6 +1,7 @@
 package org.sparta.whyncoming.order.presentation.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.sparta.whyncoming.common.response.ApiResult;
 import org.sparta.whyncoming.common.response.ResponseUtil;
 import org.sparta.whyncoming.common.security.UserDetailsImpl;
@@ -8,6 +9,7 @@ import org.sparta.whyncoming.order.application.service.CartServiceV1;
 import org.sparta.whyncoming.order.presentation.dto.request.AddCartItemRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.AddCartItemResponseV1;
 import org.sparta.whyncoming.user.domain.entity.User;
+import org.sparta.whyncoming.user.domain.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,7 +31,7 @@ public class CartControllerV1 {
     @PostMapping("/products")
     public ResponseEntity<ApiResult<AddCartItemResponseV1>> insertItemToCart(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @RequestBody AddCartItemRequestV1 request
+            @Valid @RequestBody AddCartItemRequestV1 request
             ){
         User user = userDetails.getUser();
 
