@@ -1,4 +1,4 @@
-package org.sparta.whyncoming.product.presentaion.dto.request;
+package org.sparta.whyncoming.product.presentation.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -29,6 +29,7 @@ public class ProductRequestDto {
     @Schema(description = "가게 이름", example = "중국집1")
     private String storeName;
 
+    //TODO 이 부분 백엔드적 관점에선 Name이 아니라 UUID로 받아야 맞지 않나... 하는 생각이 좀 듭니다. 어떻게 할지 고민중이에요.
     @Schema(description = "카테고리 이름 목록", example = "[\"중식\"]")
     private List<String> categoryNames;
 }
