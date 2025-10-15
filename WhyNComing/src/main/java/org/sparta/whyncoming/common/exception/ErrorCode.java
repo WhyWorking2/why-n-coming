@@ -1,4 +1,4 @@
-package org.sparta.whyncoming.common.response;
+package org.sparta.whyncoming.common.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
