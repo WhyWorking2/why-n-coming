@@ -2,6 +2,7 @@ package org.sparta.whyncoming.user.presentation.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -62,11 +63,11 @@ public class UserControllerV1 {
         return ResponseUtil.success(userServiceV1.health());
     }
 
-    @Operation(summary = "User 업데이트")
+    @Operation(summary = "User 업데이트", security = @SecurityRequirement(name = "BearerAuth"))
     @PatchMapping("/me")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResult<UpdateUserResponseDtoV1>> updateMe(
-            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo, // Swagger 문서엔 숨기고 싶다면 @Parameter(hidden = true)
             @Valid @RequestBody UpdateUserRequestDtoV1 request,
             BindingResult bindingResult
     ) {
