@@ -78,4 +78,18 @@ public class CartServiceV1 {
 
         return new GetCartItemResponseV1(cartItem);
     }
+
+    @Transactional
+    public UUID deleteCartItem(User user, UUID cartId) {
+        Cart cartItem = cartRepository.findById(cartId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "해당 장바구니 아이템을 찾을 수 없습니다."));
+
+        if (!cartItem.getUser().getUserNo().equals(user.getUserNo())) {
+            throw new BusinessException(ErrorCode.FORBIDDEN, "본인의 장바구니만 삭제 가능");
+        }
+
+        cartRepository.delete(cartItem);
+
+        return cartItem.getCartId();
+    }
 }

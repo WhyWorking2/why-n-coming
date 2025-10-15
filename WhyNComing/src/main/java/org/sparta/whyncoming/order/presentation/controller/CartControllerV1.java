@@ -9,6 +9,7 @@ import org.sparta.whyncoming.order.application.service.CartServiceV1;
 import org.sparta.whyncoming.order.presentation.dto.request.AddCartItemRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.request.UpdateCartItemRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.AddCartItemResponseV1;
+import org.sparta.whyncoming.order.presentation.dto.response.DeleteCartItemResponseV1;
 import org.sparta.whyncoming.order.presentation.dto.response.GetCartItemResponseV1;
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.sparta.whyncoming.user.domain.repository.UserRepository;
@@ -61,6 +62,18 @@ public class CartControllerV1 {
     ){
         User user = userDetails.getUser();
         GetCartItemResponseV1 responseDto = cartService.updateCartItem(user, cartId, request);
+        return ResponseUtil.success(responseDto);
+    }
+
+    @DeleteMapping("/products/{cartId}")
+    public ResponseEntity<ApiResult<DeleteCartItemResponseV1>> deleteCartItem (
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable UUID cartId
+    ){
+        User user = userDetails.getUser();
+        UUID deletedCartId = cartService.deleteCartItem(user, cartId);
+        DeleteCartItemResponseV1 responseDto = new DeleteCartItemResponseV1(deletedCartId);
+
         return ResponseUtil.success(responseDto);
     }
 }
