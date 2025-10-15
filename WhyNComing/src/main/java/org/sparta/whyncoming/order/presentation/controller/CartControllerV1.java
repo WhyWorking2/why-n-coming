@@ -8,14 +8,14 @@ import org.sparta.whyncoming.common.security.UserDetailsImpl;
 import org.sparta.whyncoming.order.application.service.CartServiceV1;
 import org.sparta.whyncoming.order.presentation.dto.request.AddCartItemRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.AddCartItemResponseV1;
+import org.sparta.whyncoming.order.presentation.dto.response.GetCartItemResponseV1;
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.sparta.whyncoming.user.domain.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/carts")
@@ -38,5 +38,16 @@ public class CartControllerV1 {
         AddCartItemResponseV1 responseDto = cartService.insertItemToCart(user, request);
 
         return ResponseUtil.success(responseDto);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<ApiResult<List<GetCartItemResponseV1>>> getMyCartItems(
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ){
+        User user = userDetails.getUser();
+
+        List<GetCartItemResponseV1> responseDtoList = cartService.getMyCartItems(user);
+
+        return ResponseUtil.success(responseDtoList);
     }
 }

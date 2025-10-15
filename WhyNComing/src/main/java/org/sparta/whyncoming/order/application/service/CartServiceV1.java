@@ -6,6 +6,7 @@ import org.sparta.whyncoming.order.domain.entity.Cart;
 import org.sparta.whyncoming.order.domain.repository.CartRepository;
 import org.sparta.whyncoming.order.presentation.dto.request.AddCartItemRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.AddCartItemResponseV1;
+import org.sparta.whyncoming.order.presentation.dto.response.GetCartItemResponseV1;
 import org.sparta.whyncoming.product.domain.entity.Product;
 import org.sparta.whyncoming.product.domain.repository.ProductRepository;
 import org.sparta.whyncoming.store.domain.entity.Store;
@@ -13,6 +14,9 @@ import org.sparta.whyncoming.store.domain.repository.StoreRepository;
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiceV1 {
@@ -48,5 +52,13 @@ public class CartServiceV1 {
         Cart savedCart = cartRepository.save(newCartItem);
 
         return new AddCartItemResponseV1(savedCart);
+    }
+
+    public List<GetCartItemResponseV1> getMyCartItems(User user){
+        List<Cart> cartItems = cartRepository.findAllByUser_UserNo(user.getUserNo());
+
+        return cartItems.stream()
+                .map(GetCartItemResponseV1::new)
+                .collect(Collectors.toList());
     }
 }
