@@ -1,7 +1,7 @@
 package org.sparta.whyncoming.order.application.service;
 
-import org.sparta.whyncoming.common.response.BusinessException;
-import org.sparta.whyncoming.common.response.ErrorCode;
+import org.sparta.whyncoming.common.exception.BusinessException;
+import org.sparta.whyncoming.common.exception.ErrorCode;
 import org.sparta.whyncoming.order.domain.entity.Cart;
 import org.sparta.whyncoming.order.domain.repository.CartRepository;
 import org.sparta.whyncoming.order.presentation.dto.request.AddCartItemRequestV1;
