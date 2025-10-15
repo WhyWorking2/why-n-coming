@@ -3,6 +3,7 @@ package org.sparta.whyncoming.common.security.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.sparta.whyncoming.common.security.jwt.JwtUtil;
+import org.sparta.whyncoming.common.security.service.CustomUserDetailsInfo;
 import org.sparta.whyncoming.user.presentation.dto.request.LoginRequestDto;
 
 import jakarta.servlet.FilterChain;
@@ -10,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 
-import org.sparta.whyncoming.common.security.UserDetailsImpl;
 import org.sparta.whyncoming.user.domain.enums.UserRoleEnum;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -48,9 +48,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) {
-        Integer userNo = ((UserDetailsImpl) authResult.getPrincipal()).getUserNo();
-        String userId = ((UserDetailsImpl) authResult.getPrincipal()).getUserId();
-        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
+        Integer userNo = ((CustomUserDetailsInfo) authResult.getPrincipal()).getUserNo();
+        String userId = ((CustomUserDetailsInfo) authResult.getPrincipal()).getUserId();
+        UserRoleEnum role = ((CustomUserDetailsInfo) authResult.getPrincipal()).getUser().getRole();
 
         String token = jwtUtil.createToken(userNo, userId, role);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);

@@ -1,16 +1,15 @@
-package org.sparta.whyncoming.common.security;
+package org.sparta.whyncoming.common.security.service;
 
 
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.sparta.whyncoming.user.domain.enums.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImpl implements CustomUserDetails {
 
     private final User user;
 
@@ -34,8 +33,24 @@ public class UserDetailsImpl implements UserDetails {
         return user.getUserId();
     }
 
+    @Override
+    public String getUserName() {
+        return user.getUserName();
+    }
+
     public Integer getUserNo() {
         return user.getUserNo();
+    }
+
+    public UserRoleEnum getRole() {
+        return user.getRole();
+    }
+
+    public String getEmail() {
+        return user.getEmail();
+    }
+    public String getPhone() {
+        return user.getUserPhone();
     }
 
     @Override
