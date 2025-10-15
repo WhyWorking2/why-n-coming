@@ -1,5 +1,6 @@
 package org.sparta.whyncoming.order.presentation.dto.request;
 
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.UUID;
@@ -8,7 +9,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public class AddCartItemRequestV1 {
 
-    private Long storeId; // 일단 Long으로 해둠, 나중에 UUID로 수정
-    private Long productId; // ''
+    private UUID storeId;
+    private UUID productId;
+
+    @Min(value = 1, message = "수량은 1 이상이어야 합니다.")
     private int quantity;
 }
