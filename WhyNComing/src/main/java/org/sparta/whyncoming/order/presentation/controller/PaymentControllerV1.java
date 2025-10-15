@@ -19,7 +19,7 @@ public class PaymentControllerV1 {
     }
 
     @GetMapping("/success")
-    public String paymentSuccess(ConfirmPaymentRequestV1 request) {
+    public String paymentSuccess(ConfirmPaymentRequestV1 request) throws Exception {
         return service.confirmPayment(request);
     }
 
