@@ -1,5 +1,6 @@
 package org.sparta.whyncoming.common.response;
 
+import org.sparta.whyncoming.common.exception.ErrorCode;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

@@ -1,6 +1,6 @@
 package org.sparta.whyncoming.product.application.service;
 
-import org.sparta.whyncoming.common.response.ErrorCode;
+import org.sparta.whyncoming.common.exception.ErrorCode;
 import org.sparta.whyncoming.product.domain.entity.Category;
 import org.sparta.whyncoming.product.domain.repository.CategoryRepository;
 import org.sparta.whyncoming.product.presentation.dto.request.CategoryRequestDto;
