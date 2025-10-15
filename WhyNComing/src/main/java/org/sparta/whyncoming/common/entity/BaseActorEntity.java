@@ -1,0 +1,26 @@
+package org.sparta.whyncoming.common.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.MappedSuperclass;
+import lombok.Getter;
+import org.sparta.whyncoming.common.entity.BaseTimeEntity;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+@Getter
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+public abstract class BaseActorEntity extends BaseTimeEntity {
+
+    // Long(사용자 PK)나 String(아이디) 등 "스칼라"로 두세요. User 엔티티 연관관계로 두면 순환/부트스트랩 이슈가 생깁니다.
+    @CreatedBy
+    @Column(name = "created_by")
+    private Integer createdBy;
+
+    @LastModifiedBy
+    @Column(name = "modified_by")
+    private Integer modifiedBy;
+
+}

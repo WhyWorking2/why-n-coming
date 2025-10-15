@@ -37,3 +37,7 @@ out/
 ### VS Code ###
 .vscode/
 .idea
+
+### yml ###
+application-secret.yml
+application-jwt.yml
