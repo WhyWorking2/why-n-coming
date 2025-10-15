@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Toss 결제 테스트</title>
+</head>
+<body>
+<h2>결제 테스트 페이지</h2>
+<button onclick="startPayment()">결제하기</button>
+
+<script>
+    async function startPayment() {
+        const response = await fetch("/v1/order/payments/ready", { method: "POST" });
+        const data = await response.json();
+
+        if (data.checkoutUrl) {
+            window.location.href = data.checkoutUrl; // Toss 결제창으로 이동
+        } else {
+            alert("결제 URL 생성 실패");
+        }
+    }
+</script>
+</body>
+</html>
