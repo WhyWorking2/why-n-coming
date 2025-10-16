@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.sparta.whyncoming.common.response.ApiResult;
 import org.sparta.whyncoming.common.response.ResponseUtil;
 import org.sparta.whyncoming.order.application.service.TossPaymentServiceV1;
-import org.sparta.whyncoming.order.presentation.dto.reqeust.TossConfirmRequestV1;
+import org.sparta.whyncoming.order.presentation.dto.request.TossConfirmRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.OrderStatusResponseV1;
 import org.sparta.whyncoming.order.presentation.dto.response.TossConfirmResponseV1;
 import org.springframework.http.ResponseEntity;

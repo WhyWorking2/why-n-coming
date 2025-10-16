@@ -7,7 +7,7 @@ import org.sparta.whyncoming.order.domain.entity.Order;
 import org.sparta.whyncoming.order.domain.enums.DeliveryStatus;
 import org.sparta.whyncoming.order.domain.repository.DeliveryRepository;
 import org.sparta.whyncoming.order.domain.repository.OrderRepository;
-import org.sparta.whyncoming.order.presentation.dto.reqeust.TossConfirmRequestV1;
+import org.sparta.whyncoming.order.presentation.dto.request.TossConfirmRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.OrderStatusResponseV1;
 import org.sparta.whyncoming.order.presentation.dto.response.TossConfirmResponseV1;
 import org.sparta.whyncoming.store.domain.repository.StoreRepository;
