@@ -7,14 +7,14 @@ import java.util.UUID;
 public class GetCartItemResponseV1 {
 
     private UUID cartId;
-    private Integer userId;
+    private Integer userNo;
     private UUID storeId;
     private UUID productId;
     private int quantity;
 
     public GetCartItemResponseV1(Cart cart){
         this.cartId = cart.getCartId();
-        this.userId = cart.getUser().getUserNo();
+        this.userNo = cart.getUser().getUserNo();
         this.storeId = cart.getStore().getStoreId();
         this.productId = cart.getProduct().getProductId();
 
