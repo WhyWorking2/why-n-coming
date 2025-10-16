@@ -1,33 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>결제 테스트</title>
+    <title>Toss Test Payment</title>
 </head>
 <body>
-<h2>토스 결제 테스트</h2>
-<button onclick="startPayment()">결제하기</button>
 
+<h2>결제 정보 입력</h2>
+
+<form id="payment-form">
+    <button type="button" id="pay-button">결제 시작</button>
+</form>
+
+<script src="https://js.tosspayments.com/v1"></script>
 <script>
-    function startPayment() {
-        fetch('/v1/order/payments/ready', { // ✅ 백엔드 API 호출
-            method: 'POST'
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log("✅ 응답 데이터:", data);
-                if (data.checkoutUrl) {
-                    // ✅ Toss 결제창으로 리다이렉트
-                    window.location.href = data.checkoutUrl;
-                } else {
-                    alert('checkoutUrl이 응답에 없습니다. 백엔드 응답 확인 필요');
-                }
-            })
-            .catch(error => {
-                console.error("❌ 결제 요청 실패:", error);
-                alert('결제 요청 중 오류 발생');
-            });
-    }
+    const clientKey = "test_ck_4yKeq5bgrpXj5PPZznwxrGX0lzW6"; // 예: test_ck_********
+    const tossPayments = TossPayments(clientKey);
+
+    document.getElementById("pay-button").addEventListener("click", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get("orderId");
+
+        if (!orderId) {
+            alert("orderId가 없습니다.");
+            return;
+        }
+
+        const amount = 1000;
+
+        tossPayments.requestPayment("카드", {
+            amount: amount,
+            orderId: orderId,
+            orderName: "테스트 결제",
+            successUrl: `http://localhost:8080/v1/order/${orderId}/payment/success`,
+            failUrl: `http://localhost:8080/v1/order/${orderId}/payment/fail`
+        });
+    });
 </script>
+
 </body>
 </html>

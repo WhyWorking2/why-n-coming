@@ -29,7 +29,6 @@ spring:
       - optional:classpath:application-secret.yml
       - optional:classpath:application-jwt.yml
 
-
 security:
  bcrypt:
   cost: 10
