@@ -48,4 +48,13 @@ public class Cart extends BaseActorEntity {
         this.user = user;
         this.quantity = quantity;
     }
+
+    // update
+    public void updateQuantity(Integer quantity){
+        this.quantity = quantity;
+    }
+
+    public void addQuantity(Integer quantity){
+        this.quantity += quantity;
+    }
 }
