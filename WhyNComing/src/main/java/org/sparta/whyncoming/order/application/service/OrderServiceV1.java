@@ -8,7 +8,6 @@ import org.sparta.whyncoming.order.domain.enums.DeliveryStatus;
 import org.sparta.whyncoming.order.domain.enums.Status;
 import org.sparta.whyncoming.order.domain.repository.DeliveryRepository;
 import org.sparta.whyncoming.order.domain.repository.OrderRepository;
-import org.sparta.whyncoming.order.domain.repository.ReviewRepository;
 import org.sparta.whyncoming.order.presentation.dto.request.CreateOrderRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.request.CreatePaymentRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.*;
@@ -94,7 +93,7 @@ public class OrderServiceV1 {
                 address,
                 user,
                 DeliveryStatus.ACCEPTED,
-                req.getContactNumber()
+                address.getAddress()
         );
 
         deliveryRepository.save(delivery);

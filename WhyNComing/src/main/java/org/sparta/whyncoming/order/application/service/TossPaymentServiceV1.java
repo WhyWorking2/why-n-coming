@@ -1,19 +1,17 @@
 package org.sparta.whyncoming.order.application.service;
 
 import jakarta.transaction.Transactional;
-import org.apache.http.HttpHeaders;
+import org.springframework.http.HttpHeaders;
 import org.sparta.whyncoming.order.domain.entity.Delivery;
 import org.sparta.whyncoming.order.domain.entity.Order;
 import org.sparta.whyncoming.order.domain.enums.DeliveryStatus;
 import org.sparta.whyncoming.order.domain.repository.DeliveryRepository;
 import org.sparta.whyncoming.order.domain.repository.OrderRepository;
 import org.sparta.whyncoming.order.presentation.dto.request.TossConfirmRequestV1;
-import org.sparta.whyncoming.order.presentation.dto.response.OrderStatusResponseV1;
+import org.sparta.whyncoming.order.presentation.dto.response.PaymentInfoResponseV1;
 import org.sparta.whyncoming.order.presentation.dto.response.TossConfirmResponseV1;
-import org.sparta.whyncoming.store.domain.repository.StoreRepository;
 import org.sparta.whyncoming.user.domain.entity.Address;
 import org.sparta.whyncoming.user.domain.entity.User;
-import org.sparta.whyncoming.user.domain.repository.AddressRepository;
 import org.sparta.whyncoming.user.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -78,7 +76,7 @@ public class TossPaymentServiceV1 {
                 address,
                 user,
                 DeliveryStatus.ACCEPTED,
-                "010-1234-1234"
+                address.getAddress()
         );
 
         deliveryRepository.save(delivery);
@@ -90,5 +88,20 @@ public class TossPaymentServiceV1 {
     private Order findOrderOrThrow(UUID orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
+    }
+
+    @Transactional
+    public PaymentInfoResponseV1 getPaymentInfo(String paymentKey, UUID orderId) {
+        String authHeader = "Basic " + Base64.getEncoder()
+                .encodeToString((secretKey + ":").getBytes(StandardCharsets.UTF_8));
+
+        PaymentInfoResponseV1 paymentInfo = webClient.get()
+                .uri("/v1/payments/{paymentKey}", paymentKey)
+                .header(HttpHeaders.AUTHORIZATION, authHeader)
+                .retrieve()
+                .bodyToMono(PaymentInfoResponseV1.class)
+                .block(); // 테스트용 동기 호출
+
+        return paymentInfo;
     }
 }

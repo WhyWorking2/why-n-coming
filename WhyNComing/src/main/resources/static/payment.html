@@ -14,26 +14,27 @@
 
 <script src="https://js.tosspayments.com/v1"></script>
 <script>
-    const clientKey = "test_ck_4yKeq5bgrpXj5PPZznwxrGX0lzW6"; // 예: test_ck_********
+    const clientKey = ""; // 예: test_ck_********
     const tossPayments = TossPayments(clientKey);
 
     document.getElementById("pay-button").addEventListener("click", function () {
         const urlParams = new URLSearchParams(window.location.search);
         const orderId = urlParams.get("orderId");
+        const serverUrl = "http://localhost:8080"; // 서버 주소 바꿔야함
 
         if (!orderId) {
             alert("orderId가 없습니다.");
             return;
         }
 
-        const amount = 1000;
+        const amount = 1000; // 금액 dummy data
 
         tossPayments.requestPayment("카드", {
             amount: amount,
             orderId: orderId,
             orderName: "테스트 결제",
-            successUrl: `http://localhost:8080/v1/order/${orderId}/payment/success`,
-            failUrl: `http://localhost:8080/v1/order/${orderId}/payment/fail`
+            successUrl: `${serverUrl}/v1/order/${orderId}/payment/success`,
+            failUrl: `${serverUrl}/v1/order/${orderId}/payment/fail`
         });
     });
 </script>

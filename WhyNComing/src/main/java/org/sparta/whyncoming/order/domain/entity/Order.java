@@ -65,6 +65,7 @@ public class Order extends BaseActorEntity {
         this.delivery = delivery;
     }
 
+    // 기본 주문
     public void pay(String method, String requests) {
         if (this.status != Status.CREATED) {
             throw new IllegalStateException("이 상태에서는 결제를 할 수 없습니다.");
@@ -75,6 +76,7 @@ public class Order extends BaseActorEntity {
         this.status = Status.SUCCESS;
     }
 
+    // 토스 페이먼츠를 활용한 주문
     public void tossPay(String method, String requests) {
         this.paymentMethod = method;
         this.requests = requests;
