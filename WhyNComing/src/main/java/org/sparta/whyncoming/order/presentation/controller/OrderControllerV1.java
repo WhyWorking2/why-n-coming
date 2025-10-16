@@ -32,13 +32,13 @@ public class OrderControllerV1 {
         return ResponseUtil.success("주문 생성 성공", service.createOrder(req));
     }
 
-    @Operation(summary = "결제")
-    @PostMapping("/{orderId}/payment")
+    @Operation(summary = "결제(API만)")
+    @PostMapping("/{orderId}/payment-api")
     public ResponseEntity<ApiResult<OrderStatusResponseV1>> createPayment(
             @PathVariable UUID orderId,
             @RequestBody CreatePaymentRequestV1 req
     ) {
-        return ResponseUtil.success("주문 생성 성공", service.createPayment(orderId, req));
+        return ResponseUtil.success("결제 생성 성공", service.createPayment(orderId, req));
     }
 
     @Operation(summary = "주문 취소")
@@ -70,7 +70,7 @@ public class OrderControllerV1 {
     public ResponseEntity<ApiResult<GetOrderDetailResponseV1>> readOrderDetail(
             @PathVariable UUID orderId
     ) {
-        return ResponseUtil.success("주문 리스트 조회 성공", service.getOrderDetail(orderId));
+        return ResponseUtil.success("주문 상세 조회 성공", service.getOrderDetail(orderId));
     }
 
     @Operation(summary = "입점주 주문 리스트 조회")
@@ -78,7 +78,7 @@ public class OrderControllerV1 {
     public ResponseEntity<ApiResult<List<GetStoreOrderListResponseV1>>> getStoreOrderList(
             @RequestParam(required = false) UUID storeId
     ) {
-        return ResponseUtil.success("주문 리스트 조회 성공", service.getStoreOrderList(storeId));
+        return ResponseUtil.success("입점주 주문 리스트 조회 성공", service.getStoreOrderList(storeId));
     }
 
     @Operation(summary = "입점주 주문 상세 조회")
@@ -86,6 +86,6 @@ public class OrderControllerV1 {
     public ResponseEntity<ApiResult<GetStoreOrderDetailResponseV1>> getStoreOrderDetail(
             @PathVariable UUID orderId
     ) {
-        return ResponseUtil.success("주문 리스트 조회 성공", service.getStoreOrderDetail(orderId));
+        return ResponseUtil.success("입점주 주문 상세 조회 성공", service.getStoreOrderDetail(orderId));
     }
 }
