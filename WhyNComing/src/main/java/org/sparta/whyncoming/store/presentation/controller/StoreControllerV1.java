@@ -1,0 +1,46 @@
+package org.sparta.whyncoming.store.presentation.controller;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.sparta.whyncoming.common.exception.ErrorCode;
+import org.sparta.whyncoming.common.response.ApiResult;
+import org.sparta.whyncoming.common.response.ResponseUtil;
+import org.sparta.whyncoming.common.security.service.CustomUserDetailsInfo;
+import org.sparta.whyncoming.store.application.service.StoreServiceV1;
+import org.sparta.whyncoming.store.presentation.dto.request.CreateStoreRequestV1;
+import org.sparta.whyncoming.store.presentation.dto.response.CreateStoreResponseV1;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/v1/stores")
+@Tag(name = "Store", description = "Store 데이터 API")
+public class StoreControllerV1 {
+
+    private final StoreServiceV1 storeServiceV1;
+
+    public StoreControllerV1(StoreServiceV1 storeServiceV1) {
+        this.storeServiceV1 = storeServiceV1;
+    }
+
+    @Operation(summary = "가게 주인 입점사 추가")
+    @PreAuthorize( "hasRole('OWNER')")
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<ApiResult<CreateStoreResponseV1>> createStore(
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
+            @Valid @RequestPart("request") CreateStoreRequestV1 request,
+            @RequestPart(value = "storeLogo", required = false) MultipartFile storeLogo,
+            @RequestPart(value = "storeImage", required = false) List<MultipartFile> storeImages
+    )throws Exception {
+
+        CreateStoreResponseV1 response = storeServiceV1.createStore(userDetailsInfo, request, storeLogo, storeImages);
+        return ResponseUtil.success("생성 성공", response);
+    }
+}
