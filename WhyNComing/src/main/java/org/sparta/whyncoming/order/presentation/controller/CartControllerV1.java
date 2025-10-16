@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.sparta.whyncoming.common.response.ApiResult;
 import org.sparta.whyncoming.common.response.ResponseUtil;
-import org.sparta.whyncoming.common.security.UserDetailsImpl;
+import org.sparta.whyncoming.common.security.service.CustomUserDetailsInfo;
 import org.sparta.whyncoming.order.application.service.CartServiceV1;
 import org.sparta.whyncoming.order.presentation.dto.request.AddCartItemRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.request.UpdateCartItemRequestV1;
@@ -12,7 +12,6 @@ import org.sparta.whyncoming.order.presentation.dto.response.AddCartItemResponse
 import org.sparta.whyncoming.order.presentation.dto.response.DeleteCartItemResponseV1;
 import org.sparta.whyncoming.order.presentation.dto.response.GetCartItemResponseV1;
 import org.sparta.whyncoming.user.domain.entity.User;
-import org.sparta.whyncoming.user.domain.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -33,10 +32,10 @@ public class CartControllerV1 {
 
     @PostMapping("/products")
     public ResponseEntity<ApiResult<AddCartItemResponseV1>> insertItemToCart(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
             @Valid @RequestBody AddCartItemRequestV1 request
             ){
-        User user = userDetails.getUser();
+        User user = userDetailsInfo.getUser();
 
         AddCartItemResponseV1 responseDto = cartService.insertItemToCart(user, request);
 
@@ -45,9 +44,9 @@ public class CartControllerV1 {
 
     @GetMapping("/list")
     public ResponseEntity<ApiResult<List<GetCartItemResponseV1>>> getMyCartItems(
-            @AuthenticationPrincipal UserDetailsImpl userDetails
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo
     ){
-        User user = userDetails.getUser();
+        User user = userDetailsInfo.getUser();
 
         List<GetCartItemResponseV1> responseDtoList = cartService.getMyCartItems(user);
 
@@ -56,21 +55,21 @@ public class CartControllerV1 {
 
     @PutMapping("/products/{cartId}")
     public ResponseEntity<ApiResult<GetCartItemResponseV1>> updateCartItem(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
             @PathVariable UUID cartId,
             @Valid @RequestBody UpdateCartItemRequestV1 request
     ){
-        User user = userDetails.getUser();
+        User user = userDetailsInfo.getUser();
         GetCartItemResponseV1 responseDto = cartService.updateCartItem(user, cartId, request);
         return ResponseUtil.success(responseDto);
     }
 
     @DeleteMapping("/products/{cartId}")
     public ResponseEntity<ApiResult<DeleteCartItemResponseV1>> deleteCartItem (
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
             @PathVariable UUID cartId
     ){
-        User user = userDetails.getUser();
+        User user = userDetailsInfo.getUser();
         UUID deletedCartId = cartService.deleteCartItem(user, cartId);
         DeleteCartItemResponseV1 responseDto = new DeleteCartItemResponseV1(deletedCartId);
 
