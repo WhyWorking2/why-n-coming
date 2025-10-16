@@ -1,7 +1,7 @@
 package org.sparta.whyncoming.config;
 
 import lombok.RequiredArgsConstructor;
-import org.sparta.whyncoming.common.security.UserDetailsServiceImpl;
+import org.sparta.whyncoming.common.security.service.UserDetailsServiceImpl;
 import org.sparta.whyncoming.common.security.filter.JwtAuthenticationFilter;
 import org.sparta.whyncoming.common.security.filter.JwtAuthorizationFilter;
 import org.sparta.whyncoming.common.security.jwt.JwtUtil;
