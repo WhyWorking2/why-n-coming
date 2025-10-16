@@ -50,10 +50,9 @@ public class Store extends BaseActorEntity {
     @Column(nullable = false)
     private Integer deliveryTip = 0;
 
-    @Column(nullable = false, precision = 2, scale = 1)
+    @Column(precision = 2, scale = 1)
     private BigDecimal storeRating = BigDecimal.ZERO;
 
-    @Column(nullable = false)
     private Integer storeReviewCount = 0;
 
     @Column(length = 255)

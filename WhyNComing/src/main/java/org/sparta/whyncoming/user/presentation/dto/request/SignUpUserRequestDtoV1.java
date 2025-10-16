@@ -4,33 +4,44 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import lombok.Setter;
 import org.sparta.whyncoming.user.domain.enums.UserRoleEnum;
 
 @Getter
-@Setter
 public class SignUpUserRequestDtoV1 {
 
     @Schema(description = "userId", example = "testId")
     @NotBlank
-    private String userId;
+    private final String userId;
+
     @Schema(description = "userPw", example = "1234")
     @NotBlank
-    private String password;
+    private final String password;
+
     @Schema(description = "유저 명", example = "테스터1")
     @NotBlank
-    private String userName;
+    private final String userName;
+
     @Schema(description = "userPhone", example = "01012341234")
-    private String userPhone;
+    @NotBlank
+    private final String userPhone;
+
     @Schema(description = "userEmail", example = "email@email.com")
     @Email
     @NotBlank
-    private String email;
+    private final String email;
+
     @Schema(description = "권한", example = "CUSTOMER")
-    private UserRoleEnum role = UserRoleEnum.CUSTOMER;
+    private final UserRoleEnum role;
 
-    private String adminToken = "";
+    private final String adminToken;
 
-
-
+    public SignUpUserRequestDtoV1(String userId, String password, String userName, String userPhone, String email, UserRoleEnum role, String adminToken) {
+        this.userId = userId;
+        this.password = password;
+        this.userName = userName;
+        this.userPhone = userPhone;
+        this.email = email;
+        this.role = role == null ? UserRoleEnum.CUSTOMER : role;
+        this.adminToken = adminToken == null ? "" : adminToken;
+    }
 }

@@ -1,6 +1,7 @@
 package org.sparta.whyncoming.user.domain.entity;
 
 import jakarta.persistence.*;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sparta.whyncoming.common.entity.BaseTimeEntity;
@@ -87,7 +88,20 @@ public class User extends BaseTimeEntity {
         this.userPhone = userPhone;
         this.email = email;
         this.role = role;
+    }
 
+    // 명시적 변경 메서드
+    public void updatePassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+    public void updateName(String name) {
+        this.userName = name;
+    }
+    public void updatePhone(String userPhone) {
+        this.userPhone = userPhone;
+    }
+    public void updateEmail(String newEmail) {
+        this.email = newEmail;
     }
 }
 

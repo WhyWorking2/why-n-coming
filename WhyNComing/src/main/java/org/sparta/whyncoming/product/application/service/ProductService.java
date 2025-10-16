@@ -1,6 +1,7 @@
 package org.sparta.whyncoming.product.application.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.sparta.whyncoming.common.exception.BusinessException;
 import org.sparta.whyncoming.common.exception.ErrorCode;
 import org.sparta.whyncoming.product.domain.entity.Category;
 import org.sparta.whyncoming.product.domain.entity.Product;
@@ -8,6 +9,8 @@ import org.sparta.whyncoming.product.domain.repository.CategoryRepository;
 import org.sparta.whyncoming.product.domain.repository.ProductRepository;
 import org.sparta.whyncoming.product.presentation.dto.request.ProductRequestDto;
 import org.sparta.whyncoming.product.presentation.dto.request.ProductUpdateRequestDto;
+import org.sparta.whyncoming.product.presentation.dto.response.ProductByCategoryResponseDto;
+import org.sparta.whyncoming.product.presentation.dto.response.ProductDetailResponseDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductResponseDto;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.store.domain.repository.StoreRepository;
@@ -17,9 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import static org.sparta.whyncoming.common.exception.ErrorCode.INVALID_REQUEST;
-import static org.sparta.whyncoming.common.exception.ErrorCode.NOT_FOUND;
 
 
 @Slf4j
@@ -46,7 +46,7 @@ public class ProductService {
 
         //입점사 조회
         Store store = storeRepository.findByStoreName(requestDto.getStoreName())
-                .orElseThrow(() -> new IllegalArgumentException(requestDto.getStoreName() + " : " + NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND ,requestDto.getStoreName()));
 
         //카테고리 리스트 생성
         List<Category> categoryList = createCategoryList(requestDto.getCategoryNames());
@@ -68,9 +68,27 @@ public class ProductService {
      */
     @Transactional(readOnly = true)
     public List<ProductResponseDto> readAllProducts() {
-
         return productRepository.findAllWithStore().stream()
                 .map(ProductResponseDto::new).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductByCategoryResponseDto> readProductsByCategory(String categoryName) {
+        return productRepository.findAllByCategoryName(categoryName).stream()
+                .map(product -> new ProductByCategoryResponseDto(categoryName,product)).toList();
+    }
+
+    /**
+     * 상품 상세 조회
+     * @param productId 상세조회할 상품의 UUID
+     * @return 상세조회된 상품의 내역
+     */
+    @Transactional(readOnly = true)
+    public ProductDetailResponseDto getProductDetail(UUID productId) {
+        Product product = productRepository.findByProductId(productId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, ": 상품 없음"));
+
+        return new ProductDetailResponseDto(product);
     }
 
     /**
@@ -81,7 +99,7 @@ public class ProductService {
      */
     public ProductResponseDto updateProduct(UUID productId, ProductUpdateRequestDto requestDto) {
         Product product = productRepository.findByProductId(productId)
-                .orElseThrow(() -> new IllegalArgumentException("상품 없음 : " + requestDto.getProductName()));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND ,requestDto.getProductName()));
 
         product.update(
                 requestDto.getProductName(),
@@ -98,10 +116,9 @@ public class ProductService {
     //TODO 반환값 String 하드코딩 대신 쓸 타입을 정해야 하고, 이미 삭제된 상품에 대한 예외처리가 필요함
     public String deleteProduct(UUID productId) {
         Product product = productRepository.findByProductId(productId)
-                .orElseThrow(() -> new IllegalArgumentException(String.valueOf(NOT_FOUND)));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
         product.delete();
 
-        log.info("ProductService.deleteProduct() - after delete(), product: {}", product);
 
         //TODO 이 부분 트랜잭션 영속성 있어서 save 없어도 진행 될 수도 있을 거 같아서 없앨지 고민중입니다.
         Product deletedProduct = productRepository.save(product);
@@ -116,13 +133,13 @@ public class ProductService {
 
         //카테고리 검증
         if (categoryName == null || categoryName.isEmpty()) {
-            throw new IllegalArgumentException("카테고리 : " + INVALID_REQUEST);
+            throw new BusinessException(ErrorCode.INVALID_REQUEST, " : 카테고리");
         }
 
         //카테고리 조회
         List<Category> categories = categoryRepository.findAllByCategoryNameIn(categoryName);
         if (categories.size() != categoryName.size()) {
-            throw new IllegalArgumentException("카테고리 : " + NOT_FOUND);
+            throw new BusinessException(ErrorCode.NOT_FOUND, " : 카테고리");
         }
 
         //카테고리에 대한 리스트 생성

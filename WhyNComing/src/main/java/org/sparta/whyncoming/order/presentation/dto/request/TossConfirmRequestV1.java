@@ -1,4 +1,4 @@
-package org.sparta.whyncoming.order.presentation.dto.reqeust;
+package org.sparta.whyncoming.order.presentation.dto.request;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
