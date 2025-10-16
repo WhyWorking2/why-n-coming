@@ -1,15 +1,14 @@
 package org.sparta.whyncoming.store.application.service;
 
-import com.amazonaws.services.kms.model.NotFoundException;
 import jakarta.transaction.Transactional;
 import org.sparta.whyncoming.common.s3.S3Util;
 import org.sparta.whyncoming.common.security.service.CustomUserDetailsInfo;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.store.domain.entity.StoreImage;
 import org.sparta.whyncoming.store.domain.repository.StoreRepository;
-import org.sparta.whyncoming.store.presentation.dto.request.CreateStoreRequestV1;
-import org.sparta.whyncoming.store.presentation.dto.response.CreateStoreResponseV1;
-import org.sparta.whyncoming.store.presentation.dto.response.ReadStoreResponseV1;
+import org.sparta.whyncoming.store.presentation.dto.request.CreateStoreOwnerRequestV1;
+import org.sparta.whyncoming.store.presentation.dto.response.CreateStoreOwnerResponseV1;
+import org.sparta.whyncoming.store.presentation.dto.response.ReadStoreOwnerResponseV1;
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,20 +19,20 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Service
-public class StoreServiceV1 {
+public class StoreOwnerServiceV1 {
 
     private final StoreRepository storeRepository;
     private final S3Util s3Util;
 
 
-    public StoreServiceV1(StoreRepository storeRepository, S3Util s3Util) {
+    public StoreOwnerServiceV1(StoreRepository storeRepository, S3Util s3Util) {
         this.storeRepository = storeRepository;
         this.s3Util = s3Util;
     }
 
     // 사장 본인의 모든 활성 매장 조회
     @Transactional
-    public List<ReadStoreResponseV1> getMyStores(CustomUserDetailsInfo userDetailsInfo) {
+    public List<ReadStoreOwnerResponseV1> getMyStores(CustomUserDetailsInfo userDetailsInfo) {
         Integer ownerNo = userDetailsInfo.getUserNo();
         return storeRepository.findAllByUser_UserNoAndDeletedDateIsNull(ownerNo)
                 .stream()
@@ -43,7 +42,7 @@ public class StoreServiceV1 {
 
     // 사장 본인의 특정 활성 매장 상세 조회
     @Transactional
-    public ReadStoreResponseV1 getMyStoreDetail(CustomUserDetailsInfo userDetailsInfo, UUID storeId) {
+    public ReadStoreOwnerResponseV1 getMyStoreDetail(CustomUserDetailsInfo userDetailsInfo, UUID storeId) {
         Integer ownerNo = userDetailsInfo.getUserNo();
 
         Store store = storeRepository.findByStoreIdAndUser_UserNoAndDeletedDateIsNull(storeId, ownerNo)
@@ -55,10 +54,10 @@ public class StoreServiceV1 {
 
     // 가게 주인 입점사 추가
     @Transactional
-    public CreateStoreResponseV1 createStore(CustomUserDetailsInfo userDetailsInfo,
-                                             CreateStoreRequestV1 request,
-                                             MultipartFile storeLogo,
-                                             List<MultipartFile> storeImages) throws Exception{
+    public CreateStoreOwnerResponseV1 createStore(CustomUserDetailsInfo userDetailsInfo,
+                                                  CreateStoreOwnerRequestV1 request,
+                                                  MultipartFile storeLogo,
+                                                  List<MultipartFile> storeImages) throws Exception{
 
         User user = userDetailsInfo.getUser();
 
@@ -102,7 +101,7 @@ public class StoreServiceV1 {
         Store savedStore = storeRepository.save(store);
 
 
-        return new CreateStoreResponseV1(
+        return new CreateStoreOwnerResponseV1(
                 savedStore.getStoreId(),
                 savedStore.getStoreName(),
                 savedStore.getStoreLogoUrl(),
@@ -114,11 +113,11 @@ public class StoreServiceV1 {
 
     // 가게 주인 입점사 수정
     @Transactional
-    public CreateStoreResponseV1 updateStore(CustomUserDetailsInfo userDetailsInfo,
-                                             UUID storeId,
-                                             CreateStoreRequestV1 request,
-                                             MultipartFile storeLogo,
-                                             List<MultipartFile> storeImages) throws Exception {
+    public CreateStoreOwnerResponseV1 updateStore(CustomUserDetailsInfo userDetailsInfo,
+                                                  UUID storeId,
+                                                  CreateStoreOwnerRequestV1 request,
+                                                  MultipartFile storeLogo,
+                                                  List<MultipartFile> storeImages) throws Exception {
 
         User user = userDetailsInfo.getUser();
 
@@ -180,7 +179,7 @@ public class StoreServiceV1 {
                 ? null
                 : updated.getStoreImages().get(0).getStoreImageUrl();
 
-        return new CreateStoreResponseV1(
+        return new CreateStoreOwnerResponseV1(
                 updated.getStoreId(),
                 updated.getStoreName(),
                 updated.getStoreLogoUrl(),
@@ -206,8 +205,8 @@ public class StoreServiceV1 {
     }
 
     // 조회 공통 메서드
-    private ReadStoreResponseV1 toReadResponse(Store store) {
-        return new ReadStoreResponseV1(
+    private ReadStoreOwnerResponseV1 toReadResponse(Store store) {
+        return new ReadStoreOwnerResponseV1(
                 store.getStoreId(),
                 store.getStoreName(),
                 store.getStoreLogoUrl(),

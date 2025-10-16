@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class UpdateStoreRequestV1 {
+public class UpdateStoreOwnerRequestV1 {
 
     @NotBlank
     private String storeName;

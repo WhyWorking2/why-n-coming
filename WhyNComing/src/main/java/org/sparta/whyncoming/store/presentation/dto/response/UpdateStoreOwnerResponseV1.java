@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.UUID;
 
 @Getter
-public class UpdateStoreResponseV1 {
+public class UpdateStoreOwnerResponseV1 {
 
     private final UUID storeId;
     private final String storeName;
@@ -16,7 +16,7 @@ public class UpdateStoreResponseV1 {
     private final String operationHours;
     private final String deliveryAddress;
 
-    public UpdateStoreResponseV1(UUID storeId, String storeName, String storeLogoUrl, String storeImageUrl, Integer minDeliveryPrice, Integer deliveryTip, String operationHours, String deliveryAddress) {
+    public UpdateStoreOwnerResponseV1(UUID storeId, String storeName, String storeLogoUrl, String storeImageUrl, Integer minDeliveryPrice, Integer deliveryTip, String operationHours, String deliveryAddress) {
         this.storeId = storeId;
         this.storeName = storeName;
         this.storeLogoUrl = storeLogoUrl;

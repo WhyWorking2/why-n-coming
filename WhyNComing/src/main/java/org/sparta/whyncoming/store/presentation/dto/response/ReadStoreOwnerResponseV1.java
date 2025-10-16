@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Getter
-public class ReadStoreResponseV1 {
+public class ReadStoreOwnerResponseV1 {
 
     private final UUID storeId;
     private final String storeName;
@@ -17,7 +17,7 @@ public class ReadStoreResponseV1 {
     private final String operationHours;
     private final String deliveryAddress;
 
-    public ReadStoreResponseV1(UUID storeId, String storeName, String storeLogoUrl, List<String> storeImageUrls, Integer minDeliveryPrice, Integer deliveryTip, String operationHours, String deliveryAddress) {
+    public ReadStoreOwnerResponseV1(UUID storeId, String storeName, String storeLogoUrl, List<String> storeImageUrls, Integer minDeliveryPrice, Integer deliveryTip, String operationHours, String deliveryAddress) {
         this.storeId = storeId;
         this.storeName = storeName;
         this.storeLogoUrl = storeLogoUrl;
