@@ -75,6 +75,12 @@ public class Order extends BaseActorEntity {
         this.status = Status.SUCCESS;
     }
 
+    public void tossPay(String method, String requests) {
+        this.paymentMethod = method;
+        this.requests = requests;
+        this.status = Status.SUCCESS;
+    }
+
     public void cancel() {
         this.status = Status.CANCELED;
     }

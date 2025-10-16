@@ -48,17 +48,17 @@ public class TossPaymentServiceV1 {
     @Transactional
     public TossConfirmResponseV1 confirmPayment(TossConfirmRequestV1 req) {
 
-        Order order = findOrderOrThrow(req.getOrderId());
-        order.pay("CARD", req.getRequests());
+        UUID orderId = UUID.fromString(req.getOrderId());
+        Order order = findOrderOrThrow(orderId);
+        order.tossPay("CARD", "많이 주세요~");
         Integer totalPrice = order.getTotalPrice();
-        req.updateTotalPrice(totalPrice);
 
         // Toss Payment 코드
         String authHeader = "Basic " + Base64.getEncoder()
                 .encodeToString((secretKey + ":").getBytes(StandardCharsets.UTF_8));
 
         TossConfirmResponseV1 tossResponse =  webClient.post()
-                .uri("/v1/order/payment/confirm")
+                .uri("/v1/payments/confirm")
                 .header(HttpHeaders.AUTHORIZATION, authHeader)
                 .bodyValue(req)
                 .retrieve()
@@ -78,7 +78,7 @@ public class TossPaymentServiceV1 {
                 address,
                 user,
                 DeliveryStatus.ACCEPTED,
-                req.getContactNumber()
+                "010-1234-1234"
         );
 
         deliveryRepository.save(delivery);

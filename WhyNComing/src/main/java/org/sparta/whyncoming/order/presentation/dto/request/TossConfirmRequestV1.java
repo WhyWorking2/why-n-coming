@@ -9,19 +9,12 @@ import java.util.UUID;
 @NoArgsConstructor
 public class TossConfirmRequestV1 {
     private String paymentKey;
-    private UUID orderId;
-    private Integer totalPrice;
-    private String contactNumber;
-    private String requests;
+    private String orderId;
+    private Integer amount;
 
-    public TossConfirmRequestV1(String paymentKey, UUID orderId, String contactNumber, String requests) {
+    public TossConfirmRequestV1(String paymentKey, String orderId, Integer amount) {
         this.paymentKey = paymentKey;
         this.orderId = orderId;
-        this.contactNumber = contactNumber;
-        this.requests = requests;
-    }
-
-    public void updateTotalPrice(Integer totalPrice) {
-        this.totalPrice = totalPrice;
+        this.amount = amount;
     }
 }
