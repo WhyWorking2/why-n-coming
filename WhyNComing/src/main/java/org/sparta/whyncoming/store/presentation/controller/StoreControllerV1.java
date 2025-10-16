@@ -3,15 +3,15 @@ package org.sparta.whyncoming.store.presentation.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.sparta.whyncoming.common.exception.ErrorCode;
 import org.sparta.whyncoming.common.response.ApiResult;
 import org.sparta.whyncoming.common.response.ResponseUtil;
 import org.sparta.whyncoming.common.security.service.CustomUserDetailsInfo;
 import org.sparta.whyncoming.store.application.service.StoreServiceV1;
 import org.sparta.whyncoming.store.presentation.dto.request.CreateStoreRequestV1;
 import org.sparta.whyncoming.store.presentation.dto.response.CreateStoreResponseV1;
-import org.springframework.http.MediaType;
+import org.sparta.whyncoming.store.presentation.dto.response.ReadStoreResponseV1;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +29,27 @@ public class StoreControllerV1 {
 
     public StoreControllerV1(StoreServiceV1 storeServiceV1) {
         this.storeServiceV1 = storeServiceV1;
+    }
+
+    @Operation(summary = "사장 본인의 모든 입점사 조회 (삭제 제외)")
+    @PreAuthorize("hasRole('OWNER')")
+    @GetMapping()
+    public ResponseEntity<ApiResult<List<ReadStoreResponseV1>>> getMyStores(
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo
+    ) {
+        List<ReadStoreResponseV1> result = storeServiceV1.getMyStores(userDetailsInfo);
+        return ResponseUtil.success("조회 성공", result);
+    }
+
+    @Operation(summary = "사장 본인의 특정 입점사 상세 조회 (삭제 제외)")
+    @PreAuthorize("hasRole('OWNER')")
+    @GetMapping("/{storeId}")
+    public ResponseEntity<ApiResult<ReadStoreResponseV1>> getMyStoreDetail(
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
+            @PathVariable UUID storeId
+    ) {
+        ReadStoreResponseV1 result = storeServiceV1.getMyStoreDetail(userDetailsInfo, storeId);
+        return ResponseUtil.success("조회 성공", result);
     }
 
     @Operation(summary = "가게 주인 입점사 추가")

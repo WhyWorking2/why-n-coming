@@ -1,5 +1,6 @@
 package org.sparta.whyncoming.store.application.service;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import jakarta.transaction.Transactional;
 import org.sparta.whyncoming.common.s3.S3Util;
 import org.sparta.whyncoming.common.security.service.CustomUserDetailsInfo;
@@ -8,12 +9,14 @@ import org.sparta.whyncoming.store.domain.entity.StoreImage;
 import org.sparta.whyncoming.store.domain.repository.StoreRepository;
 import org.sparta.whyncoming.store.presentation.dto.request.CreateStoreRequestV1;
 import org.sparta.whyncoming.store.presentation.dto.response.CreateStoreResponseV1;
+import org.sparta.whyncoming.store.presentation.dto.response.ReadStoreResponseV1;
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -28,41 +31,27 @@ public class StoreServiceV1 {
         this.s3Util = s3Util;
     }
 
-    // 가게 주인 입점사 전체 조회
+    // 사장 본인의 모든 활성 매장 조회
     @Transactional
-    public List<CreateStoreResponseV1> getAllActiveStores() {
-        return storeRepository.findAllByDeletedDateIsNull()
+    public List<ReadStoreResponseV1> getMyStores(CustomUserDetailsInfo userDetailsInfo) {
+        Integer ownerNo = userDetailsInfo.getUserNo();
+        return storeRepository.findAllByUser_UserNoAndDeletedDateIsNull(ownerNo)
                 .stream()
-                .filter(store -> !store.isDeleted())
-                .map(store -> new CreateStoreResponseV1(
-                        store.getStoreId(),
-                        store.getStoreName(),
-                        store.getStoreLogoUrl(),
-                        store.getStoreImages().isEmpty() ? null : store.getStoreImages().get(0).getStoreImageUrl(),
-                        store.getMinDeliveryPrice(),
-                        store.getDeliveryTip()
-                ))
+                .map(this::toReadResponse)
                 .toList();
     }
 
+    // 사장 본인의 특정 활성 매장 상세 조회
     @Transactional
-    public CreateStoreResponseV1 getStoreById(Long storeId) {
-        Store store = storeRepository.findByStoreIdAndDeletedDateIsNull(storeId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 가게를 찾을 수 없습니다."));
+    public ReadStoreResponseV1 getMyStoreDetail(CustomUserDetailsInfo userDetailsInfo, UUID storeId) {
+        Integer ownerNo = userDetailsInfo.getUserNo();
 
-        if (store.isDeleted()) {
-            throw new IllegalStateException("삭제된 가게입니다.");
-        }
+        Store store = storeRepository.findByStoreIdAndUser_UserNoAndDeletedDateIsNull(storeId, ownerNo)
+                .orElseThrow(() -> new IllegalArgumentException("해당 매장을 찾을 수 없거나 삭제되었습니다."));
 
-        return new CreateStoreResponseV1(
-                store.getStoreId(),
-                store.getStoreName(),
-                store.getStoreLogoUrl(),
-                store.getStoreImages().isEmpty() ? null : store.getStoreImages().get(0).getImageUrl(),
-                store.getMinDeliveryPrice(),
-                store.getDeliveryTip()
-        );
+        return toReadResponse(store);
     }
+
 
     // 가게 주인 입점사 추가
     @Transactional
@@ -214,5 +203,29 @@ public class StoreServiceV1 {
 
         // ✅ 소프트 삭제 처리
         store.deleteSoft();
+    }
+
+    // 조회 공통 메서드
+    private ReadStoreResponseV1 toReadResponse(Store store) {
+        return new ReadStoreResponseV1(
+                store.getStoreId(),
+                store.getStoreName(),
+                store.getStoreLogoUrl(),
+                getAllImageUrls(store),
+                store.getMinDeliveryPrice(),
+                store.getDeliveryTip(),
+                store.getOperationHours(),
+                store.getDeliveryAddress()
+        );
+    }
+
+    private List<String> getAllImageUrls(Store store) {
+        if (store.getStoreImages() == null || store.getStoreImages().isEmpty()) {
+            return List.of();
+        }
+        return store.getStoreImages().stream()
+                .map(StoreImage::getStoreImageUrl)
+                .filter(Objects::nonNull)
+                .toList();
     }
 }

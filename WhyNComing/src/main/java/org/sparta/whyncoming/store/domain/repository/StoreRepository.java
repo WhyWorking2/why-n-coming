@@ -15,6 +15,9 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findAllByDeletedDateIsNull();
     Optional<Store> findByStoreIdAndDeletedDateIsNull(UUID storeId);
 
+    List<Store> findAllByUser_UserNoAndDeletedDateIsNull(Integer userNo);
+    Optional<Store> findByStoreIdAndUser_UserNoAndDeletedDateIsNull(UUID storeId, Integer userId);
+
     // 관리자 전용 (삭제 포함)
     @Query("SELECT s FROM Store s")
     List<Store> findAllIncludingDeleted();
