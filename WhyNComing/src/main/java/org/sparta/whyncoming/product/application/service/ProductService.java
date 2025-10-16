@@ -12,6 +12,7 @@ import org.sparta.whyncoming.product.presentation.dto.request.ProductRequestDto;
 import org.sparta.whyncoming.product.presentation.dto.request.ProductUpdateRequestDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductByCategoryResponseDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductDetailResponseDto;
+import org.sparta.whyncoming.product.presentation.dto.response.ProductActiveResponseDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductResponseDto;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.store.domain.repository.StoreRepository;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -48,7 +48,7 @@ public class ProductService {
      * @param requestDto 생성된 상품 정보
      * @return 상품ResponseDto 생성자
      */
-    public ProductResponseDto creatProduct(ProductRequestDto requestDto, MultipartFile productImg) {
+    public ProductActiveResponseDto creatProduct(ProductRequestDto requestDto, MultipartFile productImg) {
         String productImgUrl = null;
 
         if(productImg != null && !productImg.isEmpty()) {
@@ -69,15 +69,20 @@ public class ProductService {
         //상품 생성 및 저장
         Product product = productRepository.save(new Product(store, requestDto.getProductName(), requestDto.getDescription(), requestDto.getPrice(), productImgUrl, categoryList));
 
-
-
-        return new ProductResponseDto(product);
+        return new ProductActiveResponseDto(product);
     }
 
     /**
-     * 상품 전체 조회
-     * TODO 카테고리 리스트에 대한 문제, 소프트 딜리트 조회 안되는 문제(DB에는 반영이 됨), 유저 정보에 대한 문제 미해결
-     * 이후 코드 리팩토링 하면서 해결할 예정입니다.
+     * 상품 전체 조회 - 유효한 상품만
+     * @return 유효한 상품 전체 리스트 반환
+     */
+    @Transactional(readOnly = true)
+    public List<ProductActiveResponseDto> readAllActiveProducts() {
+        return productRepository.findAllActiveWithStore();
+    }
+
+    /**
+     * 상품 전체 조회 - 삭제된 상품 포함
      * @return 상품 전체 리스트 반환
      */
     @Transactional(readOnly = true)
@@ -105,6 +110,10 @@ public class ProductService {
         Product product = productRepository.findByProductId(productId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, ": 상품 없음"));
 
+        if (product.isDeleted()) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, ": 상품 조회 불가");
+        }
+
         return new ProductDetailResponseDto(product);
     }
 
@@ -114,7 +123,7 @@ public class ProductService {
      * @param requestDto 변경할 상품정보
      * @return 변경된 상품정보
      */
-    public ProductResponseDto updateProduct(UUID productId, ProductUpdateRequestDto requestDto) {
+    public ProductActiveResponseDto updateProduct(UUID productId, ProductUpdateRequestDto requestDto) {
         Product product = productRepository.findByProductId(productId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND ,requestDto.getProductName()));
 
@@ -125,7 +134,7 @@ public class ProductService {
                 requestDto.getProductPictureUrl()
         );
 
-        return new ProductResponseDto(product);
+        return new ProductActiveResponseDto(product);
     }
 
     //TODO 반환값 String 하드코딩 대신 쓸 타입을 정해야 하고, 이미 삭제된 상품에 대한 예외처리가 필요함
@@ -158,5 +167,6 @@ public class ProductService {
         categoryList.addAll(categories);
         return categoryList;
     }
+
 
 }
