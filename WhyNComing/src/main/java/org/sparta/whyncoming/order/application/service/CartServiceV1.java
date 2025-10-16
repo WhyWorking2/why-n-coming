@@ -4,9 +4,9 @@ import org.sparta.whyncoming.common.exception.BusinessException;
 import org.sparta.whyncoming.common.exception.ErrorCode;
 import org.sparta.whyncoming.order.domain.entity.Cart;
 import org.sparta.whyncoming.order.domain.repository.CartRepository;
-import org.sparta.whyncoming.order.presentation.dto.request.AddCartItemRequestV1;
+import org.sparta.whyncoming.order.presentation.dto.request.InsertCartItemRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.request.UpdateCartItemRequestV1;
-import org.sparta.whyncoming.order.presentation.dto.response.AddCartItemResponseV1;
+import org.sparta.whyncoming.order.presentation.dto.response.InsertCartItemResponseV1;
 import org.sparta.whyncoming.order.presentation.dto.response.GetCartItemResponseV1;
 import org.sparta.whyncoming.product.domain.entity.Product;
 import org.sparta.whyncoming.product.domain.repository.ProductRepository;
@@ -35,7 +35,7 @@ public class CartServiceV1 {
     }
 
     @Transactional
-    public AddCartItemResponseV1 insertItemToCart(User user, AddCartItemRequestV1 request){
+    public InsertCartItemResponseV1 insertItemToCart(User user, InsertCartItemRequestV1 request){
         Store store = storeRepository.findByStoreId(request.getStoreId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "가게를 찾을 수 없습니다."));
 
@@ -49,7 +49,7 @@ public class CartServiceV1 {
             // 있으면 수량만 변경
             Cart cart = hasCartItem.get();
             cart.addQuantity(request.getQuantity());
-            return new AddCartItemResponseV1(cart);
+            return new InsertCartItemResponseV1(cart);
         }else{
             Cart newCartItem = new Cart(
                     store,
@@ -59,7 +59,7 @@ public class CartServiceV1 {
                     request.getQuantity()
             );
             Cart savedCart = cartRepository.save(newCartItem);
-            return new AddCartItemResponseV1(savedCart);
+            return new InsertCartItemResponseV1(savedCart);
         }
     }
 

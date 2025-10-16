@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
-public class AddCartItemResponseV1 {
+public class InsertCartItemResponseV1 {
     private UUID cartId;
     private Integer userNo;
     private UUID storeId;
@@ -16,7 +16,7 @@ public class AddCartItemResponseV1 {
     private Integer quantity;
     //private String message =  "장바구니에 상품이 성공적으로 추가되었습니다.";
 
-    public AddCartItemResponseV1(Cart cart) {
+    public InsertCartItemResponseV1(Cart cart) {
         this.cartId = cart.getCartId();
         this.userNo = cart.getUser().getUserNo();
         this.storeId = cart.getStore().getStoreId();

@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Getter
 @NoArgsConstructor
-public class AddCartItemRequestV1 {
+public class InsertCartItemRequestV1 {
 
     private UUID storeId;
     private UUID productId;

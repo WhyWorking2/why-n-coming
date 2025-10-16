@@ -6,9 +6,9 @@ import org.sparta.whyncoming.common.response.ApiResult;
 import org.sparta.whyncoming.common.response.ResponseUtil;
 import org.sparta.whyncoming.common.security.service.CustomUserDetailsInfo;
 import org.sparta.whyncoming.order.application.service.CartServiceV1;
-import org.sparta.whyncoming.order.presentation.dto.request.AddCartItemRequestV1;
+import org.sparta.whyncoming.order.presentation.dto.request.InsertCartItemRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.request.UpdateCartItemRequestV1;
-import org.sparta.whyncoming.order.presentation.dto.response.AddCartItemResponseV1;
+import org.sparta.whyncoming.order.presentation.dto.response.InsertCartItemResponseV1;
 import org.sparta.whyncoming.order.presentation.dto.response.DeleteCartItemResponseV1;
 import org.sparta.whyncoming.order.presentation.dto.response.GetCartItemResponseV1;
 import org.sparta.whyncoming.user.domain.entity.User;
@@ -31,13 +31,13 @@ public class CartControllerV1 {
     }
 
     @PostMapping("/products")
-    public ResponseEntity<ApiResult<AddCartItemResponseV1>> insertItemToCart(
+    public ResponseEntity<ApiResult<InsertCartItemResponseV1>> insertItemToCart(
             @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
-            @Valid @RequestBody AddCartItemRequestV1 request
+            @Valid @RequestBody InsertCartItemRequestV1 request
             ){
         User user = userDetailsInfo.getUser();
 
-        AddCartItemResponseV1 responseDto = cartService.insertItemToCart(user, request);
+        InsertCartItemResponseV1 responseDto = cartService.insertItemToCart(user, request);
 
         return ResponseUtil.success(responseDto);
     }
