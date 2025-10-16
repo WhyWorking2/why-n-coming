@@ -7,7 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.sparta.whyncoming.common.security.UserDetailsServiceImpl;
+import org.sparta.whyncoming.common.security.service.UserDetailsServiceImpl;
 import org.sparta.whyncoming.common.security.jwt.JwtUtil;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
