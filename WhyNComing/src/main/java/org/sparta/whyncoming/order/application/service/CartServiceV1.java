@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -41,19 +42,25 @@ public class CartServiceV1 {
         Product product = productRepository.findByProductId(request.getProductId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "상품을 찾을 수 없습니다."));
 
-        // TODO: 이미 있는 상품 -> 수량만 변경
+        // 이미 있는 상품 -> 수량만 변경
+        Optional<Cart> hasCartItem = cartRepository.findByUserAndProduct(user, product);
 
-        Cart newCartItem = new Cart(
-                store,
-                product,
-                null,
-                user,
-                request.getQuantity()
-        );
-
-        Cart savedCart = cartRepository.save(newCartItem);
-
-        return new AddCartItemResponseV1(savedCart);
+        if (hasCartItem.isPresent()){
+            // 있으면 수량만 변경
+            Cart cart = hasCartItem.get();
+            cart.addQuantity(request.getQuantity());
+            return new AddCartItemResponseV1(cart);
+        }else{
+            Cart newCartItem = new Cart(
+                    store,
+                    product,
+                    null,
+                    user,
+                    request.getQuantity()
+            );
+            Cart savedCart = cartRepository.save(newCartItem);
+            return new AddCartItemResponseV1(savedCart);
+        }
     }
 
     @Transactional
