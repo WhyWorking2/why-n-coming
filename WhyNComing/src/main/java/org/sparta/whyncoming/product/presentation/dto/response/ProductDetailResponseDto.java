@@ -25,10 +25,11 @@ public class ProductDetailResponseDto {
     private Integer createdBy;
     private Integer modifiedBy;
 
+
     /**
      * 상품 상세 조회 시 사용될 Dto
      * 상품 상세 조회 시는 무조건 삭제된 값이 조회되지 않게(손님용)으로 개발
-     * @param product 상세 조회할 상품값
+     * @param product 상세 조회할 상품 product
      */
     public ProductDetailResponseDto(Product product) {
         this.productId = product.getProductId();
@@ -41,7 +42,6 @@ public class ProductDetailResponseDto {
         this.productPictureUrl = product.getProductPictureUrl();
         this.createdDate = product.getCreatedDate();
         this.modifiedDate = product.getModifiedDate();
-        this.storeName = product.getStore().getStoreName();
         this.createdBy = product.getCreatedBy();
         this.modifiedBy = product.getModifiedBy();
     }
