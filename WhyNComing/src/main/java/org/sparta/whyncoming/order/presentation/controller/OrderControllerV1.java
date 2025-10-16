@@ -7,7 +7,6 @@ import org.sparta.whyncoming.common.response.ResponseUtil;
 import org.sparta.whyncoming.order.application.service.OrderServiceV1;
 import org.sparta.whyncoming.order.presentation.dto.request.CreateOrderRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.request.CreatePaymentRequestV1;
-import org.sparta.whyncoming.order.presentation.dto.request.CreateReviewRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,14 +57,6 @@ public class OrderControllerV1 {
         return ResponseUtil.success("주문 환불 성공", service.refundOrder(orderId));
     }
 
-    @Operation(summary = "배달 조회")
-    @GetMapping("/{orderId}/delivery")
-    public ResponseEntity<ApiResult<DeliveryStatusResponseV1>> readDeliveryStatus(
-            @PathVariable UUID orderId
-    ) {
-        return ResponseUtil.success("배달 조회 성공", service.readDeliveryStatus(orderId));
-    }
-
     @Operation(summary = "주문 리스트 조회")
     @GetMapping
     public ResponseEntity<ApiResult<List<GetOrderListResponseV1>>> readOrderList(
@@ -80,47 +71,6 @@ public class OrderControllerV1 {
             @PathVariable UUID orderId
     ) {
         return ResponseUtil.success("주문 리스트 조회 성공", service.getOrderDetail(orderId));
-    }
-
-    @Operation(summary = "리뷰 작성")
-    @PostMapping("/{orderId}/review")
-    public ResponseEntity<ApiResult<ReviewStatusResponseV1>> refundOrder(
-            @PathVariable UUID orderId,
-            @RequestBody CreateReviewRequestV1 req
-    ) {
-        return ResponseUtil.success("리뷰 작성 성공", service.writeReview(orderId, req));
-    }
-
-    @Operation(summary = "배달 수락")
-    @PostMapping("/store/{orderId}/accept")
-    public ResponseEntity<ApiResult<DeliveryStatusResponseV1>> acceptDelivery(
-            @PathVariable UUID orderId
-    ) {
-        return ResponseUtil.success("배달 수락 성공", service.acceptDelivery(orderId));
-    }
-
-    @Operation(summary = "조리 완료")
-    @PostMapping("/store/{orderId}/cooked")
-    public ResponseEntity<ApiResult<DeliveryStatusResponseV1>> cookedDelivery(
-            @PathVariable UUID orderId
-            ) {
-        return ResponseUtil.success("조리 완료 성공", service.cookedDelivery(orderId));
-    }
-
-    @Operation(summary = "배달 시작")
-    @PostMapping("/store/{orderId}/deliverying")
-    public ResponseEntity<ApiResult<DeliveryStatusResponseV1>> startDelivery(
-            @PathVariable UUID orderId
-            ) {
-        return ResponseUtil.success("배달 시작 성공", service.startDelivery(orderId));
-    }
-
-    @Operation(summary = "배달 완료")
-    @PostMapping("/store/{orderId}/deliveryed")
-    public ResponseEntity<ApiResult<DeliveryStatusResponseV1>> completeDelivery(
-            @PathVariable UUID orderId
-            ) {
-        return ResponseUtil.success("배달 완료 성공", service.completeDelivery(orderId));
     }
 
     @Operation(summary = "입점주 주문 리스트 조회")
