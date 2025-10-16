@@ -14,7 +14,7 @@ public class GetCartItemResponseV1 {
     private Integer userNo;
     private UUID storeId;
     private UUID productId;
-    private int quantity;
+    private Integer quantity;
 
     public GetCartItemResponseV1(Cart cart){
         this.cartId = cart.getCartId();
