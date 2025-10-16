@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 import org.sparta.whyncoming.order.domain.entity.Cart;
 import org.sparta.whyncoming.order.domain.entity.Delivery;
 import org.sparta.whyncoming.order.domain.entity.Order;
-import org.sparta.whyncoming.order.domain.entity.Review;
 import org.sparta.whyncoming.order.domain.enums.DeliveryStatus;
 import org.sparta.whyncoming.order.domain.enums.Status;
 import org.sparta.whyncoming.order.domain.repository.DeliveryRepository;
@@ -12,7 +11,6 @@ import org.sparta.whyncoming.order.domain.repository.OrderRepository;
 import org.sparta.whyncoming.order.domain.repository.ReviewRepository;
 import org.sparta.whyncoming.order.presentation.dto.request.CreateOrderRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.request.CreatePaymentRequestV1;
-import org.sparta.whyncoming.order.presentation.dto.request.CreateReviewRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.*;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.store.domain.repository.StoreRepository;
@@ -31,17 +29,14 @@ public class OrderServiceV1 {
 
     private final OrderRepository orderRepository;
     private final DeliveryRepository deliveryRepository;
-    private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final AddressRepository addressRepository;
 
     public OrderServiceV1(OrderRepository orderRepository, DeliveryRepository deliveryRepository,
-                          ReviewRepository reviewRepository, UserRepository userRepository,
-                          StoreRepository storeRepository, AddressRepository addressRepository) {
+                          UserRepository userRepository, StoreRepository storeRepository, AddressRepository addressRepository) {
         this.orderRepository = orderRepository;
         this.deliveryRepository = deliveryRepository;
-        this.reviewRepository = reviewRepository;
         this.userRepository = userRepository;
         this.storeRepository = storeRepository;
         this.addressRepository = addressRepository;
@@ -125,13 +120,6 @@ public class OrderServiceV1 {
         return new OrderStatusResponseV1(order.getStatus());
     }
 
-    // 배달 조회
-    public DeliveryStatusResponseV1 readDeliveryStatus(UUID orderId) {
-        Delivery delivery = deliveryRepository.findByOrder_OrderId(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("Delivery not found for order: " + orderId));
-        return new DeliveryStatusResponseV1(delivery.getDeliveryPosition(), delivery.getDeliveryStatus());
-    }
-
     // 주문 리스트 조회
     public List<GetOrderListResponseV1> getOrderList(Integer userNo) {
         return orderRepository.findAllByUser_UserNo(userNo).stream()
@@ -162,59 +150,6 @@ public class OrderServiceV1 {
                 .orElse(null);
 
         return new GetOrderDetailResponseV1(order.getOrderId(), items, review);
-    }
-
-    // 리뷰 작성
-    @Transactional
-    public ReviewStatusResponseV1 writeReview(UUID orderId, CreateReviewRequestV1 req) {
-        Order order = findOrderOrThrow(orderId);
-
-        Review review = new Review(
-                order.getStore(),
-                order.getUser(),
-                order,
-                req.getRating(),
-                req.getContent(),
-                req.getReviewPictureUrl(),
-                null
-        );
-
-        reviewRepository.save(review);
-        order.updateReview(review);
-
-        return new ReviewStatusResponseV1("SUCCESS");
-    }
-
-    // 배달 수락
-    @Transactional
-    public DeliveryStatusResponseV1 acceptDelivery(UUID orderId) {
-        Delivery delivery = findDeliveryOrThrow(orderId);
-        delivery.updateDeliveryStatus(DeliveryStatus.ACCEPTED);
-        return new DeliveryStatusResponseV1(delivery.getDeliveryStatus());
-    }
-
-    // 조리 완료
-    @Transactional
-    public DeliveryStatusResponseV1 cookedDelivery(UUID orderId) {
-        Delivery delivery = findDeliveryOrThrow(orderId);
-        delivery.updateDeliveryStatus(DeliveryStatus.COOKED);
-        return new DeliveryStatusResponseV1(delivery.getDeliveryStatus());
-    }
-
-    // 배달 시작
-    @Transactional
-    public DeliveryStatusResponseV1 startDelivery(UUID orderId) {
-        Delivery delivery = findDeliveryOrThrow(orderId);
-        delivery.updateDeliveryStatus(DeliveryStatus.DELIVERING);
-        return new DeliveryStatusResponseV1(delivery.getDeliveryStatus());
-    }
-
-    // 배달 완료
-    @Transactional
-    public DeliveryStatusResponseV1 completeDelivery(UUID orderId) {
-        Delivery delivery = findDeliveryOrThrow(orderId);
-        delivery.updateDeliveryStatus(DeliveryStatus.DELIVERED);
-        return new DeliveryStatusResponseV1(delivery.getDeliveryStatus());
     }
 
     // 입점주 주문 리스트 조회
