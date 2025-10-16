@@ -25,6 +25,7 @@ public class CategoryController {
 
     /**
      * 카테고리 생성
+     * TODO 스프링 시큐리티 적용되면 비즈니스 로직 쪽에서 admin 계정인지 검증하는 로직 추가해야함 (http 경로차단을 하면 조회 쪽이 막힘)
      */
     @Operation(summary = "카테고리 추가")
     @PostMapping
@@ -34,7 +35,8 @@ public class CategoryController {
     }
 
     /**
-     * 카테고리 전체 조회
+     * 카테고리만 조회
+     * @return 카테고리 이름 리스트 전체 조회
      */
     @Operation(summary = "카테고리 전체 조회")
     @GetMapping
@@ -44,16 +46,16 @@ public class CategoryController {
     }
 
 
-
     /**
-     * TODO 카테고리 수정에 대한 의견 - 카테고리 수정은 하면 안된다는 생각에서 제외할까 합니다.
      * 카테고리 삭제
+     * @param uuid 삭제될 카테고리의 UUID
+     * @return 삭제된 카테고리의 UUID와 품목이름
      */
     @Operation(summary = "카테고리 삭제")
     @DeleteMapping("/{uuid}")
-    public ResponseEntity<ApiResult<String>> deleteCategory(@PathVariable UUID uuid) {
-        String categoryId = categoryService.deleteCategory(uuid);
-        return ResponseEntity.ok(ApiResult.ofSuccess("삭제된 상품의 UUID :", categoryId));
+    public ResponseEntity<ApiResult<CategoryResponseDto>> deleteCategory(@PathVariable UUID uuid) {
+        CategoryResponseDto response = categoryService.deleteCategory(uuid);
+        return ResponseEntity.ok(ApiResult.ofSuccess("삭제된 상품 정보 :", response));
     }
 }
 

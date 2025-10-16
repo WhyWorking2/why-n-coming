@@ -11,36 +11,36 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-public class ProductResponseDto {
+public class ProductDetailResponseDto {
 
     private UUID productId;
     private String productName;
     private Integer price;
+    private String description;
+    private String productPictureUrl;
     private List<String> categoryNameList;
     private Instant createdDate;
     private Instant modifiedDate;
-    private Instant deletedDate;
     private String storeName;
     private Integer createdBy;
     private Integer modifiedBy;
 
     /**
-     * 상품 조회 시 사용될 Dto
-     * TODO 사용자 권한별로 노출 여부를 구분할 것
-     * 일반 사용자에게는 deletedDate가 null일 경우에만 노출
-     * 관리자에게는 전부 노툴
-     * @param product 가져온 상품 값
+     * 상품 상세 조회 시 사용될 Dto
+     * 상품 상세 조회 시는 무조건 삭제된 값이 조회되지 않게(손님용)으로 개발
+     * @param product 상세 조회할 상품값
      */
-    public ProductResponseDto(Product product) {
+    public ProductDetailResponseDto(Product product) {
         this.productId = product.getProductId();
         this.productName = product.getProductName();
         this.price = product.getPrice();
+        this.description = product.getDescription();
         this.categoryNameList = product.getCategoryProducts().stream()
                 .map(cp -> cp.getCategory().getCategoryName())
                 .collect(Collectors.toList());
+        this.productPictureUrl = product.getProductPictureUrl();
         this.createdDate = product.getCreatedDate();
         this.modifiedDate = product.getModifiedDate();
-        this.deletedDate = product.getDeletedDate();
         this.storeName = product.getStore().getStoreName();
         this.createdBy = product.getCreatedBy();
         this.modifiedBy = product.getModifiedBy();
