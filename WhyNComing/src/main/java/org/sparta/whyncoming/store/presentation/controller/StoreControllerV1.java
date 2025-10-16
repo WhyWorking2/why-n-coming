@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/stores")
@@ -42,5 +43,32 @@ public class StoreControllerV1 {
 
         CreateStoreResponseV1 response = storeServiceV1.createStore(userDetailsInfo, request, storeLogo, storeImages);
         return ResponseUtil.success("생성 성공", response);
+    }
+
+    @Operation(summary = "가게 주인 입점사 수정")
+    @PreAuthorize("hasRole('OWNER')")
+    @PutMapping(value = "/{storeId}", consumes = {"multipart/form-data"})
+    public ResponseEntity<ApiResult<CreateStoreResponseV1>> updateStore(
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
+            @PathVariable UUID storeId,
+            @Valid @RequestPart("request") CreateStoreRequestV1 request,
+            @RequestPart(value = "storeLogo", required = false) MultipartFile storeLogo,
+            @RequestPart(value = "storeImages", required = false) List<MultipartFile> storeImages
+    ) throws Exception {
+        CreateStoreResponseV1 response = storeServiceV1.updateStore(
+                userDetailsInfo, storeId, request, storeLogo, storeImages
+        );
+        return ResponseUtil.success("수정 성공", response);
+    }
+
+    @Operation(summary = "가게 주인 입점사 소프트 삭제")
+    @PreAuthorize("hasRole('OWNER')")
+    @DeleteMapping("/{storeId}")
+    public ResponseEntity<ApiResult<Void>> deleteStoreSoft(
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
+            @PathVariable UUID storeId
+    ) {
+        storeServiceV1.deleteStoreSoft(userDetailsInfo, storeId);
+        return ResponseUtil.success("입점사 소프트 삭제 완료", null);
     }
 }
