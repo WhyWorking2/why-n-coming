@@ -1,10 +1,12 @@
 package org.sparta.whyncoming.order.presentation.dto.response;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Getter
+@NoArgsConstructor
 public class DeleteCartItemResponseV1 {
 
     private UUID cartId;

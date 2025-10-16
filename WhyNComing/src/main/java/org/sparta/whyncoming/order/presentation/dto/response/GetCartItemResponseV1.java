@@ -1,9 +1,13 @@
 package org.sparta.whyncoming.order.presentation.dto.response;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.sparta.whyncoming.order.domain.entity.Cart;
 
 import java.util.UUID;
 
+@Getter
+@NoArgsConstructor
 public class GetCartItemResponseV1 {
 
     private UUID cartId;
@@ -17,6 +21,6 @@ public class GetCartItemResponseV1 {
         this.userNo = cart.getUser().getUserNo();
         this.storeId = cart.getStore().getStoreId();
         this.productId = cart.getProduct().getProductId();
-
+        this.quantity = cart.getQuantity();
     }
 }
