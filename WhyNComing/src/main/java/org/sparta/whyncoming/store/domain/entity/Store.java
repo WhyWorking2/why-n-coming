@@ -1,6 +1,9 @@
 package org.sparta.whyncoming.store.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sparta.whyncoming.common.entity.BaseActorEntity;
@@ -99,5 +102,39 @@ public class Store extends BaseActorEntity {
         this.reviews = reviews;
         this.carts = carts;
         this.categoryStores = categoryStores;
+    }
+
+    public void updateStoreLogoUrl(String newLogoUrl) {
+        this.storeLogoUrl = newLogoUrl;
+    }
+
+    public void clearImages() {
+        if (this.storeImages != null) {
+            this.storeImages.clear();
+        }
+    }
+
+    public void addImage(StoreImage storeImage) {
+        if (this.storeImages == null) this.storeImages = new ArrayList<>();
+        this.storeImages.add(storeImage);
+    }
+
+    public void update(@NotBlank String storeName, @NotBlank String storeAddress, @NotBlank String storePhone, String storeContent, @NotNull @Min(0) Integer minDeliveryPrice, @NotNull @Min(0) Integer deliveryTip, String operationHours, String deliveryAddress) {
+        this.storeName = storeName;
+        this.storeAddress = storeAddress;
+        this.storePhone = storePhone;
+        this.storeContent = storeContent;
+        this.minDeliveryPrice = minDeliveryPrice;
+        this.deliveryTip = deliveryTip;
+        this.operationHours = operationHours;
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public void deleteSoft() {
+        this.markDeleted();
+    }
+
+    public boolean isDeleted() {
+        return super.isDeleted();
     }
 }

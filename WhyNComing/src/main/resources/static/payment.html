@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Toss Test Payment</title>
+</head>
+<body>
+
+<h2>결제 정보 입력</h2>
+
+<form id="payment-form">
+    <button type="button" id="pay-button">결제 시작</button>
+</form>
+
+<script src="https://js.tosspayments.com/v1"></script>
+<script>
+    const clientKey = ""; // 예: test_ck_********
+    const tossPayments = TossPayments(clientKey);
+
+    document.getElementById("pay-button").addEventListener("click", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get("orderId");
+        const serverUrl = "http://localhost:8080"; // 서버 주소 바꿔야함
+
+        if (!orderId) {
+            alert("orderId가 없습니다.");
+            return;
+        }
+
+        const amount = 1000; // 금액 dummy data
+
+        tossPayments.requestPayment("카드", {
+            amount: amount,
+            orderId: orderId,
+            orderName: "테스트 결제",
+            successUrl: `${serverUrl}/v1/order/${orderId}/payment/success`,
+            failUrl: `${serverUrl}/v1/order/${orderId}/payment/fail`
+        });
+    });
+</script>
+
+</body>
+</html>
