@@ -17,7 +17,7 @@
 <script>
     let tossPayments = null; // 동적 초기화
     const serverUrl = "http://localhost:8080"; // 서버 주소 바꿔야함
-    let amount = 1000;
+    let amounts = 1000;
 
     document.getElementById("fetch-key-button").addEventListener("click", async function () {
         try {
@@ -33,7 +33,7 @@
             }
 
             tossPayments = TossPayments(data.clientKey);
-            amount = data.amount;
+            amounts = data.amount;
             alert("키 로딩 완료!");
             document.getElementById("pay-button").disabled = false; // 결제 버튼 활성화
 
@@ -58,7 +58,7 @@
         }
 
         tossPayments.requestPayment("카드", {
-            amount: amount,
+            amount: amounts,
             orderId: orderId,
             orderName: "테스트 결제",
             successUrl: `${serverUrl}/v1/order/${orderId}/payment/success`,

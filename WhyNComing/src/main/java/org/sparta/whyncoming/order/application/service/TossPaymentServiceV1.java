@@ -64,7 +64,6 @@ public class TossPaymentServiceV1 {
         UUID orderId = UUID.fromString(req.getOrderId());
         Order order = findOrderOrThrow(orderId);
         order.tossPay("CARD", "많이 주세요~");
-        Integer totalPrice = order.getTotalPrice();
 
         // Toss Payment 코드
         String authHeader = "Basic " + Base64.getEncoder()
@@ -97,7 +96,7 @@ public class TossPaymentServiceV1 {
         deliveryRepository.save(delivery);
         order.assignDelivery(delivery);
 
-        return new TossConfirmResponseV1();
+        return tossResponse;
     }
 
     private Order findOrderOrThrow(UUID orderId) {
