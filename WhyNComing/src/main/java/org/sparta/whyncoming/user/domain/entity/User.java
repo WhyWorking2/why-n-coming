@@ -106,6 +106,8 @@ public class User extends BaseTimeEntity {
     public void updateEmail(String newEmail) {
         this.email = newEmail;
     }
+    public void updateRole(UserRoleEnum newRole) {this.role = newRole;}
+
     public void increaseAuthVersion() {
         this.authVersion += 1;
     }

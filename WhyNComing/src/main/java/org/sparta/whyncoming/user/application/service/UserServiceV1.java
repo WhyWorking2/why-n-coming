@@ -11,9 +11,6 @@ import org.sparta.whyncoming.common.security.service.CustomUserDetailsInfo;
 import org.sparta.whyncoming.common.security.service.CustomUserDetailsService;
 
 import org.sparta.whyncoming.common.security.jwt.JwtUtil;
-import org.sparta.whyncoming.order.domain.entity.OwnerReview;
-import org.sparta.whyncoming.order.domain.entity.Review;
-import org.sparta.whyncoming.order.domain.repository.ReviewRepository;
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.sparta.whyncoming.user.domain.enums.UserRoleEnum;
 import org.sparta.whyncoming.user.domain.repository.UserRepository;
@@ -21,11 +18,8 @@ import org.sparta.whyncoming.user.domain.repository.UserRepository;
 import org.sparta.whyncoming.user.presentation.dto.request.SignUpUserRequestDtoV1;
 import org.sparta.whyncoming.user.presentation.dto.request.UpdateUserRequestDtoV1;
 
-import org.sparta.whyncoming.order.presentation.dto.response.ReviewWithReplyResponseDtoV1;
 import org.sparta.whyncoming.user.presentation.dto.response.SingUpUserResponseDtoV1;
 import org.sparta.whyncoming.user.presentation.dto.response.UpdateUserResponseDtoV1;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -45,19 +39,16 @@ public class UserServiceV1 {
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService customUserDetailsService;
-    private final ReviewRepository reviewRepository;
 
     public UserServiceV1(UserRepository userRepository,
                          EncoderUtil encoderUtil,
                          JwtUtil jwtUtil,
                          PasswordEncoder passwordEncoder,
-                         CustomUserDetailsService customUserDetailsService,
-                         ReviewRepository reviewRepository) {
+                         CustomUserDetailsService customUserDetailsService) {
         this.userRepository = userRepository;
         this.encoderUtil = encoderUtil;
         this.passwordEncoder = passwordEncoder;
         this.customUserDetailsService = customUserDetailsService;
-        this.reviewRepository = reviewRepository;
     }
 
     public String health() {
@@ -174,56 +165,6 @@ public class UserServiceV1 {
             // 이미 탈퇴했거나 존재하지 않는 경우
             throw new BusinessException(ErrorCode.NOT_FOUND, "이미 탈퇴했거나 존재하지 않는 회원입니다.");
         }
-        // (선택) 해당 사용자의 jti를 블랙리스트에 올려 현재 토큰도 즉시 차단하고 싶다면 여기서 처리
     }
 
-    /**
-     * POST /member/{userId}/idfind
-     */
-    public String findUserId(String userId) {
-        // TODO: 회원 아이디 찾기
-        return null;
-    }
-
-    /**
-     * GET /member/orders
-     */
-    public void getOrders(String userId) {
-        // TODO: 주문 목록 조회
-    }
-
-    /**
-     * GET /member/{orderId}
-     */
-    public void getOrderDetail(Long orderId) {
-        // TODO: 주문 상세 조회
-    }
-
-    // =========================
-    // BOS (Admin) APIs
-    // =========================
-
-    /**
-     * GET /bos/members
-     */
-    public void getBosMembers() {
-        // TODO: BOS 회원 목록 조회
-    }
-
-
-
-    /**
-     * GET /bos/reviews
-     */
-    public void getBosReviews() {
-        // TODO: BOS 회원리뷰 목록 조회
-    }
-
-    /**
-     * DELETE /bos/{reviewId}
-     */
-    @Transactional
-    public void deleteBosReview(Long reviewId) {
-        // TODO: BOS 회원리뷰 삭제
-    }
 }
