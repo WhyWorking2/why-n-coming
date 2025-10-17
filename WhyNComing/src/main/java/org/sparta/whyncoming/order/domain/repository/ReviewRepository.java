@@ -1,6 +1,9 @@
 package org.sparta.whyncoming.order.domain.repository;
 
 import org.sparta.whyncoming.order.domain.entity.Review;
+
+import org.sparta.whyncoming.user.domain.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +14,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
+
+    Page<Review> findByUser(User user, Pageable pageable);
+
+    Page<Review> findByUserAndDeletedDateIsNull(User user, Pageable pageable);
 
     Optional<Review> findByReviewIdAndStore_StoreId(UUID reviewId, UUID storeId);
 
@@ -33,4 +40,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
         order by r.createdDate desc
         """)
     List<Review> findDetailedActiveByStoreId(UUID storeId);
+
 }
