@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>Toss Test Payment</title>
+</head>
+<body>
+
+<h2>결제 정보 입력</h2>
+
+<form id="payment-form">
+    <button type="button" id="fetch-key-button">1. 클라이언트 키 받아오기</button>
+    <button type="button" id="pay-button" disabled>2. 결제 시작</button>
+</form>
+
+<script src="https://js.tosspayments.com/v1"></script>
+<script>
+    let tossPayments = null; // 동적 초기화
+    const serverUrl = "http://localhost:8080"; // 서버 주소 바꿔야함
+    let amounts = 1000;
+
+    document.getElementById("fetch-key-button").addEventListener("click", async function () {
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get("orderId");
+            const response = await fetch(serverUrl+"/v1/order/" + orderId + "/payment/client-key"); // 서버 엔드포인트
+            const data = await response.json();
+
+            // data = { clientKey: "...", amount: 1000 }
+            if (!data.clientKey || !data.amount) {
+                alert("필수 결제 정보가 누락되었습니다.");
+                return;
+            }
+
+            tossPayments = TossPayments(data.clientKey);
+            amounts = data.amount;
+            alert("키 로딩 완료!");
+            document.getElementById("pay-button").disabled = false; // 결제 버튼 활성화
+
+        } catch (error) {
+            console.error(error);
+            alert("서버로부터 키를 가져오지 못했습니다.");
+        }
+    });
+
+    document.getElementById("pay-button").addEventListener("click", function () {
+        if (!tossPayments) {
+            alert("먼저 키를 불러오세요!");
+            return;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const orderId = urlParams.get("orderId");
+
+        if (!orderId) {
+            alert("orderId가 없습니다.");
+            return;
+        }
+
+        tossPayments.requestPayment("카드", {
+            amount: amounts,
+            orderId: orderId,
+            orderName: "테스트 결제",
+            successUrl: `${serverUrl}/v1/order/${orderId}/payment/success`,
+            failUrl: `${serverUrl}/v1/order/${orderId}/payment/fail`
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,52 +1,42 @@
 package org.sparta.whyncoming.order.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.sparta.whyncoming.common.entity.BaseActorEntity;
 import org.sparta.whyncoming.user.domain.entity.User;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "owner_reviews")
 @Getter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class OwnerReview {
+public class OwnerReview extends BaseActorEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID ownerReviewId;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reviewId", nullable = false)
+    @JoinColumn(name = "review_id", nullable = false)
     private Review review;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userNo", nullable = false)
+    @JoinColumn(name = "user_no", nullable = false)
     private User user;
 
     @Column(length = 255)
     private String ownerReviewContent;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedDate;
-
-    @Column
-    private LocalDateTime deletedDate;
-
     public OwnerReview(Review review, User user, String ownerReviewContent) {
         this.review = review;
         this.user = user;
         this.ownerReviewContent = ownerReviewContent;
+    }
+
+    public void updateContent(String content) {
+        this.ownerReviewContent = content;
     }
 }

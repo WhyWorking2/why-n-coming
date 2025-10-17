@@ -1,23 +1,24 @@
 -- 필요한 확장
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
-
 ----------------------------
 -- 1) 사용자 (users)
 ----------------------------
-INSERT INTO users (user_no, user_id, password, user_name, user_phone, email, role, created_date, modified_date, deleted_date)
+INSERT INTO users (
+    user_no, user_id, password, user_name, user_phone, email, role,
+    created_date, modified_date
+)
 VALUES
-    (1, 'user01', '$2a$10$KazjRgX87iwb2gHQa1Fqs.9CCvk9f6RuY3IslR0UGfOAcsB6QvDrC', '홍길동', '01011110001', 'user01@test.com', 'MANAGER',  NOW(), NOW(), NULL),
-    (2, 'user02', '$2a$10$nZBkoWM9IxG5bXPt1KW3Ve3qK3XLBRJyOaujbchtC/Ua3G07y5ga2', '김철수', '01011110002', 'user02@test.com', 'OWNER',    NOW(), NOW(), NULL),
-    (3, 'user03', '$2a$10$ZaVcSOdUXG/yVfneM24QX.z1mLwUCwhTgWYTXoJExkKbh09YUeIAe', '이영희', '01011110003', 'user03@test.com', 'MASTER',   NOW(), NOW(), NULL),
-    (4, 'user04', '$2a$10$bDwwFnP7s.jQ8DXDLwGZY.d6J208eiNw14d3t8Z2gj/LcpQjbp5DO', '박민수', '01011110004', 'user04@test.com', 'CUSTOMER', NOW(), NOW(), NULL),
-    (5, 'user05', '$2a$10$S0rYQ6tgCGegmSxpQ.em5e4k2htnCUFwPAa78iUWkRHIlKtv7CCNm', '최지현', '01011110005', 'user05@test.com', 'CUSTOMER', NOW(), NOW(), NULL),
-    (6, 'user06', '$2a$10$r5z434.rcJMd4jOidj2IM.XBAoBFqLMyzUh7JGH4T5aM37cQJEXvy', '정우성', '01011110006', 'user06@test.com', 'CUSTOMER', NOW(), NOW(), NULL),
-    (7, 'user07', '$2a$10$7k3TIpb66a0pDcHRXpr3r.0ExVbv5fmZMYpFg0sSGfpE9o95gsQuO', '한가인', '01011110007', 'user07@test.com', 'CUSTOMER', NOW(), NOW(), NULL),
-    (8, 'user08', '$2a$10$hcplJBuuPDZdcYoRvb/IyeICAH10wpikr7pFj6g68k0xa4VpvdQA6', '조세호', '01011110008', 'user08@test.com', 'CUSTOMER', NOW(), NOW(), NULL),
-    (9,  'user09', '$2a$10$1SYipAQMnkExCoJ9B4Tyru1jgXtMvLUTKAUE3YPhgVQ41nM8Fz/Lu', '유재석', '01011110009', 'user09@test.com', 'CUSTOMER', NOW(), NOW(), NULL),
-    (10, 'user10', '$2a$10$.6VDxIkE1lYEP05rCxY.l.HsnX5onEx4h5xa4Y.v8Ee3LLwxaK7l2', '강호동', '01011110010', 'user10@test.com', 'CUSTOMER', NOW(), NOW(), NULL),
-    (11, 'user11', '$2a$10$FQmI2GcJ8Xq7vlmFzES5OO4TETIB7DQa9mld9SJIInwi.gHOPhh7i', '이순신', '01011110011', 'user11@test.com', 'OWNER',    NOW(), NOW(), NULL);
-
+    (1, 'user01', '$2a$10$KazjRgX87iwb2gHQa1Fqs.9CCvk9f6RuY3IslR0UGfOAcsB6QvDrC', '홍길동', '01011110001', 'user01@test.com', 'MANAGER',  NOW(), NOW()),
+    (2, 'user02', '$2a$10$nZBkoWM9IxG5bXPt1KW3Ve3qK3XLBRJyOaujbchtC/Ua3G07y5ga2', '김철수', '01011110002', 'user02@test.com', 'OWNER',    NOW(), NOW()),
+    (3, 'user03', '$2a$10$ZaVcSOdUXG/yVfneM24QX.z1mLwUCwhTgWYTXoJExkKbh09YUeIAe', '이영희', '01011110003', 'user03@test.com', 'MASTER',   NOW(), NOW()),
+    (4, 'user04', '$2a$10$bDwwFnP7s.jQ8DXDLwGZY.d6J208eiNw14d3t8Z2gj/LcpQjbp5DO', '박민수', '01011110004', 'user04@test.com', 'CUSTOMER', NOW(), NOW()),
+    (5, 'user05', '$2a$10$S0rYQ6tgCGegmSxpQ.em5e4k2htnCUFwPAa78iUWkRHIlKtv7CCNm', '최지현', '01011110005', 'user05@test.com', 'CUSTOMER', NOW(), NOW()),
+    (6, 'user06', '$2a$10$r5z434.rcJMd4jOidj2IM.XBAoBFqLMyzUh7JGH4T5aM37cQJEXvy', '정우성', '01011110006', 'user06@test.com', 'CUSTOMER', NOW(), NOW()),
+    (7, 'user07', '$2a$10$7k3TIpb66a0pDcHRXpr3r.0ExVbv5fmZMYpFg0sSGfpE9o95gsQuO', '한가인', '01011110007', 'user07@test.com', 'CUSTOMER', NOW(), NOW()),
+    (8, 'user08', '$2a$10$hcplJBuuPDZdcYoRvb/IyeICAH10wpikr7pFj6g68k0xa4VpvdQA6', '조세호', '01011110008', 'user08@test.com', 'CUSTOMER', NOW(), NOW()),
+    (9, 'user09', '$2a$10$1SYipAQMnkExCoJ9B4Tyru1jgXtMvLUTKAUE3YPhgVQ41nM8Fz/Lu', '유재석', '01011110009', 'user09@test.com', 'CUSTOMER', NOW(), NOW()),
+    (10,'user10', '$2a$10$.6VDxIkE1lYEP05rCxY.l.HsnX5onEx4h5xa4Y.v8Ee3LLwxaK7l2', '강호동', '01011110010', 'user10@test.com', 'CUSTOMER', NOW(), NOW()),
+    (11,'user11', '$2a$10$FQmI2GcJ8Xq7vlmFzES5OO4TETIB7DQa9mld9SJIInwi.gHOPhh7i', '이순신', '01011110011', 'user11@test.com', 'OWNER',    NOW(), NOW());
 ----------------------------
 -- 2) 코드→UUID 매핑 테이블들 (임시)
 ----------------------------
@@ -143,7 +144,7 @@ VALUES
 -- 7) 카테고리-매장 연결 (category_stores)
 --    PK 이름: category_product_id (스키마 기준), created/modified 필수
 ----------------------------
-INSERT INTO category_stores (category_product_id, store_id, category_id, created_date, modified_date, deleted_date)
+INSERT INTO category_stores (category_store_id, store_id, category_id, created_date, modified_date, deleted_date)
 VALUES
     (gen_random_uuid(), (SELECT id FROM store_map WHERE code='STORE001'), (SELECT id FROM cat_map WHERE code='CAT001'), NOW(), NOW(), NULL),
     (gen_random_uuid(), (SELECT id FROM store_map WHERE code='STORE002'), (SELECT id FROM cat_map WHERE code='CAT001'), NOW(), NOW(), NULL),
@@ -160,7 +161,7 @@ VALUES
 -- 8) 카테고리-상품 연결 (category_products)
 --    PK 이름: categorystore_id (스키마 기준), created/modified 필수
 ----------------------------
-INSERT INTO category_products (categorystore_id, product_id, category_id, created_date, modified_date, deleted_date)
+INSERT INTO category_products (category_product_id, product_id, category_id, created_date, modified_date, deleted_date)
 VALUES
     (gen_random_uuid(), (SELECT id FROM prod_map WHERE code='PROD001'), (SELECT id FROM cat_map WHERE code='CAT001'), NOW(), NOW(), NULL),
     (gen_random_uuid(), (SELECT id FROM prod_map WHERE code='PROD002'), (SELECT id FROM cat_map WHERE code='CAT001'), NOW(), NOW(), NULL),
@@ -233,7 +234,7 @@ WHERE o.order_id = c.order_id;
 -- 11) 배달 (deliveries)  ※ delivery_status 체크값 매핑
 -- '배송중'→'DELIVERING', '배송완료'→'DELIVERED', '대기중'→'ACCEPTED'
 ----------------------------
-INSERT INTO deliveries (delivery_id, order_id, user_no, address_id, delivery_status, "position", created_date, modified_date, deleted_date)
+INSERT INTO deliveries (delivery_id, order_id, user_no, address_id, delivery_status, delivery_position, created_date, modified_date, deleted_date)
 VALUES
     (gen_random_uuid(), (SELECT id FROM order_map WHERE code='ORDER001'),  1, (SELECT id FROM addr_map WHERE code='ADDR001'), 'DELIVERING', '강남대로 10',  NOW(), NOW(), NULL),
     (gen_random_uuid(), (SELECT id FROM order_map WHERE code='ORDER002'),  2, (SELECT id FROM addr_map WHERE code='ADDR002'), 'DELIVERED',  '마포대로 20',  NOW(), NOW(), NULL),
@@ -293,3 +294,93 @@ VALUES
     (gen_random_uuid(), (SELECT id FROM store_map WHERE code='STORE008'), 'store8.jpg',  NOW(), NOW(), NULL),
     (gen_random_uuid(), (SELECT id FROM store_map WHERE code='STORE009'), 'store9.jpg',  NOW(), NOW(), NULL),
     (gen_random_uuid(), (SELECT id FROM store_map WHERE code='STORE010'), 'store10.jpg', NOW(), NOW(), NULL);
+
+
+----------------------------
+-- 15) 감사 컬럼 일괄 보정 (created_by / modified_by )
+--     기존 INSERT 이후 실행되어도 무방
+----------------------------
+
+-- addresses: 소유자(user_no)를 작성/수정자로
+UPDATE public.addresses a
+SET created_by = a.user_no,
+    modified_by = a.user_no
+WHERE (created_by IS NULL OR modified_by IS NULL);
+
+-- stores: 점주(user_no)를 작성/수정자로
+UPDATE public.stores s
+SET created_by = s.user_no,
+    modified_by = s.user_no
+WHERE (created_by IS NULL OR modified_by IS NULL);
+
+-- products: 해당 상품의 매장 점주를 작성/수정자로
+UPDATE public.products p
+SET created_by = s.user_no,
+    modified_by = s.user_no
+    FROM public.stores s
+WHERE p.store_id = s.store_id
+  AND (p.created_by IS NULL OR p.modified_by IS NULL);
+
+-- categories: 시스템 관리자(예: 1번 유저)를 작성/수정자로
+-- 필요 시 관리자 user_no로 변경하세요.
+UPDATE public.categories c
+SET created_by = COALESCE(created_by, 1),
+    modified_by = COALESCE(modified_by, 1)
+WHERE (created_by IS NULL OR modified_by IS NULL);
+
+-- category_stores: 매장 점주를 작성/수정자로
+UPDATE public.category_stores cs
+SET created_by = s.user_no,
+    modified_by = s.user_no
+    FROM public.stores s
+WHERE cs.store_id = s.store_id
+  AND (cs.created_by IS NULL OR cs.modified_by IS NULL);
+
+-- category_products: 상품의 매장 점주를 작성/수정자로
+UPDATE public.category_products cp
+SET created_by = s.user_no,
+    modified_by = s.user_no
+    FROM public.products p
+JOIN public.stores s ON p.store_id = s.store_id
+WHERE cp.product_id = p.product_id
+  AND (cp.created_by IS NULL OR cp.modified_by IS NULL);
+
+-- orders: 주문자(user_no)를 작성/수정자로
+UPDATE public.orders o
+SET created_by = o.user_no,
+    modified_by = o.user_no
+WHERE (created_by IS NULL OR modified_by IS NULL);
+
+-- carts: 주문자(user_no)를 작성/수정자로
+UPDATE public.carts c
+SET created_by = c.user_no,
+    modified_by = c.user_no
+WHERE (created_by IS NULL OR modified_by IS NULL);
+
+-- deliveries: 배달 대상 주문의 사용자 또는 레코드의 user_no
+UPDATE public.deliveries d
+SET created_by = d.user_no,
+    modified_by = d.user_no
+WHERE (created_by IS NULL OR modified_by IS NULL);
+
+-- reviews: 리뷰 작성자(user_no)
+UPDATE public.reviews r
+SET created_by = r.user_no,
+    modified_by = r.user_no
+WHERE (created_by IS NULL OR modified_by IS NULL);
+
+-- owner_reviews: 사장(작성자) user_no
+UPDATE public.owner_reviews orv
+SET created_by = orv.user_no,
+    modified_by = orv.user_no
+WHERE (created_by IS NULL OR modified_by IS NULL);
+
+-- store_images: 매장 점주를 작성/수정자로
+UPDATE public.store_images si
+SET created_by = s.user_no,
+    modified_by = s.user_no
+    FROM public.stores s
+WHERE si.store_id = s.store_id
+  AND (si.created_by IS NULL OR si.modified_by IS NULL);
+
+SELECT setval(pg_get_serial_sequence('users', 'user_no'), (SELECT MAX(user_no) FROM users));

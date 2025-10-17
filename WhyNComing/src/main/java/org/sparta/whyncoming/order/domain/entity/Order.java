@@ -3,15 +3,11 @@ package org.sparta.whyncoming.order.domain.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.sparta.whyncoming.common.entity.BaseActorEntity;
 import org.sparta.whyncoming.order.domain.enums.Status;
-import org.sparta.whyncoming.product.domain.entity.Cart;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.user.domain.entity.User;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,19 +16,18 @@ import java.util.UUID;
 @Table(name = "orders")
 @Getter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class Order {
+public class Order extends BaseActorEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "storeId", nullable = false)
+    @JoinColumn(name = "store_id", nullable = false)
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userNo", nullable = false)
+    @JoinColumn(name = "user_no", nullable = false)
     private User user;
 
     @Column(nullable = false, length = 255)
@@ -47,17 +42,6 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Status status = Status.SUCCESS; // 기본값 SUCCESS
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedDate;
-
-    @Column
-    private LocalDateTime deletedDate;
 
     @OneToOne(mappedBy = "order")
     private Review review;
@@ -78,6 +62,40 @@ public class Order {
         this.status = status;
         this.review = review;
         this.carts = carts;
+        this.delivery = delivery;
+    }
+
+    // 기본 주문
+    public void pay(String method, String requests) {
+        if (this.status != Status.SUCCESS) {
+            throw new IllegalStateException("이 상태에서는 결제를 할 수 없습니다.");
+        }
+
+        this.paymentMethod = method;
+        this.requests = requests;
+        this.status = Status.SUCCESS;
+    }
+
+    // 토스 페이먼츠를 활용한 주문
+    public void tossPay(String method, String requests) {
+        this.paymentMethod = method;
+        this.requests = requests;
+        this.status = Status.SUCCESS;
+    }
+
+    public void cancel() {
+        this.status = Status.CANCELED;
+    }
+
+    public void refund() {
+        this.status = Status.REFUNDED;
+    }
+
+    public void updateReview(Review review) {
+        this.review = review;
+    }
+
+    public void assignDelivery(Delivery delivery) {
         this.delivery = delivery;
     }
 }

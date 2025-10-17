@@ -1,19 +1,19 @@
 package org.sparta.whyncoming.store.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.sparta.whyncoming.common.entity.BaseActorEntity;
 import org.sparta.whyncoming.order.domain.entity.Order;
 import org.sparta.whyncoming.order.domain.entity.Review;
-import org.sparta.whyncoming.product.domain.entity.Cart;
+import org.sparta.whyncoming.order.domain.entity.Cart;
 import org.sparta.whyncoming.product.domain.entity.Product;
 import org.sparta.whyncoming.user.domain.entity.User;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,15 +22,14 @@ import java.util.UUID;
 @Table(name = "stores")
 @Getter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class Store {
+public class Store extends BaseActorEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID storeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userNo", nullable = false)
+    @JoinColumn(name = "user_no", nullable = false)
     private User user;
 
     @Column(nullable = false, length = 255)
@@ -54,10 +53,9 @@ public class Store {
     @Column(nullable = false)
     private Integer deliveryTip = 0;
 
-    @Column(nullable = false, precision = 2, scale = 1)
+    @Column(precision = 2, scale = 1)
     private BigDecimal storeRating = BigDecimal.ZERO;
 
-    @Column(nullable = false)
     private Integer storeReviewCount = 0;
 
     @Column(length = 255)
@@ -65,17 +63,6 @@ public class Store {
 
     @Column(length = 255)
     private String deliveryAddress;
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdDate;
-
-    @LastModifiedDate
-    @Column(nullable = false)
-    private LocalDateTime modifiedDate;
-
-    @Column
-    private LocalDateTime deletedDate;
 
     @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StoreImage> storeImages = new ArrayList<>();
@@ -115,5 +102,39 @@ public class Store {
         this.reviews = reviews;
         this.carts = carts;
         this.categoryStores = categoryStores;
+    }
+
+    public void updateStoreLogoUrl(String newLogoUrl) {
+        this.storeLogoUrl = newLogoUrl;
+    }
+
+    public void clearImages() {
+        if (this.storeImages != null) {
+            this.storeImages.clear();
+        }
+    }
+
+    public void addImage(StoreImage storeImage) {
+        if (this.storeImages == null) this.storeImages = new ArrayList<>();
+        this.storeImages.add(storeImage);
+    }
+
+    public void update(@NotBlank String storeName, @NotBlank String storeAddress, @NotBlank String storePhone, String storeContent, @NotNull @Min(0) Integer minDeliveryPrice, @NotNull @Min(0) Integer deliveryTip, String operationHours, String deliveryAddress) {
+        this.storeName = storeName;
+        this.storeAddress = storeAddress;
+        this.storePhone = storePhone;
+        this.storeContent = storeContent;
+        this.minDeliveryPrice = minDeliveryPrice;
+        this.deliveryTip = deliveryTip;
+        this.operationHours = operationHours;
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public void deleteSoft() {
+        this.markDeleted();
+    }
+
+    public boolean isDeleted() {
+        return super.isDeleted();
     }
 }

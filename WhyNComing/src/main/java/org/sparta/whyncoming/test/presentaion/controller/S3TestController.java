@@ -1,13 +1,11 @@
 package org.sparta.whyncoming.test.presentaion.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.sparta.whyncoming.common.s3.S3Util;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -37,6 +35,21 @@ public class S3TestController {
             return ResponseEntity.internalServerError().body("파일 업로드 오류: " + e.getMessage());
         } catch (IllegalArgumentException e){
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @Operation(summary = "S3 파일 삭제 테스트 (URL 기반)")
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteFileTest(@RequestParam("fileUrl") String fileUrl) {
+        if (fileUrl == null || fileUrl.isBlank()) {
+            return ResponseEntity.badRequest().body("삭제할 파일 URL을 입력해주세요.");
+        }
+
+        try {
+            s3Util.deleteFileByUrl(fileUrl);
+            return ResponseEntity.ok("S3 파일 삭제 성공: " + fileUrl);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("S3 파일 삭제 실패: " + e.getMessage());
         }
     }
 }
