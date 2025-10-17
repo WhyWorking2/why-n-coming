@@ -27,6 +27,12 @@ public class TossPaymentControllerV1 {
         this.service = service;
     }
 
+    @Operation(summary = "Toss Client Key 반환")
+    @GetMapping("/{orderId}/payment/client-key")
+    public Map<String, Object> getClientKey(@PathVariable UUID orderId) {
+        return service.getClientKey(orderId);
+    }
+
     @Operation(summary = "결제(Toss Payments 사용)")
     @GetMapping("/{orderId}/payment")
     public RedirectView showPaymentPage(@PathVariable String orderId) {
