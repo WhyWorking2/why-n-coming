@@ -167,6 +167,4 @@ public class ProductService {
         categoryList.addAll(categories);
         return categoryList;
     }
-
-
 }

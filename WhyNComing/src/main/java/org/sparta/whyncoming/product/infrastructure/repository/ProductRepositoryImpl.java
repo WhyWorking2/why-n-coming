@@ -56,7 +56,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .toList();
     }
 
-
     /**
      * 스토어와 카테고리 리스트를 포함한 모든 상품 조회 (삭제된 경우에도 조회 가능)
      * @return 반환될 전체 상품 리스트 쿼리
@@ -97,7 +96,6 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .distinct() // 중복 제거
                 .toList();
     }
-
 
     /**
      * 카테고리별 상품조회

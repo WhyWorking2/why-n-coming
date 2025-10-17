@@ -46,7 +46,6 @@ public class ProductActiveResponseDto {
         this.modifiedBy = product.getModifiedBy();
     }
 
-
     /**
      * 상품 전체 조회에 사용될 메서드 (삭제된 상품 제외)
      * @param productId

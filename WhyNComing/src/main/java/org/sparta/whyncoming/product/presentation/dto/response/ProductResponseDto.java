@@ -47,5 +47,4 @@ public class ProductResponseDto {
         this.createdBy = createdBy;
         this.modifiedBy = modifiedBy;
     }
-
 }
