@@ -19,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -26,6 +27,9 @@ public class TossPaymentServiceV1 {
 
     @Value("${toss.secret-key}")
     private String secretKey;
+
+    @Value("${toss.client-key}")
+    private String clientKey;
 
     private final WebClient webClient;
     private final OrderRepository orderRepository;
@@ -41,6 +45,17 @@ public class TossPaymentServiceV1 {
         this.orderRepository = orderRepository;
         this.deliveryRepository = deliveryRepository;
         this.userRepository = userRepository;
+    }
+
+    @Transactional
+    public Map<String, Object> getClientKey(UUID orderId) {
+        Order order = findOrderOrThrow(orderId);
+        int amount = order.getTotalPrice();
+
+        return Map.of(
+                "clientKey", clientKey,
+                "amount", amount
+        );
     }
 
     @Transactional
