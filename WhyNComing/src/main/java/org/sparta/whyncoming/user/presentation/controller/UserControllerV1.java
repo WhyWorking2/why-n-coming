@@ -17,8 +17,10 @@ import org.sparta.whyncoming.user.presentation.dto.request.SignUpUserRequestDtoV
 
 
 import org.sparta.whyncoming.user.presentation.dto.request.UpdateUserRequestDtoV1;
+import org.sparta.whyncoming.order.presentation.dto.response.ReviewWithReplyResponseDtoV1;
 import org.sparta.whyncoming.user.presentation.dto.response.SingUpUserResponseDtoV1;
 import org.sparta.whyncoming.user.presentation.dto.response.UpdateUserResponseDtoV1;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,12 +44,18 @@ public class UserControllerV1 {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @Operation(summary = "User 헬스체크")
+    @GetMapping("/db")
+    public ResponseEntity<ApiResult<String>> check() {
+        return ResponseUtil.success(userServiceV1.health());
+    }
+
     @Operation(summary = "User 회원 가입")
     @PostMapping("/signup")
     public ResponseEntity<ApiResult<SingUpUserResponseDtoV1>> signup(@Valid SignUpUserRequestDtoV1 requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if(fieldErrors.size() > 0) {
+        if (fieldErrors.size() > 0) {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
 
             }
@@ -55,12 +63,6 @@ public class UserControllerV1 {
         }
 
         return ResponseUtil.success("회원 생성 성공", userServiceV1.signup(requestDto));
-    }
-
-    @Operation(summary = "User 헬스체크")
-    @GetMapping("/db")
-    public ResponseEntity<ApiResult<String>> check() {
-        return ResponseUtil.success(userServiceV1.health());
     }
 
     @Operation(summary = "User 업데이트", security = @SecurityRequirement(name = "BearerAuth"))
@@ -71,17 +73,35 @@ public class UserControllerV1 {
             @Valid @RequestBody UpdateUserRequestDtoV1 request,
             BindingResult bindingResult
     ) {
-        if(userDetailsInfo == null){
-            return ResponseUtil.failure(ErrorCode.VALIDATION_FAILED, "로그인되어 있지 않습니다.");
-        }
+
         if (bindingResult.hasErrors()) {
             return ResponseUtil.failure(ErrorCode.VALIDATION_FAILED, "회원 수정 실패");
         }
         if (!passwordEncoder.matches(request.getOldPassword(), userDetailsInfo.getPassword())) {
-            throw new BusinessException(ErrorCode.UNAUTHORIZED,"현재 비밀번호를 확인해주세요.");
+            throw new BusinessException(ErrorCode.UNAUTHORIZED, "현재 비밀번호를 확인해주세요.");
         }
         // TODO: 서비스 호출 후 결과 리턴
         UpdateUserResponseDtoV1 response = userServiceV1.updateSelf(userDetailsInfo, request);
         return ResponseUtil.success("회원 수정 성공", response);
     }
+
+    @Operation(summary = "User 탈퇴", security = @SecurityRequirement(name = "BearerAuth"))
+    @DeleteMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResult<Void>> deleteMe(
+            @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo
+    ) {
+        if (userDetailsInfo == null) {
+            return ResponseUtil.failure(ErrorCode.UNAUTHORIZED, "로그인되어 있지 않습니다.");
+        }
+        userServiceV1.deleteSelf(userDetailsInfo);
+        return ResponseUtil.success("회원 탈퇴 성공", null);
+    }
+
+
+    //내가 쓴 리뷰 삭제
+
+    //내 주문 목록 조회
+    //내 주문 상세 조회
+
 }

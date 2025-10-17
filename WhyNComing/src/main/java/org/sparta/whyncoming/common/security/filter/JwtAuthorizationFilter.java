@@ -7,9 +7,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.sparta.whyncoming.common.exception.BusinessException;
+import org.sparta.whyncoming.common.exception.ErrorCode;
 import org.sparta.whyncoming.common.security.service.UserDetailsServiceImpl;
 import org.sparta.whyncoming.common.security.jwt.JwtUtil;
 
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -44,9 +47,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
-
             try {
                 setAuthentication(Integer.parseInt(info.getSubject()));
+            } catch (DisabledException de) {
+                // 탈퇴/비활성 사용자: 인증 거부 및 401 응답
+                log.warn("Blocked disabled user request: {}", de.getMessage());
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                res.setContentType("application/json;charset=UTF-8");
+                res.getWriter().write(ErrorCode.UNAUTHORIZED.getMessage());
+                return;
             } catch (Exception e) {
                 log.error(e.getMessage());
                 return;
@@ -68,6 +77,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     // 인증 객체 생성
     private Authentication createAuthentication(Integer userNo) {
         UserDetails userDetails = userDetailsService.loadUserByUserNo(userNo);
+        if (userDetails == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "사용자 정보를 찾을 수 없습니다.");
+        }
+        if (!userDetails.isEnabled()) {
+            // delete_date 등으로 비활성화된 사용자: 인증 차단
+            throw new BusinessException(ErrorCode.NOT_FOUND, "이미 탈퇴했거나 존재하지 않는 회원입니다.");
+        }
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }

@@ -41,4 +41,22 @@ public class Address extends BaseActorEntity {
         this.representativeYn = representativeYn;
         this.deliveries = deliveries;
     }
+
+    public Address(User user, String address, String representativeYn) {
+        this.user = user;
+        this.address = address;
+        this.representativeYn = representativeYn;
+    }
+
+    public void makeRepresentative() {
+        this.representativeYn = "Y";
+    }
+
+    public void makeNonRepresentative() {
+        this.representativeYn = "N";
+    }
+
+    public void setAddress(String address) {
+
+    }
 }
