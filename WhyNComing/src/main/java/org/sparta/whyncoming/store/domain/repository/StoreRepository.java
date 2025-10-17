@@ -3,6 +3,7 @@ package org.sparta.whyncoming.store.domain.repository;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +19,17 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findAllByUser_UserNoAndDeletedDateIsNull(Integer userNo);
     Optional<Store> findByStoreIdAndUser_UserNoAndDeletedDateIsNull(UUID storeId, Integer userId);
 
-    // 관리자 전용 (삭제 포함)
-    @Query("SELECT s FROM Store s")
-    List<Store> findAllIncludingDeleted();
+    @Query("""
+        select distinct s
+        from Store s
+        left join fetch s.storeImages si
+        """)
+    List<Store> findAllWithImagesForAdmin();
 
-    @Query("SELECT s FROM Store s WHERE s.storeId = :storeId")
-    Optional<Store> findAnyById(UUID storeId);
+    @Query("""
+        select s from Store s
+        left join fetch s.storeImages si
+        where s.storeId = :storeId
+        """)
+    Optional<Store> findByIdWithImages(@Param("storeId") UUID storeId);
 }
