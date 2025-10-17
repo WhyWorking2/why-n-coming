@@ -33,7 +33,7 @@ public class OrderControllerV1 {
         return ResponseUtil.success("주문 생성 성공", service.createOrder(req));
     }
 
-    @Operation(summary = "결제(API만)")
+    @Operation(summary = "기본 결제")
     @PostMapping("/{orderId}/payment-api")
     public ResponseEntity<ApiResult<OrderStatusResponseV1>> createPayment(
             @PathVariable UUID orderId,
