@@ -6,6 +6,7 @@ import org.sparta.whyncoming.product.domain.entity.Product;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductByCategoryResponseDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductActiveResponseDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductResponseDto;
+import org.sparta.whyncoming.product.presentation.dto.response.ProductSimpleResponseDto;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -128,6 +129,15 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         p.getModifiedBy()
                 ))
                 .distinct() // 필요하면
+                .toList();
+    }
+
+    @Override
+    public List<ProductSimpleResponseDto> findAllSimple() {
+        List<Product> products = em.createQuery("SELECT p FROM Product p WHERE p.deletedDate IS NULL", Product.class)
+                .getResultList();
+        return products.stream()
+                .map(p -> new ProductSimpleResponseDto(p.getProductId(), p.getProductName()))
                 .toList();
     }
 }
