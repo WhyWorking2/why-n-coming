@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Entity
 @Table(name = "products")
 @Getter
@@ -85,8 +84,5 @@ public class Product extends BaseActorEntity {
 
     public void delete() {
         this.markDeleted();
-        log.info("Product.delete() called - deletedDate set to {}", this.getDeletedDate());
     }
-
-
 }

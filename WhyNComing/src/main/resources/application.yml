@@ -28,6 +28,7 @@ spring:
     import:
       - optional:classpath:application-secret.yml
       - optional:classpath:application-jwt.yml
+      - optional:classpath:application-toss.yml
 
 security:
  bcrypt:

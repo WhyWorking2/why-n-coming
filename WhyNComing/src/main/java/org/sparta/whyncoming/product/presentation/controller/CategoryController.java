@@ -47,7 +47,6 @@ public class CategoryController {
         return ResponseEntity.ok(ApiResult.ofSuccess(categories));
     }
 
-
     /**
      * 카테고리 삭제
      * 관리자만 가능

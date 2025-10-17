@@ -21,10 +21,8 @@ public class ProductDetailResponseDto {
     private List<String> categoryNameList;
     private Instant createdDate;
     private Instant modifiedDate;
-    private String storeName;
     private Integer createdBy;
     private Integer modifiedBy;
-
 
     /**
      * 상품 상세 조회 시 사용될 Dto
