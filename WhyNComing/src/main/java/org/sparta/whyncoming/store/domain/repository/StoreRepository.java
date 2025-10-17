@@ -13,7 +13,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     Optional<Store> findByStoreName(String storeName);
     Optional<Store> findByStoreId(UUID storeId);
-    List<Store> findAllByDeletedDateIsNull();
     Optional<Store> findByStoreIdAndDeletedDateIsNull(UUID storeId);
 
     List<Store> findAllByUser_UserNoAndDeletedDateIsNull(Integer userNo);
@@ -32,4 +31,14 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
         where s.storeId = :storeId
         """)
     Optional<Store> findByIdWithImages(@Param("storeId") UUID storeId);
+
+    @Query("""
+        select distinct s
+        from CategoryStore cs
+          join cs.store s
+          left join fetch s.storeImages si
+        where cs.category.categoryId = :categoryId
+          and s.deletedDate is null
+        """)
+    List<Store> findActiveStoresWithImagesByCategory(@Param("categoryId") UUID categoryId);
 }
