@@ -6,6 +6,7 @@ import org.sparta.whyncoming.order.domain.entity.Delivery;
 import org.sparta.whyncoming.order.domain.entity.Order;
 import org.sparta.whyncoming.order.domain.enums.DeliveryStatus;
 import org.sparta.whyncoming.order.domain.enums.Status;
+import org.sparta.whyncoming.order.domain.repository.CartRepository;
 import org.sparta.whyncoming.order.domain.repository.DeliveryRepository;
 import org.sparta.whyncoming.order.domain.repository.OrderRepository;
 import org.sparta.whyncoming.order.presentation.dto.request.CreateOrderRequestV1;
@@ -33,17 +34,17 @@ public class OrderServiceV1 {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final AddressRepository addressRepository;
-    private final ProductRepository productRepository;
+    private final CartRepository cartRepository;
 
     public OrderServiceV1(OrderRepository orderRepository, DeliveryRepository deliveryRepository,
                           UserRepository userRepository, StoreRepository storeRepository,
-                          AddressRepository addressRepository, ProductRepository productRepository) {
+                          AddressRepository addressRepository, CartRepository cartRepository) {
         this.orderRepository = orderRepository;
         this.deliveryRepository = deliveryRepository;
         this.userRepository = userRepository;
         this.storeRepository = storeRepository;
         this.addressRepository = addressRepository;
-        this.productRepository = productRepository;
+        this.cartRepository = cartRepository;
     }
 
     // 주문 요청
@@ -56,14 +57,7 @@ public class OrderServiceV1 {
         Store store = storeRepository.findByStoreId(req.getStoreId())
                 .orElseThrow(() -> new IllegalArgumentException("입점주가 존재하지 않습니다."));
 
-        List<Cart> carts = req.getItems().stream()
-                .map(item -> {
-                    Product product = productRepository.findByProductId(item.getProductId())
-                            .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다. ID: " + item.getProductId()));
-
-                    return new Cart(store, product, null, user, item.getQuantity());
-                })
-                .toList();
+        List<Cart> carts = cartRepository.findAllById(req.getCartIds());
 
         int totalPrice = carts.stream()
                 .mapToInt(cart -> cart.getProduct().getPrice() * cart.getQuantity())
@@ -72,10 +66,10 @@ public class OrderServiceV1 {
         Order order = new Order(
                 store,
                 user,
-                null,
+                "CARD",
                 totalPrice,
                 null,
-                Status.CREATED,
+                Status.SUCCESS,
                 null,
                 carts,
                 null

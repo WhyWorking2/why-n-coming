@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/order")
-@Tag(name = "Order", description = "주문 데이터 API")
+@Tag(name = "Delivery", description = "배달 데이터 API")
 public class DeliveryControllerV1 {
     private final DeliveryServiceV1 service;
 
