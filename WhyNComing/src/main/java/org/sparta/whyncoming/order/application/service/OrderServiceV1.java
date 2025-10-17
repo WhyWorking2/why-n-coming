@@ -6,11 +6,14 @@ import org.sparta.whyncoming.order.domain.entity.Delivery;
 import org.sparta.whyncoming.order.domain.entity.Order;
 import org.sparta.whyncoming.order.domain.enums.DeliveryStatus;
 import org.sparta.whyncoming.order.domain.enums.Status;
+import org.sparta.whyncoming.order.domain.repository.CartRepository;
 import org.sparta.whyncoming.order.domain.repository.DeliveryRepository;
 import org.sparta.whyncoming.order.domain.repository.OrderRepository;
 import org.sparta.whyncoming.order.presentation.dto.request.CreateOrderRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.request.CreatePaymentRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.*;
+import org.sparta.whyncoming.product.domain.entity.Product;
+import org.sparta.whyncoming.product.domain.repository.ProductRepository;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.store.domain.repository.StoreRepository;
 import org.sparta.whyncoming.user.domain.entity.Address;
@@ -31,14 +34,17 @@ public class OrderServiceV1 {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final AddressRepository addressRepository;
+    private final CartRepository cartRepository;
 
     public OrderServiceV1(OrderRepository orderRepository, DeliveryRepository deliveryRepository,
-                          UserRepository userRepository, StoreRepository storeRepository, AddressRepository addressRepository) {
+                          UserRepository userRepository, StoreRepository storeRepository,
+                          AddressRepository addressRepository, CartRepository cartRepository) {
         this.orderRepository = orderRepository;
         this.deliveryRepository = deliveryRepository;
         this.userRepository = userRepository;
         this.storeRepository = storeRepository;
         this.addressRepository = addressRepository;
+        this.cartRepository = cartRepository;
     }
 
     // 주문 요청
@@ -51,20 +57,19 @@ public class OrderServiceV1 {
         Store store = storeRepository.findByStoreId(req.getStoreId())
                 .orElseThrow(() -> new IllegalArgumentException("입점주가 존재하지 않습니다."));
 
-        int totalPrice = req.getItems().stream()
+        List<Cart> carts = cartRepository.findAllById(req.getCartIds());
+
+        int totalPrice = carts.stream()
                 .mapToInt(cart -> cart.getProduct().getPrice() * cart.getQuantity())
                 .sum();
-
-        List<Cart> carts = req.getItems();
-        //carts.forEach(cart -> cart.setOrder(order)); // Order와 Cart 사이 mapping인데 당장 필요 없음
 
         Order order = new Order(
                 store,
                 user,
-                null,
+                "CARD",
                 totalPrice,
                 null,
-                Status.CREATED,
+                Status.SUCCESS,
                 null,
                 carts,
                 null
