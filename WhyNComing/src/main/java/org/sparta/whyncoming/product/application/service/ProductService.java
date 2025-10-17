@@ -1,6 +1,5 @@
 package org.sparta.whyncoming.product.application.service;
 
-import lombok.extern.slf4j.Slf4j;
 import org.sparta.whyncoming.common.exception.BusinessException;
 import org.sparta.whyncoming.common.exception.ErrorCode;
 import org.sparta.whyncoming.common.s3.S3Util;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.UUID;
 
 
-@Slf4j
 @Service
 @Transactional
 public class ProductService {
