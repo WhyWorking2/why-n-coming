@@ -11,6 +11,8 @@ import org.sparta.whyncoming.order.domain.repository.OrderRepository;
 import org.sparta.whyncoming.order.presentation.dto.request.CreateOrderRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.request.CreatePaymentRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.*;
+import org.sparta.whyncoming.product.domain.entity.Product;
+import org.sparta.whyncoming.product.domain.repository.ProductRepository;
 import org.sparta.whyncoming.store.domain.entity.Store;
 import org.sparta.whyncoming.store.domain.repository.StoreRepository;
 import org.sparta.whyncoming.user.domain.entity.Address;
@@ -31,14 +33,17 @@ public class OrderServiceV1 {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final AddressRepository addressRepository;
+    private final ProductRepository productRepository;
 
     public OrderServiceV1(OrderRepository orderRepository, DeliveryRepository deliveryRepository,
-                          UserRepository userRepository, StoreRepository storeRepository, AddressRepository addressRepository) {
+                          UserRepository userRepository, StoreRepository storeRepository,
+                          AddressRepository addressRepository, ProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.deliveryRepository = deliveryRepository;
         this.userRepository = userRepository;
         this.storeRepository = storeRepository;
         this.addressRepository = addressRepository;
+        this.productRepository = productRepository;
     }
 
     // 주문 요청
@@ -51,12 +56,18 @@ public class OrderServiceV1 {
         Store store = storeRepository.findByStoreId(req.getStoreId())
                 .orElseThrow(() -> new IllegalArgumentException("입점주가 존재하지 않습니다."));
 
-        int totalPrice = req.getItems().stream()
+        List<Cart> carts = req.getItems().stream()
+                .map(item -> {
+                    Product product = productRepository.findByProductId(item.getProductId())
+                            .orElseThrow(() -> new IllegalArgumentException("상품이 존재하지 않습니다. ID: " + item.getProductId()));
+
+                    return new Cart(store, product, null, user, item.getQuantity());
+                })
+                .toList();
+
+        int totalPrice = carts.stream()
                 .mapToInt(cart -> cart.getProduct().getPrice() * cart.getQuantity())
                 .sum();
-
-        List<Cart> carts = req.getItems();
-        //carts.forEach(cart -> cart.setOrder(order)); // Order와 Cart 사이 mapping인데 당장 필요 없음
 
         Order order = new Order(
                 store,

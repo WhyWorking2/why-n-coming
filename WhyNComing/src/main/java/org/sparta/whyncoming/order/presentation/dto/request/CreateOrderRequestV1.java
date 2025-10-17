@@ -16,6 +16,18 @@ import java.util.UUID;
 @Schema(description = "주문 요청 DTO")
 public class CreateOrderRequestV1 {
 
+    @Getter
+    @NoArgsConstructor
+    public static class OrderItemRequest {
+        UUID productId;
+        int quantity;
+
+        public OrderItemRequest(UUID productId, int quantity) {
+            this.productId = productId;
+            this.quantity = quantity;
+        }
+    }
+
     @Schema(description = "회원번호", example = "101")
     @NotBlank(message = "회원번호는 필수입니다.")
     private Integer userNo;
@@ -27,6 +39,6 @@ public class CreateOrderRequestV1 {
     @Schema(description = "장바구니 아이템 목록")
     @NotNull(message = "주문 항목 리스트는 필수입니다.")
     @Size(min = 1, message = "주문 항목은 최소 한 개 이상이어야 합니다.")
-    private List<Cart> items;
+    private List<OrderItemRequest> items;
 }
 
