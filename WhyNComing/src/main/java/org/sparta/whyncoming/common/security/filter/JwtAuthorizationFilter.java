@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.sparta.whyncoming.common.exception.BusinessException;
 import org.sparta.whyncoming.common.exception.ErrorCode;
+import org.sparta.whyncoming.common.security.auth.AuthVersionProvider;
 import org.sparta.whyncoming.common.security.service.UserDetailsServiceImpl;
 import org.sparta.whyncoming.common.security.jwt.JwtUtil;
 
@@ -28,16 +29,21 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final AuthVersionProvider authVersionProvider;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil,
+                                  UserDetailsServiceImpl userDetailsService,
+                                  AuthVersionProvider authVersionProvider) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.authVersionProvider = authVersionProvider;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
         String tokenValue = jwtUtil.getJwtFromHeader(req);
+
 
         if (StringUtils.hasText(tokenValue)) {
 
@@ -47,6 +53,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            // token, claims, userId, tokenVer 추출 이후에 추가
+            Integer tokenVer = info.get("authVersion", Integer.class);
+            if (tokenVer == null) {
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+
+            int currentVer = authVersionProvider.currentVersion(Integer.parseInt(info.getSubject()));
+            if (tokenVer.intValue() != currentVer) {
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
             try {
                 setAuthentication(Integer.parseInt(info.getSubject()));
             } catch (DisabledException de) {

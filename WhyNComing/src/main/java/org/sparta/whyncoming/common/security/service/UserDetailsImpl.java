@@ -1,6 +1,7 @@
 package org.sparta.whyncoming.common.security.service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.sparta.whyncoming.user.domain.enums.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Slf4j
 public class UserDetailsImpl implements CustomUserDetails {
 
     private final User user;
@@ -45,6 +47,9 @@ public class UserDetailsImpl implements CustomUserDetails {
     public UserRoleEnum getRole() {
         return user.getRole();
     }
+
+    @Override
+    public Integer getAuthVersion() {return user.getAuthVersion(); }
 
     public String getEmail() {
         return user.getEmail();
