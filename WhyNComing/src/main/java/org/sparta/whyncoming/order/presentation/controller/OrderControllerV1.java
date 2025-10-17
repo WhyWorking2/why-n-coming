@@ -9,6 +9,7 @@ import org.sparta.whyncoming.order.presentation.dto.request.CreateOrderRequestV1
 import org.sparta.whyncoming.order.presentation.dto.request.CreatePaymentRequestV1;
 import org.sparta.whyncoming.order.presentation.dto.response.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -74,6 +75,7 @@ public class OrderControllerV1 {
     }
 
     @Operation(summary = "입점주 주문 리스트 조회")
+    @PreAuthorize("hasRole('OWNER')")
     @GetMapping("/store")
     public ResponseEntity<ApiResult<List<GetStoreOrderListResponseV1>>> getStoreOrderList(
             @RequestParam(required = false) UUID storeId
@@ -82,6 +84,7 @@ public class OrderControllerV1 {
     }
 
     @Operation(summary = "입점주 주문 상세 조회")
+    @PreAuthorize("hasRole('OWNER')")
     @GetMapping("/store/{orderId}")
     public ResponseEntity<ApiResult<GetStoreOrderDetailResponseV1>> getStoreOrderDetail(
             @PathVariable UUID orderId

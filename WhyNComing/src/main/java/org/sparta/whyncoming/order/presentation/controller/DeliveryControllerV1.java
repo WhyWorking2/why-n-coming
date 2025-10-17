@@ -7,6 +7,7 @@ import org.sparta.whyncoming.common.response.ResponseUtil;
 import org.sparta.whyncoming.order.application.service.DeliveryServiceV1;
 import org.sparta.whyncoming.order.presentation.dto.response.DeliveryStatusResponseV1;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -30,6 +31,7 @@ public class DeliveryControllerV1 {
     }
 
     @Operation(summary = "배달 수락")
+    @PreAuthorize("hasRole('OWNER')")
     @PostMapping("/store/{orderId}/accept")
     public ResponseEntity<ApiResult<DeliveryStatusResponseV1>> acceptDelivery(
             @PathVariable UUID orderId
@@ -38,6 +40,7 @@ public class DeliveryControllerV1 {
     }
 
     @Operation(summary = "조리 완료")
+    @PreAuthorize("hasRole('OWNER')")
     @PostMapping("/store/{orderId}/cooked")
     public ResponseEntity<ApiResult<DeliveryStatusResponseV1>> cookedDelivery(
             @PathVariable UUID orderId
@@ -46,6 +49,7 @@ public class DeliveryControllerV1 {
     }
 
     @Operation(summary = "배달 시작")
+    @PreAuthorize("hasRole('OWNER')")
     @PostMapping("/store/{orderId}/deliverying")
     public ResponseEntity<ApiResult<DeliveryStatusResponseV1>> startDelivery(
             @PathVariable UUID orderId
@@ -54,6 +58,7 @@ public class DeliveryControllerV1 {
     }
 
     @Operation(summary = "배달 완료")
+    @PreAuthorize("hasRole('OWNER')")
     @PostMapping("/store/{orderId}/deliveryed")
     public ResponseEntity<ApiResult<DeliveryStatusResponseV1>> completeDelivery(
             @PathVariable UUID orderId
