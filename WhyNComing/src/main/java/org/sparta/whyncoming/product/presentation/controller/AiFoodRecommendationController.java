@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.sparta.whyncoming.common.response.ApiResult;
 import org.sparta.whyncoming.product.application.service.AiFoodRecommendationService;
+import org.sparta.whyncoming.product.presentation.dto.response.ProductAiResponseDto;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class AiFoodRecommendationController {
 
     @Operation(summary = "AI를 활용한 배달 음식 추천")
     @PostMapping("/recommend")
-    public ResponseEntity<ApiResult<String>> recommendFood(@RequestParam String text) {
-        return ResponseEntity.ok(ApiResult.ofSuccess(aiFoodRecommendationService.recommendFood(text)));
+    public ResponseEntity<ApiResult<ProductAiResponseDto>> recommendFood(@RequestParam String foodPreference) {
+        return ResponseEntity.ok(ApiResult.ofSuccess(aiFoodRecommendationService.recommendFood(foodPreference)));
     }
 }
