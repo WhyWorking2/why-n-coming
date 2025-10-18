@@ -28,4 +28,6 @@ public interface CustomUserDetails extends UserDetails {
 
     /** 역할 (users.role) */
     UserRoleEnum getRole();
+
+    Integer getAuthVersion();
 }

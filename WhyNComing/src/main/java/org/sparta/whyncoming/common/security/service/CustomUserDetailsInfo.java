@@ -47,6 +47,11 @@ public class CustomUserDetailsInfo implements CustomUserDetails{
     }
 
     @Override
+    public Integer getAuthVersion() {return user.getAuthVersion();}
+
+
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // user.getRole()이 null이 아니면 "ROLE_"를 붙여서 반환
         UserRoleEnum role = user.getRole();

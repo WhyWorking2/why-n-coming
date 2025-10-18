@@ -43,7 +43,7 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(Integer userNo, String userId, UserRoleEnum role) {
+    public String createToken(Integer userNo, String userId, UserRoleEnum role, Integer authVersion) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -51,6 +51,7 @@ public class JwtUtil {
                         .setSubject(String.valueOf(userNo)) // ✅ DB 식별자 user_no 를 subject로
                         .claim("userId", userId)            // 로그인 ID (조회용)
                         .claim(AUTHORIZATION_KEY, role)     // 권한
+                        .claim("authVersion", authVersion)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME))
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)

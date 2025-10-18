@@ -43,7 +43,10 @@ public class User extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private UserRoleEnum role = UserRoleEnum.CUSTOMER; // 기본값 CUSTOMER
+    private UserRoleEnum role = UserRoleEnum.CUSTOMER;
+
+    @Column(nullable = false)
+    private Integer authVersion = 1;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
@@ -103,5 +106,9 @@ public class User extends BaseTimeEntity {
     public void updateEmail(String newEmail) {
         this.email = newEmail;
     }
-}
+    public void updateRole(UserRoleEnum newRole) {this.role = newRole;}
 
+    public void increaseAuthVersion() {
+        this.authVersion += 1;
+    }
+}

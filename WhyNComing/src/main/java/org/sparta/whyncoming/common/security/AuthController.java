@@ -36,7 +36,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse LoginResponse) {
 
-        String token = jwtUtil.createToken(request.userNo(), request.userId, request.role);
+        String token = jwtUtil.createToken(request.userNo(), request.userId, request.role, request.authVersion);
         LoginResponse.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
         return ResponseEntity.ok(new LoginResponse(token));
     }
@@ -45,7 +45,8 @@ public class AuthController {
     public record LoginRequest(
             @Schema(example = "1") Integer userNo,
             @Schema(example = "user01") String userId,
-            @Schema(example = "MANAGER") UserRoleEnum role
+            @Schema(example = "MANAGER") UserRoleEnum role,
+            @Schema(example = "1") Integer authVersion
 
     ) {}
 

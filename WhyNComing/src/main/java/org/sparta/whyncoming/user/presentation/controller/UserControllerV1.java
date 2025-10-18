@@ -98,10 +98,4 @@ public class UserControllerV1 {
         return ResponseUtil.success("회원 탈퇴 성공", null);
     }
 
-
-    //내가 쓴 리뷰 삭제
-
-    //내 주문 목록 조회
-    //내 주문 상세 조회
-
 }

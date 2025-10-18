@@ -28,5 +28,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     int softDeleteByUserNo(@Param("userNo") Integer userNo,
                            @Param("deleteDate") Instant deleteDate);
 
+    @Query("""
+        select u.authVersion
+          from User u
+         where u.userNo = :userNo
+    """)
+    Optional<Integer> findAuthVersionByUserId(@Param("userNo") Integer userNo);
 
 }
