@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS public.users
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.users
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.stores
 (
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS public.stores
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.stores
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.categories
 (
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS public.categories
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.categories
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.products
 (
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS public.products
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.products
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.orders
 (
@@ -176,7 +176,7 @@ CREATE TABLE IF NOT EXISTS public.orders
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.orders
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.addresses
 (
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS public.addresses
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.addresses
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.deliveries
 (
@@ -248,7 +248,7 @@ CREATE TABLE IF NOT EXISTS public.deliveries
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.deliveries
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.reviews
 (
@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS public.reviews
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.reviews
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.owner_reviews
 (
@@ -325,7 +325,7 @@ CREATE TABLE IF NOT EXISTS public.owner_reviews
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.owner_reviews
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.carts
 (
@@ -369,7 +369,7 @@ CREATE TABLE IF NOT EXISTS public.carts
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.carts
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.category_products
 (
@@ -402,7 +402,7 @@ CREATE TABLE IF NOT EXISTS public.category_products
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.category_products
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.category_stores
 (
@@ -435,7 +435,7 @@ CREATE TABLE IF NOT EXISTS public.category_stores
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.category_stores
-    OWNER to "user";
+    OWNER to app_user;
 
 CREATE TABLE IF NOT EXISTS public.store_images
 (
@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS public.store_images
     TABLESPACE pg_default;
 
 ALTER TABLE IF EXISTS public.store_images
-    OWNER to "user";
+    OWNER to app_user;
 
 -- === Auto-update modified_date triggers ===
 DROP TRIGGER IF EXISTS trg_users_set_modified ON public.users;
