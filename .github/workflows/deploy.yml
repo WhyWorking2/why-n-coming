@@ -1,7 +1,7 @@
 name: PR Build & Deploy to EC2 (deploy branch)
 
 on:
-  # ✅ PR 검증: master에서 deploy로 PR 보낼 때 동작
+  # ✅ PR 검증: master에서 deploy로 PR 보낼 때 동작 되어라 제발
   pull_request:
     branches: [ "deploy" ]
     types: [ opened, synchronize, reopened, ready_for_review ]
