@@ -57,18 +57,18 @@ jobs:
         working-directory: WhyNComing
         run: ./gradlew clean build -x test --no-daemon
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Docker build (no push)
-        uses: docker/build-push-action@v6
-        with:
-          context: ${{ env.BUILD_CONTEXT }}
-          file: ${{ env.DOCKERFILE_PATH }}
-          push: false
-          tags: ${{ env.IMAGE_NAME }}:pr-${{ github.event.pull_request.number }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#
+#      - name: Docker build (no push)
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: ${{ env.BUILD_CONTEXT }}
+#          file: ${{ env.DOCKERFILE_PATH }}
+#          push: false
+#          tags: ${{ env.IMAGE_NAME }}:pr-${{ github.event.pull_request.number }}
+#          cache-from: type=gha
+#          cache-to: type=gha,mode=max
 
   # 🔹 prod 브랜치로 push 되었을 때 실제 이미지 빌드 & GHCR 푸시
   build-and-push:
