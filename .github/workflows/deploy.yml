@@ -123,12 +123,37 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
           script: |
-            set -e
+            set -euo pipefail
             cd /opt/app
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin || true
 
-            export IMAGE_TAG=${{ github.sha }}   
-            docker compose -f docker-compose.prod.yml pull
-            docker compose -f docker-compose.prod.yml up -d --pull always
+            # 0) (선택) 현재 compose 확인
+            echo "== docker-compose.prod.yml =="
+            sed -n '1,120p' docker-compose.prod.yml
 
+            # 1) GHCR 로그인 (실패 숨기지 말 것)
+            docker logout ghcr.io || true
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+            # 2) 이번 릴리스 태그(정확히 CI가 푸시한 SHA)
+            export IMAGE_TAG=${{ github.sha }}
+            export IMAGE=ghcr.io/whyworking2/why-n-coming
+
+            echo "Will deploy: ${IMAGE}:${IMAGE_TAG}"
+
+            # 3) 미리 해당 태그가 실제 존재하는지 확인 (존재 안하면 여기서 실패)
+            docker pull ${IMAGE}:${IMAGE_TAG}
+
+            # 4) 캐시된 latest/old 제거(선택) → 항상 새로 가져오게
+            docker rmi ${IMAGE}:latest || true
+
+            # 5) compose로 pull + 재생성 강제 (변수 주입)
+            IMAGE_TAG=${IMAGE_TAG} docker compose -f docker-compose.prod.yml pull
+            IMAGE_TAG=${IMAGE_TAG} docker compose -f docker-compose.prod.yml up -d --pull always --force-recreate --no-deps app
+
+            # 6) 상태 확인
+            docker compose -f docker-compose.prod.yml ps
+            docker compose -f docker-compose.prod.yml images
+            docker inspect --format='{{.Id}} {{.RepoTags}} {{.RepoDigests}}' ${IMAGE}:${IMAGE_TAG}
+
+            # 7) 청소
             docker image prune -f
