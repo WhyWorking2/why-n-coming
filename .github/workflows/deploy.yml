@@ -8,10 +8,11 @@ on:
     branches: [ "prod" ]
   workflow_dispatch: {}
 
+# ✅ GitHub Actions 권한을 직접 명시 (조직 정책에 막혀도 작동)
 permissions:
-  contents: read
-  packages: write
-  id-token: write
+  contents: read        # 코드 checkout 권한
+  packages: write       # GHCR에 Docker 이미지 Push 권한
+  id-token: write       # (OIDC 사용 시 필요)
 
 concurrency:
   group: deploy-prod
@@ -23,6 +24,7 @@ env:
   DOCKERFILE_PATH: ./WhyNComing/Dockerfile
 
 jobs:
+  # 🔹 PR 시에만 실행되는 빌드 검증용 Job
   pr-verify:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
@@ -43,6 +45,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+          cache: 'gradle'
 
       - name: Gradle build
         working-directory: WhyNComing
@@ -61,6 +64,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # 🔹 prod 브랜치로 push 되었을 때 실제 이미지 빌드 & GHCR 푸시
   build-and-push:
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
@@ -79,7 +83,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to GHCR (GITHUB_TOKEN)
+      - name: Log in to GHCR (using GITHUB_TOKEN)
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -98,6 +102,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # 🔹 EC2로 SSH 접속하여 최신 이미지 배포
   deploy:
     if: ${{ github.event_name == 'push' }}
     needs: build-and-push
