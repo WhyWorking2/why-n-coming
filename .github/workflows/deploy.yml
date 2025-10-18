@@ -1,13 +1,13 @@
-name: PR Build & Deploy to EC2 (deploy branch)
+name: PR Build & Deploy to EC2 (prod branch)
 
 on:
-  # ✅ PR 검증: master에서 deploy로 PR 보낼 때 동작
+  # ✅ PR 검증: master에서 prod로 PR 보낼 때 동작
   pull_request:
-    branches: [ "deploy" ]
+    branches: [ "prod" ]
     types: [ opened, synchronize, reopened, ready_for_review ]
-  # ✅ 실제 배포: deploy 브랜치에 머지(= push)되면 동작
+  # ✅ 실제 배포: prod 브랜치에 머지(= push)되면 동작
   push:
-    branches: [ "deploy" ]
+    branches: [ "prod" ]
 
 permissions:
   contents: read
@@ -15,12 +15,12 @@ permissions:
   id-token: write
 
 concurrency:
-  group: deploy-branch-deploy
+  group: deploy-prod
   cancel-in-progress: false
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/$(echo $GITHUB_REPOSITORY | cut -d'/' -f2)
-  DOCKER_CONTEXT: ./WhyNComing
+  IMAGE_NAME: ghcr.io/whyworking2/why-n-coming    # 소문자 고정
+  DOCKER_CONTEXT: ./WhyNComing               # Dockerfile 있는 디렉토리
 
 jobs:
   # -----------------------------
@@ -29,7 +29,7 @@ jobs:
   pr-verify:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
-    name: PR Build (deploy target)
+    name: PR Build (prod target)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,13 +40,14 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Gradle build (no test skip)
+      - name: Gradle build
         working-directory: spring
         run: ./gradlew clean build --no-daemon
 
-      # 선택: 도커 이미지까지 로컬 빌드해 검증(푸시는 안 함)
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      # 도커 이미지 로컬 빌드 검증(푸시 안 함)
       - name: Docker build (no push)
         uses: docker/build-push-action@v6
         with:
@@ -57,13 +58,13 @@ jobs:
           cache-to: type=gha,mode=max
 
   # -----------------------------
-  # 2) 배포 — deploy 브랜치에 push 시(= 머지 후)만 실행
+  # 2) 배포 — prod 브랜치에 push 시(= 머지 후)만 실행
   #    빌드 & GHCR 푸시 → EC2에 배포
   # -----------------------------
   build-and-push:
     if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
-    name: Build & Push Image (deploy)
+    name: Build & Push Image (prod)
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -71,12 +72,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to GHCR
+      - name: Log in to GHCR (GITHUB_TOKEN)
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & Push
         uses: docker/build-push-action@v6
@@ -105,7 +106,8 @@ jobs:
           script: |
             set -e
             cd /opt/app
-            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+            # 패키지가 Private이면 로그인 필요. Public이면 이 줄 지워도 됨.
+            echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin || true
             docker compose -f docker-compose.prod.yml pull
             docker compose -f docker-compose.prod.yml up -d
             docker image prune -f
