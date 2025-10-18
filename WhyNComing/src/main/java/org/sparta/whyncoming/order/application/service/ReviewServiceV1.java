@@ -101,7 +101,7 @@ public class ReviewServiceV1 {
         }
 
         // 리뷰 조회 (없으면 404 성격의 비즈니스 예외)
-        Review review = reviewRepository.findById(reviewId)
+        Review review = reviewRepository.findByReviewId(reviewId)
                 .orElseThrow(() -> new BusinessException(
                         ErrorCode.NOT_FOUND,
                         "삭제할 리뷰를 찾을 수 없습니다."));
@@ -119,7 +119,7 @@ public class ReviewServiceV1 {
         }
 
         // 삭제 처리 (소프트 삭제 정책이 있다면 여기서 상태/일시 업데이트로 교체)
-        reviewRepository.deleteById(reviewId);
+        reviewRepository.deleteByReviewId(reviewId);
     }
 
 }
