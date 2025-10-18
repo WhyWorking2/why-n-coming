@@ -20,7 +20,7 @@ concurrency:
 
 env:
   IMAGE_NAME: ghcr.io/whyworking2/why-n-coming
-  DOCKER_CONTEXT: ./WhyNComing
+  DOCKER_CONTEXT: .
   DOCKERFILE_PATH: ./WhyNComing/Dockerfile
 
 jobs:
