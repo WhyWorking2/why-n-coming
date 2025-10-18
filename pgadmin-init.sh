@@ -8,8 +8,8 @@ cat >/pgadmin4/servers.json <<EOF
       "Group": "Servers",
       "Host": "db",
       "Port": 5432,
-      "MaintenanceDB": "${POSTGRES_DB}",
-      "Username": "${POSTGRES_USER}",
+      "MaintenanceDB": "whyncoming",
+      "Username": "user",
       "SSLMode": "prefer",
       "PassFile": "/pgpass"
     }
@@ -17,7 +17,7 @@ cat >/pgadmin4/servers.json <<EOF
 }
 EOF
 
-echo "db:5432:${POSTGRES_DB}:${POSTGRES_USER}:${POSTGRES_PASSWORD}" > /pgpass
+echo "db:5432:whyncoming:user:1234" > /pgpass
 chmod 600 /pgpass
 chown 5050:5050 /pgpass /pgadmin4/servers.json   # ★ 중요
 

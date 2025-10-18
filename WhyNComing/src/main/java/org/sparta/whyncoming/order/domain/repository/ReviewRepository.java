@@ -41,4 +41,7 @@ public interface ReviewRepository extends JpaRepository<Review, UUID> {
         """)
     List<Review> findDetailedActiveByStoreId(UUID storeId);
 
+    Optional<Review> findByReviewId(UUID reviewId);
+
+    void deleteByReviewId(UUID reviewId);
 }
