@@ -1,16 +1,19 @@
-version: "3.9"
-
 services:
   app:
     image: ghcr.io/whyworking2/why-n-coming:latest
-    container_name: whyncoming
-    restart: unless-stopped
-    ports:
-      - "8080:8080"
+    container_name: why-n-coming
+    restart: always
     env_file:
       - .env
+    environment:
+      - SPRING_CONFIG_ADDITIONAL_LOCATION=file:/opt/app/secret/
+      - SPRING_PROFILES_ACTIVE=prod,secret
+    volumes:
+      - /opt/app/secret:/opt/app/secret:ro
+    ports:
+      - "8080:8080"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD-SHELL", "curl -fsSL -o /dev/null http://localhost:8080/"]
       interval: 10s
-      timeout: 5s
-      retries: 5
+      timeout: 3s
+      retries: 10
