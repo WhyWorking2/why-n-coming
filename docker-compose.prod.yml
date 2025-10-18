@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/whyworking2/why-n-coming:latest
+    image: ghcr.io/whyworking2/why-n-coming:${IMAGE_TAG:-latest}
     container_name: why-n-coming
     restart: always
     env_file:
