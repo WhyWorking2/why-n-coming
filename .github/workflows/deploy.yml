@@ -20,7 +20,7 @@ concurrency:
 
 env:
   IMAGE_NAME: ghcr.io/whyworking2/why-n-coming
-  DOCKER_CONTEXT: .
+  BUILD_CONTEXT: .
   DOCKERFILE_PATH: ./WhyNComing/Dockerfile
 
 jobs:
@@ -47,6 +47,12 @@ jobs:
           java-version: '21'
           cache: 'gradle'
 
+      - name: Fix gradlew permission & line endings
+        working-directory: WhyNComing
+        run: |
+          chmod +x gradlew
+          sed -i 's/\r$//' gradlew
+
       - name: Gradle build
         working-directory: WhyNComing
         run: ./gradlew clean build --no-daemon
@@ -57,7 +63,7 @@ jobs:
       - name: Docker build (no push)
         uses: docker/build-push-action@v6
         with:
-          context: ${{ env.DOCKER_CONTEXT }}
+          context: ${{ env.BUILD_CONTEXT }}
           file: ${{ env.DOCKERFILE_PATH }}
           push: false
           tags: ${{ env.IMAGE_NAME }}:pr-${{ github.event.pull_request.number }}
