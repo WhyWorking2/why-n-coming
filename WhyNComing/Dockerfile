@@ -1,9 +1,11 @@
 FROM eclipse-temurin:17-jdk AS builder
 WORKDIR /app
 
-COPY gradlew .
+COPY gradlew gradlew
 COPY gradle gradle
-COPY build.gradle settings.gradle ./
+COPY build.gradle* settings.gradle* gradle.properties* ./
+
+RUN chmod +x gradlew && sed -i 's/\r$//' gradlew
 RUN ./gradlew dependencies --no-daemon || true
 
 COPY src src
