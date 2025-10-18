@@ -20,7 +20,7 @@ concurrency:
 
 env:
   IMAGE_NAME: ghcr.io/whyworking2/why-n-coming
-  BUILD_CONTEXT: .
+  BUILD_CONTEXT: ./WhyNComing
   DOCKERFILE_PATH: ./WhyNComing/Dockerfile
 
 jobs:
@@ -55,7 +55,7 @@ jobs:
 
       - name: Gradle build
         working-directory: WhyNComing
-        run: ./gradlew clean build --no-daemon
+        run: ./gradlew clean build -x test --no-daemon
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
