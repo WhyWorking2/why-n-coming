@@ -115,22 +115,13 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy to EC2
     steps:
-      - name: Ensure /opt/app exists and writable
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER || 'ubuntu' }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script_stop: true
-          script: |
-            set -euo pipefail
-            sudo mkdir -p /opt/app
-            sudo chown $USER:$USER /opt/app
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Print local compose sha256 (for compare)
         run: |
           echo "LOCAL docker-compose.prod.yml SHA256:"
-          sha256sum docker-compose.prod.yml || shasum -a 256 docker-compose.prod.yml || true
+          sha256sum docker-compose.prod.yml || shasum -a 256 docker-compose.prod.yml
 
       - name: Upload latest docker-compose.prod.yml to EC2 (overwrite)
         uses: appleboy/scp-action@v0.1.7
@@ -142,20 +133,6 @@ jobs:
           target: "/opt/app/"
           overwrite: true
 
-      - name: Verify remote compose sha256 and content
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER || 'ubuntu' }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script_stop: true
-          script: |
-            set -euo pipefail
-            cd /opt/app
-            echo "REMOTE docker-compose.prod.yml SHA256:"
-            sha256sum docker-compose.prod.yml || shasum -a 256 docker-compose.prod.yml || true
-            echo "== HEAD of remote docker-compose.prod.yml =="
-            sed -n '1,80p' docker-compose.prod.yml
       - name: SSH to EC2 and deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -163,32 +140,22 @@ jobs:
           username: ${{ secrets.EC2_USER || 'ubuntu' }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script_stop: true
-          debug: true
           script: |
             set -euo pipefail
-            set -x
-
             cd /opt/app
+            echo "== docker-compose.prod.yml =="
+            sha256sum docker-compose.prod.yml || true
+            sed -n '1,120p' docker-compose.prod.yml
 
-            # compose 파일 경로 확정적으로 지정
-            COMPOSE="-f /opt/app/docker-compose.prod.yml"
-
-            # 어떤 compose 파일을 참조하는지 명시 출력
-            echo "Using compose file: ${COMPOSE}"
-
-            # GHCR 로그인 (username/token 필수)
             docker logout ghcr.io || true
             echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
 
             export IMAGE_TAG=${{ github.sha }}
             export IMAGE=ghcr.io/whyworking2/why-n-coming
 
-            # 태그 존재 검증
             docker pull ${IMAGE}:${IMAGE_TAG}
+            IMAGE_TAG=${IMAGE_TAG} docker compose -f docker-compose.prod.yml pull app
+            IMAGE_TAG=${IMAGE_TAG} docker compose -f docker-compose.prod.yml up -d --pull always --force-recreate --no-deps app
 
-            # 변수 주입은 같은 줄에 (확실하게)
-            IMAGE_TAG=${IMAGE_TAG} docker compose ${COMPOSE} pull app
-            IMAGE_TAG=${IMAGE_TAG} docker compose ${COMPOSE} up -d --pull always --force-recreate --no-deps app
-
-            docker compose ${COMPOSE} ps
-            docker compose ${COMPOSE} images
+            docker compose -f docker-compose.prod.yml ps
+            docker compose -f docker-compose.prod.yml images
