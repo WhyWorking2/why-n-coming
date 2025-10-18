@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  app:
+    image: ghcr.io/whyworking2/why-n-coming:latest
+    container_name: whyncoming
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
