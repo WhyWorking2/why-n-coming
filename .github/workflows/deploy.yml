@@ -10,9 +10,9 @@ on:
 
 # ✅ GitHub Actions 권한을 직접 명시 (조직 정책에 막혀도 작동)
 permissions:
-  contents: read        # 코드 checkout 권한
-  packages: write       # GHCR에 Docker 이미지 Push 권한
-  id-token: write       # (OIDC 사용 시 필요)
+  contents: read
+  packages: write
+  id-token: write       
 
 concurrency:
   group: deploy-prod
