@@ -6,7 +6,7 @@ services:
     container_name: pg
     restart: unless-stopped
     environment:
-      POSTGRES_USER: user
+      POSTGRES_USER: app_user
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: whyncoming
       TZ: Asia/Seoul
@@ -31,7 +31,7 @@ services:
       PGADMIN_CONFIG_SERVER_MODE: "False"
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
 
-      POSTGRES_USER: user
+      POSTGRES_USER: app_user
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: whyncoming
 
