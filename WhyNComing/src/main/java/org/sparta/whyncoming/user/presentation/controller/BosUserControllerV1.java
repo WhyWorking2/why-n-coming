@@ -44,7 +44,7 @@ public class BosUserControllerV1 {
     @Operation(summary = "User 업데이트", security = @SecurityRequirement(name = "BearerAuth"))
     @PatchMapping("/{userNo}")
     public ResponseEntity<ApiResult<UpdateUserResponseDtoV1>> updateMe(
-            @PathParam("userNo") Integer userNo,
+            @PathVariable("userNo") Integer userNo,
             @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
             @Valid @RequestBody UpdateUserByAdminRequestDtoV1 request,
             BindingResult bindingResult
@@ -56,7 +56,7 @@ public class BosUserControllerV1 {
         if(userDetailsInfo.getRole() == UserRoleEnum.MANAGER && request.getRole() == UserRoleEnum.MASTER) {
             return ResponseUtil.failure(ErrorCode.UNAUTHORIZED, "매니저 권한 초과 실패");
         }
-        // TODO: 서비스 호출 후 결과 리턴
+
         UpdateUserResponseDtoV1 response = bosUserServiceV1.updateUserInfo(userNo, request);
         return ResponseUtil.success("회원 수정 성공", response);
     }

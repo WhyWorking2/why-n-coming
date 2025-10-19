@@ -56,7 +56,6 @@ public class Address extends BaseActorEntity {
         this.representativeYn = "N";
     }
 
-    public void setAddress(String address) {
+    public void setAddress(String address) {this.address = address; }
 
-    }
 }

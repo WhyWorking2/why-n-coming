@@ -10,6 +10,7 @@ import org.sparta.whyncoming.common.response.ResponseUtil;
 import org.sparta.whyncoming.common.security.service.CustomUserDetailsInfo;
 import org.sparta.whyncoming.user.application.service.AddressServiceV1;
 import org.sparta.whyncoming.user.presentation.dto.request.AddressCreateRequestDtoV1;
+import org.sparta.whyncoming.user.presentation.dto.request.AddressUpdateRequestDtoV1;
 import org.sparta.whyncoming.user.presentation.dto.response.AddressResponseDtoV1;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,12 +61,12 @@ public class AddressControllerV1 {
     }
 
     @Operation(summary = "배송지 수정", security = @SecurityRequirement(name = "BearerAuth"))
-    @PatchMapping("/addresses/{addressId}")
+    @PatchMapping("/{addressId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResult<AddressResponseDtoV1>> updateAddress(
             @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
             @PathVariable("addressId") UUID addressId,
-            @Valid @RequestBody org.sparta.whyncoming.user.presentation.dto.request.AddressUpdateRequestDtoV1 request,
+            @Valid @RequestBody AddressUpdateRequestDtoV1 request,
             BindingResult bindingResult
     ) {
 
@@ -78,7 +79,7 @@ public class AddressControllerV1 {
 
 
     @Operation(summary = "배송지 삭제", security = @SecurityRequirement(name = "BearerAuth"))
-    @DeleteMapping("/addresses/{addressId}")
+    @DeleteMapping("/{addressId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResult<Void>> deleteAddress(
             @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo,
