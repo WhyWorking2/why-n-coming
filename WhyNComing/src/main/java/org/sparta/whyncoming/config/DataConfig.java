@@ -23,7 +23,7 @@ public class DataConfig { // 지속성 엔티티에 대한 감사 활성화
                 .map(SecurityContext::getAuthentication)
                 .filter(auth -> auth != null && auth.isAuthenticated() && !(auth instanceof AnonymousAuthenticationToken))
                 .map(auth -> {
-                    Object principal = auth.getPrincipal();
+                    Object principal = auth.getPrincipal(); // 로그인한 사용자 객체
 
                     // 1) CustomUserDetails 구현체 (userNo 존재 시)
                     try {

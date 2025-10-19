@@ -2,6 +2,8 @@ package org.sparta.whyncoming.common.log.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -45,14 +47,14 @@ public class LogSanitizer {
                 String name = it.next();
                 JsonNode child = node.get(name);
                 if (SENSITIVE_KEYS.contains(name.toLowerCase())) {
-                    ((com.fasterxml.jackson.databind.node.ObjectNode) node).put(name, "***");
+                    ((ObjectNode) node).put(name, "***");
                 } else {
-                    ((com.fasterxml.jackson.databind.node.ObjectNode) node).set(name, maskNode(child));
+                    ((ObjectNode) node).set(name, maskNode(child));
                 }
             }
         } else if (node.isArray()) {
             for (int i = 0; i < node.size(); i++) {
-                ((com.fasterxml.jackson.databind.node.ArrayNode) node).set(i, maskNode(node.get(i)));
+                ((ArrayNode) node).set(i, maskNode(node.get(i)));
             }
         }
         return node;

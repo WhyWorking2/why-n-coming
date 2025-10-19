@@ -4,6 +4,12 @@ import com.github.benmanes.caffeine.cache.Cache;
 import org.sparta.whyncoming.user.domain.repository.AuthSnapshotRepository;
 import org.springframework.stereotype.Component;
 
+/**
+ * AuthVersionProvider는 유저의 권한 변경 버전을 관리하는 컴포넌트입니다.
+ * - 요청 시 캐시에 저장된 auth_version을 우선 조회하고, 없을 경우 DB에서 가져와 캐시에 저장합니다.
+ * - 유저의 권한 또는 상태가 변경되면 해당 유저의 캐시를 무효화하여 최신 정보를 반영합니다.
+ * 이를 통해 매 요청마다 DB 조회를 최소화하면서도 최신 권한 상태를 보장합니다.
+ */
 @Component
 public class AuthVersionProvider {
 

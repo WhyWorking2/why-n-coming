@@ -91,9 +91,6 @@ public class UserControllerV1 {
     public ResponseEntity<ApiResult<Void>> deleteMe(
             @AuthenticationPrincipal CustomUserDetailsInfo userDetailsInfo
     ) {
-        if (userDetailsInfo == null) {
-            return ResponseUtil.failure(ErrorCode.UNAUTHORIZED, "로그인되어 있지 않습니다.");
-        }
         userServiceV1.deleteSelf(userDetailsInfo);
         return ResponseUtil.success("회원 탈퇴 성공", null);
     }
