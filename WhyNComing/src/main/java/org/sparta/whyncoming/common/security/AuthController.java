@@ -43,9 +43,9 @@ public class AuthController {
 
     // === DTOs ===
     public record LoginRequest(
-            @Schema(example = "1") Integer userNo,
-            @Schema(example = "user01") String userId,
-            @Schema(example = "MANAGER") UserRoleEnum role,
+            @Schema(example = "3") Integer userNo,
+            @Schema(example = "user03") String userId,
+            @Schema(example = "MASTER") UserRoleEnum role,
             @Schema(example = "1") Integer authVersion
 
     ) {}

@@ -54,6 +54,7 @@ public class BosUserServiceV1 {
         //전화번호
         if (request.getRole() != null) {
             userInfo.updateRole(request.getRole());
+            userInfo.increaseAuthVersion();
         }
         if(request.getDeleted()){
             userInfo.markDeleted();
@@ -66,3 +67,4 @@ public class BosUserServiceV1 {
     }
 
 }
+

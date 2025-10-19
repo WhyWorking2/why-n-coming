@@ -1,7 +1,6 @@
 package org.sparta.whyncoming.user.application.service;
 
 import jakarta.transaction.Transactional;
-import org.sparta.whyncoming.common.encode.EncoderUtil;
 
 
 import org.sparta.whyncoming.common.exception.BusinessException;
@@ -10,7 +9,6 @@ import org.sparta.whyncoming.common.security.service.CustomUserDetails;
 import org.sparta.whyncoming.common.security.service.CustomUserDetailsInfo;
 import org.sparta.whyncoming.common.security.service.CustomUserDetailsService;
 
-import org.sparta.whyncoming.common.security.jwt.JwtUtil;
 import org.sparta.whyncoming.user.domain.entity.User;
 import org.sparta.whyncoming.user.domain.enums.UserRoleEnum;
 import org.sparta.whyncoming.user.domain.repository.UserRepository;
@@ -28,25 +26,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.UUID;
+
 
 
 @Service
 public class UserServiceV1 {
 
     private final UserRepository userRepository;
-    private final EncoderUtil encoderUtil;
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService customUserDetailsService;
 
     public UserServiceV1(UserRepository userRepository,
-                         EncoderUtil encoderUtil,
-                         JwtUtil jwtUtil,
                          PasswordEncoder passwordEncoder,
                          CustomUserDetailsService customUserDetailsService) {
         this.userRepository = userRepository;
-        this.encoderUtil = encoderUtil;
         this.passwordEncoder = passwordEncoder;
         this.customUserDetailsService = customUserDetailsService;
     }
@@ -64,7 +58,7 @@ public class UserServiceV1 {
         String userName = requestDto.getUserName();  // 사용자 이름
         String userPhone = requestDto.getUserPhone();// 휴대폰 번호
         String email = requestDto.getEmail();
-        String password = encoderUtil.encode(requestDto.getPassword());
+        String password = passwordEncoder.encode(requestDto.getPassword());
 
         // 중복 체크: userId, email
         userRepository.findByUserId(userId).ifPresent(u -> {

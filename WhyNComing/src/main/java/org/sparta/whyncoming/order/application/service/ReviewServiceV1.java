@@ -66,7 +66,7 @@ public class ReviewServiceV1 {
                                  Pageable pageable) {
 
         // 기본 구현: 사용자 리뷰를 페이지로 조회 후, OwnerReview를 매핑 (N+1 방지 위해 추후 전용 쿼리로 최적화 가능)
-        Page<Review> page = reviewRepository.findByUser(userDetailsInfo.getUser(), pageable);
+        Page<Review> page = reviewRepository.findByUserAndDeletedDateIsNull(userDetailsInfo.getUser(), pageable);
 
         return page.map(r -> {
             OwnerReview orv = r.getOwnerReview();
@@ -95,31 +95,38 @@ public class ReviewServiceV1 {
     @Transactional
     public void deleteMyReview(CustomUserDetailsInfo userDetailsInfo, UUID reviewId) {
         if (reviewId == null) {
-            throw new BusinessException(
-                    ErrorCode.INVALID_REQUEST,
-                    "리뷰 ID가 필요합니다.");
+            throw new BusinessException(ErrorCode.INVALID_REQUEST, "리뷰 ID가 필요합니다.");
         }
 
-        // 리뷰 조회 (없으면 404 성격의 비즈니스 예외)
-        Review review = reviewRepository.findByReviewId(reviewId)
-                .orElseThrow(() -> new BusinessException(
-                        ErrorCode.NOT_FOUND,
-                        "삭제할 리뷰를 찾을 수 없습니다."));
+        // 1) 리뷰 로드
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND, "삭제할 리뷰를 찾을 수 없습니다."));
 
-        // 소유권 확인: 엔티티 동등성 대신 식별자 비교 (프록시/영속성 컨텍스트 차이 방지)
+        // 2) 소유권 체크 (프록시 안전하게 식별자 비교)
         Integer reviewUserNo = (review.getUser() != null) ? review.getUser().getUserNo() : null;
         Integer currentUserNo = (userDetailsInfo != null && userDetailsInfo.getUser() != null)
                 ? userDetailsInfo.getUser().getUserNo()
                 : null;
 
         if (reviewUserNo == null || currentUserNo == null || !reviewUserNo.equals(currentUserNo)) {
-            throw new BusinessException(
-                    ErrorCode.UNAUTHORIZED,
-                    "본인이 작성한 리뷰만 삭제할 수 있습니다.");
+            throw new BusinessException(ErrorCode.UNAUTHORIZED, "본인이 작성한 리뷰만 삭제할 수 있습니다.");
         }
 
-        // 삭제 처리 (소프트 삭제 정책이 있다면 여기서 상태/일시 업데이트로 교체)
-        reviewRepository.deleteByReviewId(reviewId);
+        // 3) 이미 삭제된 경우는 무시(idempotent)
+        if (review.getDeletedDate() != null) {
+            return;
+        }
+
+        // 4) 리뷰 소프트 딜리트 (감사 컬럼 채움)
+        review.markDeleted(); // 아래 엔티티 메서드 참고
+
+        // 5) 사장답글도 함께 소프트 딜리트(있다면, 정책에 따라)
+        OwnerReview ownerReview = review.getOwnerReview();
+        if (ownerReview != null && ownerReview.getDeletedDate() == null) {
+            ownerReview.markDeleted();
+        }
+
+        // 6) flush/save 호출 불필요: 영속 상태 변경이므로 트랜잭션 커밋 시점에 업데이트됨
     }
 
 }

@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 
 @Hidden
 @RestControllerAdvice
@@ -37,6 +39,9 @@ public class GlobalExceptionHandler {
     }
 
 
+    /**
+     * 비즈니스 로직 예외 처리.
+     */
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ApiResult<Void>> handleBusiness(BusinessException ex) {
         ErrorCode code = ex.getErrorCode();
@@ -45,6 +50,9 @@ public class GlobalExceptionHandler {
     }
 
 
+    /**
+     * @Valid 검증 실패 처리.
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResult<Void>> handleValidation(MethodArgumentNotValidException ex) {
         String msg = ex.getBindingResult().getFieldErrors().stream()
@@ -56,6 +64,9 @@ public class GlobalExceptionHandler {
     }
 
 
+    /**
+     * @Validated 제약 조건 위반 처리.
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ApiResult<Void>> handleConstraint(ConstraintViolationException ex) {
         String msg = ex.getConstraintViolations().stream()
@@ -67,6 +78,19 @@ public class GlobalExceptionHandler {
     }
 
 
+    /**
+     * 인증 또는 인가 거부 시 403 응답 처리.
+     */
+    @ExceptionHandler({ AuthorizationDeniedException.class, AccessDeniedException.class })
+    public ResponseEntity<ApiResult<Void>> handleAccessDenied(RuntimeException ex) {
+        logError(HttpStatus.FORBIDDEN.value(), ErrorCode.FORBIDDEN.name(), "Access Denied", (Exception) ex);
+        return ResponseUtil.failure(ErrorCode.FORBIDDEN, "Access Denied");
+    }
+
+
+    /**
+     * 기타 모든 예외 처리 (500 응답).
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResult<Void>> handleEtc(Exception ex) {
         logError(HttpStatus.INTERNAL_SERVER_ERROR.value(), ErrorCode.INTERNAL_SERVER_ERROR.name(), ex.getMessage(), ex);

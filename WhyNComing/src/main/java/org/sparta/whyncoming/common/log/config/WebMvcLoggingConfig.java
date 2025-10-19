@@ -8,6 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * WebMvcLoggingConfig는 Spring MVC 요청/응답 로깅을 위한 설정 클래스입니다.
+ * - ApiLoggingInterceptor: 모든 API 요청과 응답을 로깅하도록 등록합니다.
+ * - TraceAndCacheFilter: 요청에 traceId를 부여하고 캐싱 로깅 필터를 등록합니다.
+ * Swagger, actuator, 정적 리소스 등의 경로는 로깅 대상에서 제외됩니다.
+ */
 @Configuration
 public class WebMvcLoggingConfig implements WebMvcConfigurer {
 
