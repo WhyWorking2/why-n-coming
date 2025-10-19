@@ -1,6 +1,7 @@
 package org.sparta.whyncoming.product.presentation.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.sparta.whyncoming.common.response.ApiResult;
@@ -101,11 +102,15 @@ public class ProductController {
      * @return 수정된 상품정보
      */
     @Operation(summary = "상품 수정")
-    @PutMapping("/{uuid}")
+    @PutMapping(value = "/{uuid}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResult<ProductActiveResponseDto>> updateProduct
-    (@PathVariable UUID uuid, @RequestBody ProductUpdateRequestDto updateRequestDto) {
+    ( @PathVariable UUID uuid,
+      @Parameter(description = "수정할 상품 정보") //스웨거용 parameter 어노테이션
+      @RequestPart("updateRequestDto") @Valid ProductUpdateRequestDto updateRequestDto,
+      @Parameter(description = "업로드할 이미지")
+      @RequestPart("imageFile") MultipartFile imageFile) {
 
-        return ResponseEntity.ok(ApiResult.ofSuccess(productService.updateProduct(uuid, updateRequestDto)));
+        return ResponseEntity.ok(ApiResult.ofSuccess(productService.updateProduct(uuid, updateRequestDto, imageFile)));
     }
 
     // 삭제

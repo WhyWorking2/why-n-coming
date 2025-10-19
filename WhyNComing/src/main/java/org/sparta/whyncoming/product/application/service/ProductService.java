@@ -121,21 +121,39 @@ public class ProductService {
      * @param requestDto 변경할 상품정보
      * @return 변경된 상품정보
      */
-    public ProductActiveResponseDto updateProduct(UUID productId, ProductUpdateRequestDto requestDto) {
+    public ProductActiveResponseDto updateProduct(UUID productId, ProductUpdateRequestDto requestDto, MultipartFile productImg) {
         Product product = productRepository.findByProductId(productId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND ,requestDto.getProductName()));
+        String newImageUrl = null;
 
+        if (productImg != null && !productImg.isEmpty()) {
+            s3Util.deleteFileByUrl(product.getProductPictureUrl());
+            try {
+                newImageUrl = s3Util.uploadFile(productImg, "products");
+            } catch (IOException e) {
+                throw new BusinessException(ErrorCode.INVALID_REQUEST);
+            }
+        }
+
+        /*
+        S3에 새 이미지가 업로드 되었을 경우에만 update에서 이미지 url이 변경됨.
+         */
+        String imageUrlToUpdate = (newImageUrl != null) ? newImageUrl : product.getProductPictureUrl();
         product.update(
                 requestDto.getProductName(),
                 requestDto.getPrice(),
                 requestDto.getDescription(),
-                requestDto.getProductPictureUrl()
+                imageUrlToUpdate
         );
 
         return new ProductActiveResponseDto(product);
     }
 
-    //TODO 반환값 String 하드코딩 대신 쓸 타입을 정해야 하고, 이미 삭제된 상품에 대한 예외처리가 필요함
+    /**
+     * 상품 삭제 비즈니스 로직
+     * @param productId 삭제될 상품의 UUID
+     * @return 삭제된 상품의 UUID
+     */
     public String deleteProduct(UUID productId) {
         Product product = productRepository.findByProductId(productId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND));
