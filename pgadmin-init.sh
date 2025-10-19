@@ -1,5 +1,4 @@
 #!/bin/sh -eu
-
 cat >/pgadmin4/servers.json <<EOF
 {
   "Servers": {
@@ -16,9 +15,7 @@ cat >/pgadmin4/servers.json <<EOF
   }
 }
 EOF
-
 echo "db:5432:whyncoming:app_user:1234" > /pgpass
 chmod 600 /pgpass
 chown 5050:5050 /pgpass /pgadmin4/servers.json   # ★ 중요
-
 exec /entrypoint.sh
