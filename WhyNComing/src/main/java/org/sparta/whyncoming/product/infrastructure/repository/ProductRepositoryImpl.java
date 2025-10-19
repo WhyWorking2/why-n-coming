@@ -46,6 +46,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                         p.getProductId(),
                         p.getProductName(),
                         p.getStore().getStoreName(),
+                        p.getProductPictureUrl(),
                         categoryMap.get(p.getProductId()),
                         p.getPrice(),
                         p.getCreatedDate(),

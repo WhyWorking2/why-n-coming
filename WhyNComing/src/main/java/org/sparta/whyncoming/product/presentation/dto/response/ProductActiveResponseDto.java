@@ -48,20 +48,21 @@ public class ProductActiveResponseDto {
 
     /**
      * 상품 전체 조회에 사용될 메서드 (삭제된 상품 제외)
-     * @param productId
-     * @param productName
-     * @param storeName
-     * @param categoryNameList
-     * @param price
-     * @param createdDate
-     * @param modifiedDate
-     * @param createdBy
-     * @param modifiedBy
+     * @param productId 조회될 상품 uuid
+     * @param productName 조회될 상품명
+     * @param storeName 조회될 상품의 입점사
+     * @param categoryNameList 조회될 상품의 카테고리 리스트
+     * @param price 조회될 상품의 가격
+     * @param createdDate 조회될 상품의 생성시간
+     * @param modifiedDate 수정시간
+     * @param createdBy 상품 생성자
+     * @param modifiedBy 상품의 마지막 수정자
      */
-    public ProductActiveResponseDto(UUID productId, String productName, String storeName, List<String> categoryNameList, Integer price, Instant createdDate, Instant modifiedDate, Integer createdBy, Integer modifiedBy) {
+    public ProductActiveResponseDto(UUID productId, String productName, String storeName, String productPictureUrl, List<String> categoryNameList, Integer price, Instant createdDate, Instant modifiedDate, Integer createdBy, Integer modifiedBy) {
         this.productId = productId;
         this.productName = productName;
         this.storeName = storeName;
+        this.productPictureUrl = productPictureUrl;
         this.price = price;
         this.categoryNameList = categoryNameList;
 
