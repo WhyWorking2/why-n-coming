@@ -67,7 +67,7 @@ public class Order extends BaseActorEntity {
 
     // 기본 주문
     public void pay(String method, String requests) {
-        if (this.status != Status.CREATED) {
+        if (this.status != Status.SUCCESS) {
             throw new IllegalStateException("이 상태에서는 결제를 할 수 없습니다.");
         }
 

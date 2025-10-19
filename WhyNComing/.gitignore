@@ -41,3 +41,5 @@ out/
 ### yml ###
 application-secret.yml
 application-jwt.yml
+application-toss.yml
+application-ai.yml

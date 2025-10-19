@@ -1,6 +1,7 @@
 package org.sparta.whyncoming.config;
 
 import lombok.RequiredArgsConstructor;
+import org.sparta.whyncoming.common.security.auth.AuthVersionProvider;
 import org.sparta.whyncoming.common.security.service.UserDetailsServiceImpl;
 import org.sparta.whyncoming.common.security.filter.JwtAuthenticationFilter;
 import org.sparta.whyncoming.common.security.filter.JwtAuthorizationFilter;
@@ -27,6 +28,7 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final AuthVersionProvider authVersionProvider;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -47,7 +49,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthorizationFilter jwtAuthorizationFilter() {
-        return new JwtAuthorizationFilter(jwtUtil, userDetailsService);
+        return new JwtAuthorizationFilter(jwtUtil, userDetailsService, authVersionProvider);
     }
 
     @Bean

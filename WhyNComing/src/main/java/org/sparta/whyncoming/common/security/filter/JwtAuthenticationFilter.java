@@ -51,8 +51,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Integer userNo = ((CustomUserDetailsInfo) authResult.getPrincipal()).getUserNo();
         String userId = ((CustomUserDetailsInfo) authResult.getPrincipal()).getUserId();
         UserRoleEnum role = ((CustomUserDetailsInfo) authResult.getPrincipal()).getUser().getRole();
-
-        String token = jwtUtil.createToken(userNo, userId, role);
+        Integer authVersion = ((CustomUserDetailsInfo) authResult.getPrincipal()).getAuthVersion();
+        String token = jwtUtil.createToken(userNo, userId, role, authVersion);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
     }
 

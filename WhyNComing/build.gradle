@@ -28,6 +28,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    //caffeine CASH
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.8'
 
     //JWT
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
@@ -66,8 +68,14 @@ dependencies {
     // AWS S3
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'software.amazon.awssdk:s3:2.20.87'
+
+    implementation("io.netty:netty-resolver-dns-native-macos::osx-aarch_64")
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.named('bootRun') {
+    systemProperty "spring.profiles.active", System.getProperty("spring.profiles.active") ?: "local"
 }

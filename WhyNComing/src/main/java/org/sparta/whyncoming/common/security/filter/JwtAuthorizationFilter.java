@@ -7,9 +7,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.sparta.whyncoming.common.exception.BusinessException;
+import org.sparta.whyncoming.common.exception.ErrorCode;
+import org.sparta.whyncoming.common.security.auth.AuthVersionProvider;
 import org.sparta.whyncoming.common.security.service.UserDetailsServiceImpl;
 import org.sparta.whyncoming.common.security.jwt.JwtUtil;
 
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -25,16 +29,21 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
+    private final AuthVersionProvider authVersionProvider;
 
-    public JwtAuthorizationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService) {
+    public JwtAuthorizationFilter(JwtUtil jwtUtil,
+                                  UserDetailsServiceImpl userDetailsService,
+                                  AuthVersionProvider authVersionProvider) {
         this.jwtUtil = jwtUtil;
         this.userDetailsService = userDetailsService;
+        this.authVersionProvider = authVersionProvider;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
         String tokenValue = jwtUtil.getJwtFromHeader(req);
+
 
         if (StringUtils.hasText(tokenValue)) {
 
@@ -44,9 +53,27 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            // token, claims, userId, tokenVer 추출 이후에 추가
+            Integer tokenVer = info.get("authVersion", Integer.class);
+            if (tokenVer == null) {
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
 
+            int currentVer = authVersionProvider.currentVersion(Integer.parseInt(info.getSubject()));
+            if (tokenVer.intValue() != currentVer) {
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
             try {
                 setAuthentication(Integer.parseInt(info.getSubject()));
+            } catch (DisabledException de) {
+                // 탈퇴/비활성 사용자: 인증 거부 및 401 응답
+                log.warn("Blocked disabled user request: {}", de.getMessage());
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                res.setContentType("application/json;charset=UTF-8");
+                res.getWriter().write(ErrorCode.UNAUTHORIZED.getMessage());
+                return;
             } catch (Exception e) {
                 log.error(e.getMessage());
                 return;
@@ -68,6 +95,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     // 인증 객체 생성
     private Authentication createAuthentication(Integer userNo) {
         UserDetails userDetails = userDetailsService.loadUserByUserNo(userNo);
+        if (userDetails == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND, "사용자 정보를 찾을 수 없습니다.");
+        }
+        if (!userDetails.isEnabled()) {
+            // delete_date 등으로 비활성화된 사용자: 인증 차단
+            throw new BusinessException(ErrorCode.NOT_FOUND, "이미 탈퇴했거나 존재하지 않는 회원입니다.");
+        }
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }

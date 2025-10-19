@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/v1/order")
-@Tag(name = "Order", description = "주문 데이터 API")
+@Tag(name = "Toss Order", description = "Toss 주문 데이터 API")
 public class TossPaymentControllerV1 {
 
     private final TossPaymentServiceV1 service;
@@ -27,13 +27,19 @@ public class TossPaymentControllerV1 {
         this.service = service;
     }
 
-    @Operation(summary = "결제(Toss Payments 사용)")
+    @Operation(summary = "Toss Client Key 반환(HTML 프런트엔드에서만 가능)")
+    @GetMapping("/{orderId}/payment/client-key")
+    public Map<String, Object> getClientKey(@PathVariable UUID orderId) {
+        return service.getClientKey(orderId);
+    }
+
+    @Operation(summary = "Toss Payments 결제(HTML 프런트엔드에서만 가능)")
     @GetMapping("/{orderId}/payment")
     public RedirectView showPaymentPage(@PathVariable String orderId) {
         return new RedirectView("/payment.html?orderId=" + orderId);
     }
 
-    @Operation(summary = "결제 성공")
+    @Operation(summary = "TOSS 결제 성공(HTML 프런트엔드에서만 가능)")
     @GetMapping("/{orderId}/payment/success")
     public ResponseEntity<ApiResult<TossConfirmResponseV1>> paymentSuccess(
             @PathVariable UUID orderId,
@@ -46,7 +52,7 @@ public class TossPaymentControllerV1 {
         return ResponseUtil.success("주문 생성 성공", res);
     }
 
-    @Operation(summary = "결제 실패")
+    @Operation(summary = "TOSS 결제 실패(HTML 프런트엔드에서만 가능)")
     @GetMapping("/{orderId}/payment/fail")
     public ResponseEntity<?> paymentFail(
             @PathVariable UUID orderId,
@@ -58,7 +64,7 @@ public class TossPaymentControllerV1 {
         );
     }
 
-    @Operation(summary = "결제 조회")
+    @Operation(summary = "TOSS 결제 조회")
     @GetMapping("/{orderId}/payment/{paymentKey}")
     public ResponseEntity<?> getPaymentInfo(
             @PathVariable String paymentKey,

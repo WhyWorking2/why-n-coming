@@ -9,6 +9,7 @@ import org.sparta.whyncoming.product.presentation.dto.request.ProductRequestDto;
 import org.sparta.whyncoming.product.presentation.dto.request.ProductUpdateRequestDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductByCategoryResponseDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductDetailResponseDto;
+import org.sparta.whyncoming.product.presentation.dto.response.ProductActiveResponseDto;
 import org.sparta.whyncoming.product.presentation.dto.response.ProductResponseDto;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,6 @@ public class ProductController {
         this.productService = productService;
     }
 
-
     /**
      * 상품 추가 컨트롤러
      * 관리자일 때
@@ -40,7 +40,7 @@ public class ProductController {
     @PreAuthorize(" hasRole('ADMIN') or hasRole('MANAGER') or (hasRole('OWNER') and #requestDto.storeName == authentication.name)")
     @Operation(summary = "상품 추가")
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResult<ProductResponseDto>> createProduct(
+    public ResponseEntity<ApiResult<ProductActiveResponseDto>> createProduct(
             @RequestPart("requestDto") @Valid ProductRequestDto requestDto,
             @RequestPart("imageFile")  MultipartFile imageFile) {
 
@@ -54,8 +54,8 @@ public class ProductController {
      */
     @Operation(summary = "상품 전체조회")
     @GetMapping
-    public ResponseEntity<ApiResult<List<ProductResponseDto>>> findByProductList() {
-        return ResponseEntity.ok(ApiResult.ofSuccess(productService.readAllProducts()));
+    public ResponseEntity<ApiResult<List<ProductActiveResponseDto>>> findByActiveProductList() {
+        return ResponseEntity.ok(ApiResult.ofSuccess(productService.readAllActiveProducts()));
     }
 
     /**
@@ -65,7 +65,7 @@ public class ProductController {
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER')")
     @Operation(summary = "관리자, 매니저용 전체조회 - 삭제된 상품 포함된 리스트")
     @GetMapping("/deleted")
-    public ResponseEntity<ApiResult<List<ProductResponseDto>>> findByDeletedProductList() {
+    public ResponseEntity<ApiResult<List<ProductResponseDto>>> findByProductList() {
         return ResponseEntity.ok(ApiResult.ofSuccess(productService.readAllProducts()));
     }
 
@@ -102,7 +102,7 @@ public class ProductController {
      */
     @Operation(summary = "상품 수정")
     @PutMapping("/{uuid}")
-    public ResponseEntity<ApiResult<ProductResponseDto>> updateProduct
+    public ResponseEntity<ApiResult<ProductActiveResponseDto>> updateProduct
     (@PathVariable UUID uuid, @RequestBody ProductUpdateRequestDto updateRequestDto) {
 
         return ResponseEntity.ok(ApiResult.ofSuccess(productService.updateProduct(uuid, updateRequestDto)));

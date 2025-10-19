@@ -1,0 +1,19 @@
+services:
+  app:
+    image: ghcr.io/whyworking2/why-n-coming:${IMAGE_TAG:-latest}
+    container_name: why-n-coming
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - SPRING_CONFIG_ADDITIONAL_LOCATION=file:/opt/app/secret/
+      - SPRING_PROFILES_ACTIVE=prod,secret
+    volumes:
+      - /opt/app/secret:/opt/app/secret:ro
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsSL -o /dev/null http://localhost:8080/"]
+      interval: 10s
+      timeout: 3s
+      retries: 10

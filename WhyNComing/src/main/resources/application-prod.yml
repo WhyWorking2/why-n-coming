@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    # 환경변수로 오버라이드 가능(권장): DB_HOST/DB_PORT/DB_NAME/DB_USERNAME/DB_PASSWORD
+    url: jdbc:postgresql://${DB_HOST:${RDS_ENDPOINT}}:${DB_PORT:5432}/${DB_NAME:whyncoming}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate   # 운영은 반드시 validate
+
+# 운영에선 불필요한 과도한 SQL 로그 끄기
+logging:
+  level:
+    org.hibernate.SQL: info
+    org.hibernate.orm.jdbc.bind: info
+
+# (선택) 리버스 프록시 앞단일 때 유용
+server:
+  forward-headers-strategy: framework
+
+# AWS SDK 기본 설정(자격증명은 가급적 EC2 IAM Role로, access-key/secret-key는 secret.yml에 두지 않는 걸 권장)
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    s3:
+      bucket: ${S3_BUCKET:}   # 버킷명은 환경변수/secret.yml로

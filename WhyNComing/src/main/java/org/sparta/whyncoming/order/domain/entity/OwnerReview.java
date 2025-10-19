@@ -1,6 +1,7 @@
 package org.sparta.whyncoming.order.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.sparta.whyncoming.common.entity.BaseActorEntity;
@@ -33,5 +34,9 @@ public class OwnerReview extends BaseActorEntity {
         this.review = review;
         this.user = user;
         this.ownerReviewContent = ownerReviewContent;
+    }
+
+    public void updateContent(String content) {
+        this.ownerReviewContent = content;
     }
 }

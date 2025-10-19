@@ -1,6 +1,5 @@
 package org.sparta.whyncoming.user.application.service;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.sparta.whyncoming.common.encode.EncoderUtil;
 
@@ -18,6 +17,7 @@ import org.sparta.whyncoming.user.domain.repository.UserRepository;
 
 import org.sparta.whyncoming.user.presentation.dto.request.SignUpUserRequestDtoV1;
 import org.sparta.whyncoming.user.presentation.dto.request.UpdateUserRequestDtoV1;
+
 import org.sparta.whyncoming.user.presentation.dto.response.SingUpUserResponseDtoV1;
 import org.sparta.whyncoming.user.presentation.dto.response.UpdateUserResponseDtoV1;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,21 +27,26 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.util.UUID;
+
 
 @Service
 public class UserServiceV1 {
 
     private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
     private final EncoderUtil encoderUtil;
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService customUserDetailsService;
 
-    public UserServiceV1(UserRepository userRepository, EncoderUtil encoderUtil, JwtUtil jwtUtil, PasswordEncoder passwordEncoder,CustomUserDetailsService customUserDetailsService) {
+    public UserServiceV1(UserRepository userRepository,
+                         EncoderUtil encoderUtil,
+                         JwtUtil jwtUtil,
+                         PasswordEncoder passwordEncoder,
+                         CustomUserDetailsService customUserDetailsService) {
         this.userRepository = userRepository;
         this.encoderUtil = encoderUtil;
-        this.jwtUtil = jwtUtil;
         this.passwordEncoder = passwordEncoder;
         this.customUserDetailsService = customUserDetailsService;
     }
@@ -96,7 +101,9 @@ public class UserServiceV1 {
         User userInfo = userRepository.findById(user.getUserNo()).orElseThrow(
                 () -> new BusinessException(ErrorCode.UNAUTHORIZED,"수정할 유저 정보가 없습니다.")
         );
-
+        if (userInfo.isDeleted()) {
+            throw new BusinessException(ErrorCode.UNAUTHORIZED," 탈퇴한 회원입니다.");
+        }
         String newPassword = passwordEncoder.encode(request.getNewPassword().trim());
 
         // JPA Dirty Checking으로 업데이트: 새 엔티티 생성/저장은 금지
@@ -122,7 +129,7 @@ public class UserServiceV1 {
         정보수정에 오류가 발생하여 기존 SpringSecurity에 저장된 SecurityContext 또한 수정을 해야한다는 것을 알게되어
         기존 정보 호출
          */
-        CustomUserDetails updatedUserDetails = (CustomUserDetails) customUserDetailsService.loadUserByUserNo(updateUser.getUserNo());
+        CustomUserDetails updatedUserDetails = customUserDetailsService.loadUserByUserNo(updateUser.getUserNo());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         /*
@@ -149,133 +156,15 @@ public class UserServiceV1 {
     }
 
     /**
-     * DELETE /member/{userId}
+     * DELETE /User/{userId}
      */
     @Transactional
-    public void deleteMember(String userId) {
-        // TODO: 회원 탈퇴
+    public void deleteSelf(CustomUserDetailsInfo user) {
+        int updated = userRepository.softDeleteByUserNo(user.getUserNo(), Instant.now());
+        if (updated == 0) {
+            // 이미 탈퇴했거나 존재하지 않는 경우
+            throw new BusinessException(ErrorCode.NOT_FOUND, "이미 탈퇴했거나 존재하지 않는 회원입니다.");
+        }
     }
 
-    /**
-     * POST /member/{userId}/idfind
-     */
-    public String findUserId(String userId) {
-        // TODO: 회원 아이디 찾기
-        return null;
-    }
-
-    /**
-     * POST /member/{userId}/pwfind
-     */
-    public void findPassword(String userId) {
-        // TODO: 회원 비밀번호 찾기(재설정 절차)
-    }
-
-    /**
-     * POST /member/logout
-     */
-    public void logout(HttpServletResponse response) {
-        // TODO: 로그아웃 처리 (토큰 무효화 등)
-    }
-
-    /**
-     * GET /member/reviews
-     */
-    public void getMemberReviews(String userId) {
-        // TODO: 회원 리뷰 목록 조회
-    }
-
-    // =========================
-    // MEMBER DELIVERY APIs
-    // =========================
-
-    /**
-     * POST /member/delivery/address
-     */
-    @Transactional
-    public void registerDeliveryAddress(String userId /*, AddressRequestDto dto */) {
-        // TODO: 배송지 등록
-    }
-
-    /**
-     * GET /member/delivery/addresses
-     */
-    public void getDeliveryAddresses(String userId) {
-        // TODO: 배송지 목록 조회
-    }
-
-    /**
-     * PATCH /member/delivery/{addressId}
-     */
-    @Transactional
-    public void updateDeliveryAddress(Long addressId /*, AddressRequestDto dto */) {
-        // TODO: 배송지 수정
-    }
-
-    /**
-     * DELETE /member/delivery/{addressId}
-     */
-    @Transactional
-    public void deleteDeliveryAddress(Long addressId) {
-        // TODO: 배송지 삭제
-    }
-
-    // =========================
-    // MEMBER ORDER APIs
-    // =========================
-
-    /**
-     * GET /member/orders
-     */
-    public void getOrders(String userId) {
-        // TODO: 주문 목록 조회
-    }
-
-    /**
-     * GET /member/{orderId}
-     */
-    public void getOrderDetail(Long orderId) {
-        // TODO: 주문 상세 조회
-    }
-
-    // =========================
-    // BOS (Admin) APIs
-    // =========================
-
-    /**
-     * GET /bos/members
-     */
-    public void getBosMembers() {
-        // TODO: BOS 회원 목록 조회
-    }
-
-    /**
-     * GET /bos/member/{userId}
-     */
-    public void getBosMemberDetail(String userId) {
-        // TODO: BOS 회원 상세 조회
-    }
-
-    /**
-     * UPDATE /bos/member/{userId}
-     */
-    @Transactional
-    public void updateBosMember(String userId, SignUpUserRequestDtoV1 requestDto) {
-        // TODO: BOS 회원정보 수정
-    }
-
-    /**
-     * GET /bos/reviews
-     */
-    public void getBosReviews() {
-        // TODO: BOS 회원리뷰 목록 조회
-    }
-
-    /**
-     * DELETE /bos/{reviewId}
-     */
-    @Transactional
-    public void deleteBosReview(Long reviewId) {
-        // TODO: BOS 회원리뷰 삭제
-    }
 }
