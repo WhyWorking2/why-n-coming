@@ -1,160 +1,82 @@
 # 🛍️ WhyNComing
 
-쇼핑·예약 등 도메인을 대상으로 **JWT 기반 인증/인가**, **Flyway 마이그레이션**, **Caffeine 캐시 최적화**를 적용한 Spring Boot 서비스입니다.
+> 배달의민족 기능을 모티브로 한 백엔드 전용 프로젝트  
+> 실시간 배달원 기능 없이, 주문 → 수락 → 배달 시작 → 배달 완료까지의 상태 관리 중심으로 구현했습니다.
 
 ---
 
-## ✨ 핵심 기능
-
-- **사용자 인증(Authentication)**: Access/Refresh **JWT** 발급, 회전(Rotation), 로그아웃 블랙리스트
-- **인가(Authorization)**: `@PreAuthorize` / `@PostAuthorize`, **RoleHierarchy**(`MASTER > ADMIN > OWNER > CUSTOMER`), 리소스 소유권 `Policy` 검증
-- **토큰 무효화 & 권한 캐싱**
-    - `AuthVersionCache`: `userNo → auth_version` (불일치 시 **즉시 401**)
-    - `TokenBlacklistCache`: 로그아웃/재발급 시 `jti` 차단
-    - `TokenAuthorityCache`: `jti → GrantedAuthorities` 캐시로 DB 조회 최소화
-- **데이터 관리**: **Flyway**로 스키마 버전관리, **Soft Delete**(`deleted_date`) 표준화
-- **운영 편의**: Spring **Actuator** 헬스 엔드포인트 분리, 표준 에러 포맷/로깅 구조화
+## 🚀 프로젝트 개요
+- **프로젝트명**: Whyncoming Delivery
+- **설명**: 입점사, 상품, 주문, 결제, 배달 상태를 관리하는 백엔드 시스템
+- **개발 기간:** 2025.09.26 ~ 2025.10.20
+- **참여 인원**: Backend 5명
+- **주요 기능**: 회원 관리 / 주문 및 결제 / 카테고리 매핑 / 배달 상태 관리 / 이미지 업로드 / AI 기능
 
 ---
 
-## 🧰 기술 스택
-
-| 구분 | 기술 |
-|------|------|
-| **Backend** | Spring Boot 3.5.6, Spring Security, JPA, Validation, AOP, Actuator |
-| **Database** | PostgreSQL, Flyway |
-| **Cache** | Caffeine Cache (권한/버전/블랙리스트 캐싱) |
-| **Build / Repo** | Gradle, GitHub |
-| **API 문서** | Swagger (OpenAPI 3.0) |
-| **Secrets 관리** | Infisical (중앙 저장) → 정적 yml 로딩 전략 |
-| **Infra / DevOps** | Docker Compose, CI/CD 확장 구조 |
+## ⚙️ 기술 스택
+- **Language**: Java 17
+- **Framework**: Spring Boot 3.x
+- **Database**: PostgreSQL (Docker + Flyway 마이그레이션 관리)
+- **Infra**: AWS / S3
+- **Auth**: Spring Security + JWT
+- **Cache**: Caffeine Cache (권한/버전/블랙리스트 캐싱)
+- **Build Tool**: Gradle
+- **AI**: OpenAI API 연동
+- **Payment**: PG사 테스트 결제 연동 (토스페이)
+- **Secret Management**: Infisical
+- **API 문서화**: Swagger
 
 ---
 
-## 🗂️ 디렉토리 구조 (예시)
+## 📦 주요 기능
+- **회원 관리 (User)**: JWT 기반 인증, 권한 관리
+- **입점사 관리 (Seller)**: 입점사 등록 / 수정 / 삭제
+- **상품 관리 (Product)**: 상품 등록 / 수정 / 삭제 / 조회
+- **카테고리 관리 (Category)**: 카테고리 등록 / 삭제 / 조회 / 상품과 입점사 모두 M:N 관계, 매핑 테이블 관리
+- **주문 및 결제 (Order/Payment)**: 주문 생성, 결제 연동, 상태 전이
+- **배달 프로세스 (Delivery)**: 주문 수락 → 배달 시작 → 완료
+- **장바구니 (Cart)**: 상품 추가 / 삭제 / 수량 변경
+- **이미지 업로드 (Image)**: AWS S3 연동
+- **AI 기능 (Assistant)**: 상품 추천 및 챗봇 기능 구현
 
+---
+
+
+## 📂 프로젝트 구조
 ```
 src
- └─ main
-    ├─ java/com/whyn/...
-    │   ├─ auth/ (JWT, 필터, 토큰 유틸, 리프레시)
-    │   ├─ security/ (SecurityFilterChain, RoleHierarchy, Policy)
-    │   ├─ cache/ (TokenCaches: Authority / Blacklist / AuthVersion)
-    │   ├─ audit/ (AuditorAware, BaseTimeEntity)
-    │   ├─ domain/ (엔티티, 리포지토리)
-    │   └─ api/ (Controller, DTO)
-    └─ resources/
-        ├─ application.yml
-        └─ db/migration/ (Flyway SQL 스크립트)
+┣ main/java/org.sparta.whyncoming
+┃ ┣ common # 공통 유틸, 예외, 응답 포맷
+┃ ┣ config # S3, JWT, Security 설정
+┃ ┣ user # 회원 관련 로직
+┃ ┣ store # 입점사 도메인
+┃ ┣ product # 상품, 카테고리, AI 기능
+┃ ┣ order # 주문, 장바구니, 결제, 배달, 리뷰
+┃ ┗ test # 프로젝트 로직 예시
+┗ resources
 ```
+> MSA로 분리될 가능성을 염두에 두고 도메인을 적게 나누었습니다.
 
 ---
 
-## 🚀 빠른 시작
+## 🧑‍💻 팀원 역할
 
-### 1️⃣ 시크릿 설정 (yml)
-`application-secret.yml` 파일을 환경별로 분리해 관리합니다.  
-Infisical은 원천 저장소로만 사용하며, 실행은 정적 yml 로딩 방식으로 전환했습니다.
+| 이름            | GitHub                                       | 담당                                  | 주요 기여 |
+|:--------------|:---------------------------------------------|:------------------------------------|:--|
+| **한준희** (팀장)  | [@kingstree](https://github.com/kingstree)   | 유저 / 보안 / 발표 /                      | JWT + Security 인증 및 인가, 발표 진행 |
+| **구대윤** (기술팀장)| [@kookong2](https://github.com/kookong2)     | 입점사 / ERD / 초기 설정                   | 초기 구조 설계 및 공통 환경 구성      |
+| **박 결**       | [@parkg17](https://github.com/parkg17)       | 주문 / PG 결제 / Entity                 | 결제 연동 및 주문 상태 관리 , AI 기능 |
+| **진주양**       | [@juyangjin](https://github.com/juyangjin)            | 상품 / 카테고리 / README                    | OpenAI 연동, 더미데이터 설계, 문서화 |
+| **김소윤**       | [@soyxni](https://github.com/soyxni)         | 장바구니 / AWS S3                       | 이미지 업로드 기능, 발표자료 제작      |
 
-```yaml
-whyn:
-  auth:
-    jwt:
-      secret: "change-me"
-      refreshSecret: "change-me"
 
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/whyncoming
-    username: app_user
-    password: app_password
-```
-
-> 실행 시:
-> ```bash
-> SPRING_PROFILES_ACTIVE=dev,secret
-> SPRING_CONFIG_ADDITIONAL_LOCATION=file:/opt/app/secret/
-> ```
+> 일부 인원은 **AI / 문서 / 초기설정 등 중복 영역**에도 참여.
 
 ---
+## 🧠 트러블슈팅
 
-### 2️⃣ Docker (선택)
-
-```bash
-docker compose up -d
-```
-
----
-
-### 3️⃣ 애플리케이션 실행
-
-```bash
-./gradlew bootRun
-# 또는 IDE에서 Run/Debug
-```
-
----
-
-### 4️⃣ Swagger UI
-
-```
-http://localhost:8080/swagger-ui/index.html
-```
-
----
-
-## 🔐 인증 / 인가 요약
-
-### ✅ 인증 (Authentication)
-
-- `POST /v1/auth/login` → 자격 검증(BCrypt) → Access/Refresh JWT 발급
-
-**JWT Claims 예시**
-```json
-{
-  "userNo": 5,
-  "userId": "user05",
-  "role": "CUSTOMER",
-  "authVersion": 1
-}
-```
-
----
-
-### ✅ 인가 (Authorization)
-
-- **권한 계층**
-    - `MASTER > ADMIN > OWNER > CUSTOMER`
-- **도메인 접근 제어**
-    - `@PreAuthorize("@policy.isOwner(#orderId)")` 로 사용자 리소스 검증
-- **스코프/클레임 기반 인가**
-    - JWT `roles`, `auth_version` 활용
-
----
-
-## 🧱 데이터 & 마이그레이션
-
-- **Flyway** 자동 마이그레이션 적용
-- **Soft Delete**: `deleted_date` 로 삭제 상태 표현 (`delete_by` 제거)
-- **Auditing**
-    - `created_date`, `modified_date` 유지
-    - `users` 테이블은 `created_by`, `modified_by` 제거 (순환의존 해결)
-    - 행위 감사는 `user_audit_log(actor_user_id, target_user_id, action, occurred_at)` 별도 테이블 기록
-
----
-
-## ⚡ 캐싱 전략 (Caffeine)
-
-| 캐시 이름 | 키 | 값 | 목적 |
-|------------|----|----|------|
-| `TokenAuthorityCache` | jti | GrantedAuthorities | 토큰 권한 조회 속도 향상 |
-| `TokenBlacklistCache` | jti | 만료시각 | 로그아웃/재발급 시 즉시 차단 |
-| `AuthVersionCache` | userNo | auth_version | 토큰 버전 불일치 시 즉시 401 |
-
----
-
-## 🧩 트러블슈팅 기록
-
+### User
 ### 1️⃣ Infisical CLI 디버깅 불편
 - **문제:** `infisical run -- ...` 실행 시 IDE 브레이크포인트/리런 불안정
 - **해결:** **시크릿 yml 분리**. Infisical은 원천 저장소로만 사용, CI/로컬에서 `export → yml` 동기화
@@ -176,8 +98,24 @@ http://localhost:8080/swagger-ui/index.html
 - **문제:** 순환의존 / AuditorAware 초기화 문제
 - **해결:** 별도 `user_audit_log` 테이블로 행위 로그 기록
 
+### Store
+- **원인:**
+- **해결:**
+
+### Order / Payment / Delivery
+- **원인:**
+- **해결:**
+
+### Product / Category
+
+### N+1 쿼리 문제
+- **원인:** 리스트 속 리스트를 조회하는 방식
+- **해결:** JPQL로 조인 후 내부 리스트를 매핑하고 Dto 타입으로 반환하는 것으로 해결
+원인 : 리스트 속 리스트를 조회하는 방식
+
+### Cart / S3
+- **원인:** 
+- **해결:**
+
 ---
 
-
-> 본 문서는 WhyNComing 프로젝트의 기술 구조 및 트러블슈팅 이력을 기반으로 작성되었습니다.  
-> 실제 운영 환경의 포트, 계정, TTL 값은 팀 표준에 맞게 조정하세요.
