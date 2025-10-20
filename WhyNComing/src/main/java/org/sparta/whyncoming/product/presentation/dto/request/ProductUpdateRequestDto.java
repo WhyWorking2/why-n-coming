@@ -21,7 +21,4 @@ public class ProductUpdateRequestDto {
     @Schema(description = "상품 설명", example = "고소하고 바삭한 탕수육")
     private String description;
 
-    @Schema(description = "상품 이미지 URL", example = "https://example.com/images/tang.jpg")
-    private String productPictureUrl;
-
 }
